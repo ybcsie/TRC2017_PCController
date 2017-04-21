@@ -1,0 +1,16 @@
+D:\TRC2017\PCController\PCController\bin\Debug\PCController.exe.config
+D:\TRC2017\PCController\PCController\output\PCController.exe.config
+D:\TRC2017\PCController\PCController\output\PCController.exe
+D:\TRC2017\PCController\PCController\output\PCController.pdb
+D:\TRC2017\PCController\PCController\output\Syntec.RemoteObj.dll
+D:\TRC2017\PCController\PCController\output\Syntec.OpenCNC.dll
+D:\TRC2017\PCController\PCController\output\MMICommon32.dll
+D:\TRC2017\PCController\PCController\output\nunit.framework.dll
+D:\TRC2017\PCController\PCController\obj\Debug\PCController.csprojResolveAssemblyReference.cache
+D:\TRC2017\PCController\PCController\obj\Debug\PCController.Properties.Resources.resources
+D:\TRC2017\PCController\PCController\obj\Debug\PCController.csproj.GenerateResource.Cache
+D:\TRC2017\PCController\PCController\obj\Debug\PCController.exe
+D:\TRC2017\PCController\PCController\obj\Debug\PCController.pdb
+D:\TRC2017\TRC2017_PCController\PCController\output\PCController.exe.config
+D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.exe
+D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.pdb
