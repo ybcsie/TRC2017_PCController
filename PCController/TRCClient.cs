@@ -88,8 +88,14 @@ namespace PCController
 
             char[] buf = new char[100];
             int count = 0;
-
-            count = tcpReader.Read(buf, 0, 100);
+            
+            try
+            {
+                count = tcpReader.Read(buf, 0, 100);
+            }
+            catch
+            {
+            }
 
             return new string(buf, 0, count);
 
