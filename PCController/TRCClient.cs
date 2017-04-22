@@ -95,6 +95,15 @@ namespace PCController
 
         }
 
+        private static int sentCmd(string str)
+        {
+            if(!isConnected())
+            {
+                connectionErrorHandler();
+                return -1;
+            }
+
+        }
 
 
         public static void communicate()
