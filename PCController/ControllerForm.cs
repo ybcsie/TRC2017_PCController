@@ -142,43 +142,37 @@ namespace PCController
 
         private void auto()
         {
-            const double armbaselong = 320;
-            const double arm2rate = 0.53125;
-            const double arm3rate = 0.9375;
+            const double armbaselong = 305;
+            const double arm2rate = 0.5868852;
+            const double arm3rate = 1.154918032;
+            const double ratio = 780;
 
             //need modify
-            const double tmp1 = 28.1748;
-            const double tmp2 = 89.1047;
-            const double tmp3 = 62.72038;
-            const double distance = 130;
+ 
+            const double distance = 180;
             //need modify
 
-            const int pointsnum = 10;
+            const int pointsnum = 30;
 
 
 
-            int[,] coordinate = new int[10, 3];
+            double[,] coordinate = new double[10, 4];
             int[,] scheduleing = new int[100, 2];
             AngleList[] go = new AngleList[10];
 
             //initialize coordinate
-            RoutPlanning.Initialize(coordinate);
+            RoutPlanning.Initialize(coordinate, armbaselong, arm2rate, arm3rate, distance, ratio);
 
             //scheduleing
             Scheduler.ScheduleFunction(scheduleing);
 
 
             //roudplaining
-            go[0] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[0, 1] + tmp1, coordinate[0, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[1] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[1, 1] + tmp1, coordinate[1, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[2] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[2, 1] + tmp1, coordinate[2, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[3] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[3, 1] + tmp1, coordinate[3, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[4] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[4, 1] + tmp1, coordinate[4, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[5] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[5, 1] + tmp1, coordinate[5, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[6] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[6, 1] + tmp1, coordinate[6, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[7] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[7, 1] + tmp1, coordinate[7, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[8] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[8, 1] + tmp1, coordinate[8, 2], tmp2, 170 - tmp3, distance, pointsnum);
-            go[9] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[9, 1] + tmp1, coordinate[9, 2], tmp2, 170 - tmp3, distance, pointsnum);
+            int i = 0;
+            for (i = 0; i < 10; i++)
+            {
+                go[i] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
+            }
 
             //printf("fuck %LF %LF\n", go[0]->one, go[0]->nextangle->one);
 

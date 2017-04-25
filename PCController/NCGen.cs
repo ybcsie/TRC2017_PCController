@@ -14,7 +14,7 @@ namespace PCController
         public static void generator(AngleList[] go, int[,] scheduling)
         {
             const int complete = 11, access = 10, touch = 12, grab = 13, communication = 322;//O pin
-            decimal[,] savedata = new decimal[20, 4];
+            decimal[,] savedata = new decimal[100, 4];
             int i, number, count;
             decimal afterz;
 

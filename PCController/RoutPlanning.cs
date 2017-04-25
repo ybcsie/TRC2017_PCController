@@ -117,6 +117,12 @@ namespace PCController
                 tmpangle9 = Math.Acos(tmpangle9);
 
                 tmpangle6 = (Math.Pow(tmpline1, 2) + Math.Pow(afterline1, 2) - Math.Pow(movelong, 2)) / (2 * tmpline1 * afterline1);
+                if(tmpangle6>1 && tmpangle6 < 1.0001)
+                {
+                    tmpangle6 = 1;
+                }
+
+
                 tmpangle6 = Math.Acos(tmpangle6);
 
                 afterangle1 = angle1 - (tmpangle8 - tmpangle9 - tmpangle6);//
@@ -139,24 +145,120 @@ namespace PCController
 
             return afterangle;
         }
-
-        public static void Initialize(int[,] coordinate)
+        public static void Initialize(double[,] coordinate, double armbaselong, double arm2rate, double arm3rate, double distance, double ratio)
         {
 
             /*
             the first layer(highter one) are 0~3(left to right);second layer(lower one) are 4~7(left to right)
             */
+            //int[,] coordinate = new int[10, 4];
             int i;
+            double[,] measureangle = new double[10, 4];
+            double[,] realcd = new double[5, 2];
+            double[] centerx = new double[4];
+            double[] centery = new double[4];
+            double avcx, avcy;
+            double[,] reference = new double[5, 2];
+            double armlong1 = armbaselong;
+            double armlong2 = armbaselong * arm2rate;
+            double armlong3 = armbaselong * arm3rate;
+            const double pi = 3.1415926;
+
+
+            //calculate the real(x,y)coordinate(realcd) of each platform
             for (i = 0; i < 5; i++)
             {
-                coordinate[i, 0] = 760;//ridio
-                coordinate[i, 1] = (i + 1) * 30;//angle
-                coordinate[i, 2] = 0;//z
-                coordinate[i + 5, 0] = 760;//ridio
-                coordinate[i + 5, 1] = (i + 1) * 30;//angle
-                coordinate[i + 5, 2] = 0;//z
-                                         //printf("coordinate %d:%d,%d,%d",i,coordinate[i][0],coordinate[i][1],coordinate[i][2]);
+                realcd[i, 0] = (armlong1 * Math.Cos(measureangle[i, 0])) + (armlong2 * Math.Cos(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Cos(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3]));
+                realcd[i, 1] = (armlong1 * Math.Sin(measureangle[i, 0])) + (armlong2 * Math.Sin(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Sin(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3])); ;
             }
+            //
+            //for test,because no measureangle
+            for (i = 0; i < 10; i++)
+            {
+                measureangle[i, 1] = 0;
+            }
+            double topanglez = 0, loweranglez = 0;
+            realcd[0, 0] = 3.0 * (ratio / 5);
+            realcd[0, 1] = 4.0* (ratio / 5);
+            realcd[1, 0] = 4.0 * (ratio / 5);
+            realcd[1, 1] = 3.0 * (ratio / 5);
+            realcd[2, 0] = 5.0 * (ratio / 5);
+            realcd[2, 1] = 0.0 * (ratio / 5);
+            realcd[3, 0] = 4.0 * (ratio / 5);
+            realcd[3, 1] = (-3) * (ratio / 5);
+            realcd[4, 0] = 3.0 * (ratio / 5);
+            realcd[4, 1] = (-4) * (ratio / 5);
+            //need to deleted
+
+            //calculate the center of cycle
+            double cx, cy, dx, dy, l, h, tdx, tdy;
+
+            for (i = 0; i < 4; i++)
+            {
+
+                cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
+                cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
+                if (realcd[i + 1, 1] - realcd[i, 1] < 0)
+                {
+                    dx = realcd[i + 1, 0] - realcd[i, 0];
+                    dy = realcd[i + 1, 1] - realcd[i, 1];
+                }
+                else
+                {
+                    dx = realcd[i, 0] - realcd[i + 1, 0];
+                    dy = realcd[i, 1] - realcd[i + 1, 1];
+                }
+                l = Math.Sqrt(dx * dx + dy * dy);
+                h = Math.Sqrt(ratio * ratio - (l / 2) * (l / 2));
+                tdx = (-1) * h * dy / l;
+                tdy = h * dx / l;
+                centerx[i] = cx - tdx;
+                centery[i] = cy - tdy;
+            }
+            avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / 4;
+            avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / 4;
+            Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f}", avcx, avcy));
+            //calculate center
+
+            double tmplong1 = 0;//original pointer to forth modor
+            double tmplong2 = 0;//avcenter to reference
+            double tmpangle1 = 0;//tmplong and y axis;
+            double tmpangle2 = 0;//tmplong and (avcenter to reference)
+
+
+            for (i = 0; i < 5; i++)
+            {
+                reference[i, 0] = avcx + (realcd[i, 0] - avcx) * ((ratio - distance - armlong3) / ratio);
+                reference[i, 1] = avcy + (realcd[i, 1] - avcy) * ((ratio - distance - armlong3) / ratio);
+                //printf("\n%f %f %f\n",reference[i][0],reference[i][1],(reference[i][0]-avcx)*(reference[i][0]-avcx)+(reference[i][1]-avcy)*(reference[i][1]-avcy));
+                Program.form.mesPrintln(string.Format("各平台直線進入點  x:{0:f} y:{1:f}", reference[i, 0], reference[i, 1]));
+            }
+
+            for (i = 0; i < 5; i++)
+            {
+                tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
+                tmpangle1 = (reference[i, 1] * 1) / (tmplong1);
+                tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
+                coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
+                coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
+                coordinate[i, 0] = tmpangle1 + coordinate[i, 0];
+                coordinate[i, 1] = measureangle[i, 1];
+                coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
+                coordinate[i, 2] = (Math.Acos(coordinate[i, 2])) * 180 / pi;
+                coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
+                coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
+                tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
+                tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
+                tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
+                coordinate[i, 3] = 180 - tmpangle2 - coordinate[i, 3];
+                coordinate[i+5, 0] = coordinate[i, 0];
+                coordinate[i+5, 1] = coordinate[i, 1];
+                coordinate[i + 5, 2] = coordinate[i, 2];
+                coordinate[i + 5, 3] = coordinate[i, 3];
+                Program.form.mesPrintln(string.Format("各平台直線進入初始四軸角度 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
+            }
+
+
         }
 
         public static AngleList routplanning(double armbaselong, double arm2rate, double arm3rate, double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)

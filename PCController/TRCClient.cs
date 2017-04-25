@@ -108,6 +108,7 @@ namespace PCController
                 connectionErrorHandler();
                 return -1;
             }
+            return 0;
 
         }
 
