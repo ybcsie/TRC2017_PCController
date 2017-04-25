@@ -63,6 +63,9 @@
     <Compile Include="Scheduler.cs" />
     <Compile Include="SyntecClient.cs" />
     <Compile Include="TRCClient.cs" />
+    <EmbeddedResource Include="ControllerForm.resx">
+      <DependentUpon>ControllerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

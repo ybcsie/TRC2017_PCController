@@ -14,6 +14,7 @@ D:\TRC2017\PCController\PCController\obj\Debug\PCController.pdb
 D:\TRC2017\TRC2017_PCController\PCController\output\PCController.exe.config
 D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.exe
 D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.pdb
+<<<<<<< HEAD
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\output\PCController.exe.config
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\obj\Debug\PCController.exe
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\obj\Debug\PCController.pdb
@@ -26,3 +27,18 @@ C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\output\Syntec.
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\output\Syntec.OpenCNC.dll
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\output\MMICommon32.dll
 C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\output\nunit.framework.dll
+=======
+D:\TRC2017\test\TRC2017_PCController\PCController\output\PCController.exe.config
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.exe
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.pdb
+D:\TRC2017\test\TRC2017_PCController\PCController\output\PCController.exe
+D:\TRC2017\test\TRC2017_PCController\PCController\output\PCController.pdb
+D:\TRC2017\test\TRC2017_PCController\PCController\output\Syntec.RemoteObj.dll
+D:\TRC2017\test\TRC2017_PCController\PCController\output\Syntec.OpenCNC.dll
+D:\TRC2017\test\TRC2017_PCController\PCController\output\MMICommon32.dll
+D:\TRC2017\test\TRC2017_PCController\PCController\output\nunit.framework.dll
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.csprojResolveAssemblyReference.cache
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.ControllerForm.resources
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.Properties.Resources.resources
+D:\TRC2017\test\TRC2017_PCController\PCController\obj\Debug\PCController.csproj.GenerateResource.Cache
+>>>>>>> add origin setter

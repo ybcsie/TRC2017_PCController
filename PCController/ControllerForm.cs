@@ -249,7 +249,6 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
             */
 
-            SyntecClient.disconnect();
 
         }
 
@@ -285,6 +284,11 @@ namespace PCController
             mesPrintln("Starting TRC communication...");
             ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
 
+        }
+
+        private void bt_setOrigin_Click(object sender, EventArgs e)
+        {
+            SyntecClient.setOrigin();
         }
     }
 

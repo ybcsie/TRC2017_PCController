@@ -62,6 +62,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
+            this.bt_setOrigin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -147,7 +148,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(211, 35);
+            this.bt_test.Location = new System.Drawing.Point(211, 81);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(75, 23);
             this.bt_test.TabIndex = 9;
@@ -391,6 +392,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.bt_setOrigin);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.bt_genNC);
@@ -431,6 +433,16 @@
             this.tB_mesPrint.Size = new System.Drawing.Size(459, 332);
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
+            // 
+            // bt_setOrigin
+            // 
+            this.bt_setOrigin.Location = new System.Drawing.Point(211, 35);
+            this.bt_setOrigin.Name = "bt_setOrigin";
+            this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
+            this.bt_setOrigin.TabIndex = 22;
+            this.bt_setOrigin.Text = "Set Origin";
+            this.bt_setOrigin.UseVisualStyleBackColor = true;
+            this.bt_setOrigin.Click += new System.EventHandler(this.bt_setOrigin_Click);
             // 
             // ControllerForm
             // 
@@ -500,6 +512,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button bt_TRCCommStart;
+        private System.Windows.Forms.Button bt_setOrigin;
     }
 }
 

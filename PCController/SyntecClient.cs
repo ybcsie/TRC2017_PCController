@@ -106,6 +106,22 @@ namespace PCController
 
         }
 
+
+        public static void writeReg(int addr, int val)
+        {
+            cnc.WRITE_plc_register(addr, addr, new int[] { val });
+        }
+
+        public static void setOrigin()
+        {
+            writeReg(13, 7);
+            writeReg(15208, 7);
+            writeReg(13, 2);
+
+        }
+
+
+
         public static void setPos()
         {
             if (cnc == null)
