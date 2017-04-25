@@ -104,6 +104,18 @@ namespace PCController
 
         }
 
+        public static string getMovCode()
+        {
+            string output = "";
+            int gvarNO = 100;
+
+            for (int i = 0; i < RoutPlanning.pointCount; i++)
+            {
+                output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ10 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
+            }
+
+            return output;
+        }
 
         private static int waitaccess(int access, int communication)
         {

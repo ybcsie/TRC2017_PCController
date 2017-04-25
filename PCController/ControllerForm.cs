@@ -66,6 +66,7 @@ namespace PCController
             while (messLock) ;
             messLock = true;
             messOut += str;
+            messModified = true;
             messLock = false;
         }
 
@@ -89,6 +90,7 @@ namespace PCController
         private System.Windows.Forms.Timer timer300ms;
 
         private string messOut = "";
+        private bool messModified = false;
         private bool messLock = false;
 
         private string initBtText_TRCConnect;
@@ -140,11 +142,18 @@ namespace PCController
 
         }
 
+        private void linearMOV()
+        {
+
+        }
+
+
         private void auto()
         {
-            const double armbaselong = 305;
-            const double arm2rate = 0.5868852;
-            const double arm3rate = 1.154918032;
+            ArmData.longbase = 305;
+            ArmData.longrate2 = 0.5868852;
+            ArmData.longrate3 = 1.154918032;
+
             const double ratio = 780;
 
             //need modify
@@ -161,7 +170,7 @@ namespace PCController
             AngleList[] go = new AngleList[10];
 
             //initialize coordinate
-            RoutPlanning.Initialize(coordinate, armbaselong, arm2rate, arm3rate, distance, ratio);
+            RoutPlanning.Initialize(coordinate, distance, ratio);
 
             //scheduleing
             Scheduler.ScheduleFunction(scheduleing);
@@ -171,7 +180,7 @@ namespace PCController
             int i = 0;
             for (i = 0; i < 10; i++)
             {
-                go[i] = RoutPlanning.routplanning(armbaselong, arm2rate, arm3rate, coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
+                go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
             }
 
             //printf("fuck %LF %LF\n", go[0]->one, go[0]->nextangle->one);
@@ -194,9 +203,13 @@ namespace PCController
         }
         private void refreshMess()
         {
+            if (!messModified)
+                return;
+
             tB_mesPrint.Text = messOut;
             tB_mesPrint.SelectionStart = tB_mesPrint.TextLength;
             tB_mesPrint.ScrollToCaret();
+            messModified = false;
         }
 
 
@@ -249,6 +262,7 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
             */
 
+            mesPrintln(NCGen.getMovCode());
 
         }
 

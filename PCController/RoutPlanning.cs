@@ -61,6 +61,7 @@ namespace PCController
 
         private static MotorAngle calcu(MotorAngle origangle, double distance, int pointsnum)
         {
+            pointCount = pointsnum;
 
             double pi = 3.1415926;
             int count = 0;
@@ -145,7 +146,10 @@ namespace PCController
 
             return afterangle;
         }
-        public static void Initialize(double[,] coordinate, double armbaselong, double arm2rate, double arm3rate, double distance, double ratio)
+
+        public static int pointCount;
+
+        public static void Initialize(double[,] coordinate, double distance, double ratio)
         {
 
             /*
@@ -159,9 +163,9 @@ namespace PCController
             double[] centery = new double[4];
             double avcx, avcy;
             double[,] reference = new double[5, 2];
-            double armlong1 = armbaselong;
-            double armlong2 = armbaselong * arm2rate;
-            double armlong3 = armbaselong * arm3rate;
+            double armlong1 = ArmData.longbase;
+            double armlong2 = armlong1 * ArmData.longrate2;
+            double armlong3 = armlong1 * ArmData.longrate3;
             const double pi = 3.1415926;
 
 
@@ -261,14 +265,10 @@ namespace PCController
 
         }
 
-        public static AngleList routplanning(double armbaselong, double arm2rate, double arm3rate, double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)
+        public static AngleList routplanning(double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)
         {
 
             MotorAngle origmotor = new MotorAngle(angle1, angle2, angle3, angle4);
-
-            ArmData.longbase = armbaselong;
-            ArmData.longrate2 = arm2rate;
-            ArmData.longrate3 = arm3rate;
 
             calcu(origmotor, distance, pointsnum);
 
