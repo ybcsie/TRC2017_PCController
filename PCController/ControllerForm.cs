@@ -161,7 +161,7 @@ namespace PCController
             const double distance = 180;
             //need modify
 
-            const int pointsnum = 30;
+            const int pointsnum = 50;
 
 
 

@@ -52,3 +52,4 @@ D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.csprojResolv
 D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.ControllerForm.resources
 D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.Properties.Resources.resources
 D:\TRC2017\TRC2017_PCController\PCController\obj\Debug\PCController.csproj.GenerateResource.Cache
+C:\Users\kevin\Documents\GitHub\TRC2017_PCController\PCController\obj\Debug\PCController.ControllerForm.resources

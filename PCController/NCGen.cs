@@ -39,7 +39,7 @@ namespace PCController
 
                 while (tmp != null)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", tmp.one, tmp.two, tmp.three, tmp.four);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;", tmp.one, tmp.three,tmp.two ,tmp.four);
 
                     savedata[count, 0] = tmp.one;
                     savedata[count, 1] = tmp.two;
@@ -56,11 +56,11 @@ namespace PCController
 
                 while (count != 0)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", savedata[count, 0], afterz, savedata[count, 2], savedata[count, 3]);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;", savedata[count, 0], savedata[count, 2], afterz, savedata[count, 3]);
                     count--;
                 }
-
-                sendcomplete(complete, communication);
+                ncfile.WriteLine("WAIT();");
+                //sendcomplete(complete, communication);
 
 
                 //put
@@ -73,7 +73,7 @@ namespace PCController
 
                 while (tmp != null)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", tmp.one, tmp.two, tmp.three, tmp.four);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;", tmp.one, tmp.three, tmp.two, tmp.four);
 
                     savedata[count, 0] = tmp.one;
                     savedata[count, 1] = tmp.two;
@@ -85,19 +85,20 @@ namespace PCController
                 }
 
                 count--;
-                afterz = put(touch);
+                //afterz = put(touch);
                 while (count != 0)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", savedata[count, 0], afterz, savedata[count, 2], savedata[count, 3]);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;", savedata[count, 0], savedata[count, 2], afterz, savedata[count, 3]);
                     count--;
                 }
+                ncfile.WriteLine("WAIT();");
                 /*
 
                 sendcomplete(complete, communication);
                 */
             }
 
-
+            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;",0,0, 0, 0);
             ncfile.WriteLine("M30;");
             ncfile.Close();
 
@@ -119,8 +120,8 @@ namespace PCController
 
         private static int waitaccess(int access, int communication)
         {
-            ncfile.WriteLine("SETDO({0:f3},1);", communication);
-            ncfile.WriteLine("WHILE (READDO({0:d})=0) DO", access);
+            ncfile.WriteLine("SETDO({0:d},1);", communication);
+            ncfile.WriteLine("WHILE (@{0:d}=0) DO", access);
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE");
             ncfile.WriteLine("SETDO({0:d},0);", access);
@@ -130,22 +131,24 @@ namespace PCController
         }
         private static decimal suck(int touch)
         {
+            /*
             ncfile.WriteLine("WHILE (READDO({0:f3})=0) DO", touch);
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE;");
             ncfile.WriteLine("SETDO({0:d},0);", touch);
-
+            */
             return 0;
 
         }
 
         private static decimal put(int touch)
         {
+            /*
             ncfile.WriteLine("WHILE (READDO({0:d})=0) DO", touch);
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE;");
             ncfile.WriteLine("SETDO({0:d},0);", touch);
-
+            */
             return 0;
 
         }
