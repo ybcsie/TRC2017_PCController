@@ -262,7 +262,8 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
             */
 
-            mesPrintln(NCGen.getMovCode());
+            NCGen.genInitNC();
+
 
         }
 

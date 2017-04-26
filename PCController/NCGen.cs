@@ -20,10 +20,8 @@ namespace PCController
 
             int tesknum = 0;
 
-            ncfile = new StreamWriter("mainjob.txt");
+            startGenNC("mainjob.txt");
 
-            ncfile.WriteLine("%%@MACRO");
-            ncfile.WriteLine("#1510 := @115221;");
             ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=0.0 FJ20;");
 
 
@@ -98,14 +96,45 @@ namespace PCController
                 */
             }
 
-            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL8;",0,0, 0, 0);
-            ncfile.WriteLine("M30;");
-            ncfile.Close();
-
+            endGenNC();
 
         }
 
-        public static string getMovCode()
+
+        private static void startGenNC(string filename)
+        {
+            ncfile = new StreamWriter(filename);
+
+            ncfile.WriteLine("%%@MACRO");
+            ncfile.WriteLine("#1510 := @115221;");
+
+        }
+        private static void endGenNC()
+        {
+            ncfile.WriteLine("M30;");
+            ncfile.Close();
+        }
+
+        public static void genInitNC()
+        {
+            startGenNC("initializer.txt");
+
+            ncfile.WriteLine("@10 := 1");
+            ncfile.WriteLine("WHILE (@10 = 1) DO");
+
+            ncfile.WriteLine("IF (@11 = 1) THEN");
+            //ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine(getMovCode());
+            ncfile.WriteLine("@11 := 0");
+            ncfile.WriteLine("END_IF");
+
+            ncfile.WriteLine("SLEEP();");
+            ncfile.WriteLine("END_WHILE");
+
+            endGenNC();
+        }
+
+        private static string getMovCode()
         {
             string output = "";
             int gvarNO = 100;
