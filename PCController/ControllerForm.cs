@@ -44,6 +44,11 @@ namespace PCController
             timer300ms.Tick += new EventHandler(timer300ms_Tick);
             timer300ms.Enabled = true;
 
+            ArmData.longbase = 305;
+            ArmData.longrate2 = 0.5868852;
+            ArmData.longrate3 = 1.154918032;
+
+
             mesPrintln("Ready...");
 
         }
@@ -144,16 +149,31 @@ namespace PCController
 
         private void linearMOV()
         {
+            if (SyntecClient.readSingleVar(11) == 1)
+                return;
 
+
+            AngleList linearAngleList = RoutPlanning.routplanning(SyntecClient.Rel[0], SyntecClient.Rel[2], SyntecClient.Rel[1], SyntecClient.Rel[3], 50, 10);
+
+            Angle currNode = linearAngleList.headAngle;
+
+            int i = 0;
+            while (currNode != null)
+            {
+                SyntecClient.writeSingleVar(100 + i++, (double)currNode.one);
+                SyntecClient.writeSingleVar(100 + i++, (double)currNode.three);
+                SyntecClient.writeSingleVar(100 + i++, (double)currNode.two);
+                SyntecClient.writeSingleVar(100 + i++, (double)currNode.four);
+
+                currNode = currNode.nextangle;
+            }
+
+            SyntecClient.writeSingleVar(11, 1);
         }
 
 
         private void auto()
         {
-            ArmData.longbase = 305;
-            ArmData.longrate2 = 0.5868852;
-            ArmData.longrate3 = 1.154918032;
-
             const double ratio = 780;
 
             //need modify
@@ -262,7 +282,7 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
             */
 
-            NCGen.genInitNC();
+            linearMOV();
 
 
         }
@@ -291,6 +311,7 @@ namespace PCController
         private void bt_genNC_Click(object sender, EventArgs e)
         {
             auto();
+            NCGen.genInitNC();
 
         }
 

@@ -60,9 +60,9 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.bt_setOrigin = new System.Windows.Forms.Button();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.bt_setOrigin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -168,6 +168,11 @@
             // num_gvarNo
             // 
             this.num_gvarNo.Location = new System.Drawing.Point(65, 131);
+            this.num_gvarNo.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
             this.num_gvarNo.Name = "num_gvarNo";
             this.num_gvarNo.Size = new System.Drawing.Size(54, 22);
             this.num_gvarNo.TabIndex = 11;
@@ -413,6 +418,16 @@
             this.tabPage2.Text = "Test Functions";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // bt_setOrigin
+            // 
+            this.bt_setOrigin.Location = new System.Drawing.Point(211, 35);
+            this.bt_setOrigin.Name = "bt_setOrigin";
+            this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
+            this.bt_setOrigin.TabIndex = 22;
+            this.bt_setOrigin.Text = "Set Origin";
+            this.bt_setOrigin.UseVisualStyleBackColor = true;
+            this.bt_setOrigin.Click += new System.EventHandler(this.bt_setOrigin_Click);
+            // 
             // bt_TRCCommStart
             // 
             this.bt_TRCCommStart.Location = new System.Drawing.Point(64, 287);
@@ -433,16 +448,6 @@
             this.tB_mesPrint.Size = new System.Drawing.Size(459, 332);
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
-            // 
-            // bt_setOrigin
-            // 
-            this.bt_setOrigin.Location = new System.Drawing.Point(211, 35);
-            this.bt_setOrigin.Name = "bt_setOrigin";
-            this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
-            this.bt_setOrigin.TabIndex = 22;
-            this.bt_setOrigin.Text = "Set Origin";
-            this.bt_setOrigin.UseVisualStyleBackColor = true;
-            this.bt_setOrigin.Click += new System.EventHandler(this.bt_setOrigin_Click);
             // 
             // ControllerForm
             // 

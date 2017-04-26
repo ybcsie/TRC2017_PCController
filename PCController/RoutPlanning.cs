@@ -58,6 +58,8 @@ namespace PCController
 
     class RoutPlanning
     {
+        public static int pointCount;
+
 
         private static MotorAngle calcu(MotorAngle origangle, double distance, int pointsnum)
         {
@@ -69,6 +71,14 @@ namespace PCController
             double arm1long = ArmData.longbase;
             double arm2long = arm1long * (ArmData.longrate2);
             double arm3long = arm1long * (ArmData.longrate3);
+
+
+            if (arm1long == 0 || arm2long == 0 || arm3long == 0)
+            {
+                Program.form.showWarnning(string.Format("arm1long = {0:f3}, arm2long = {1:f3},arm3long = {2:f3}", arm1long, arm2long, arm3long));
+                return null;
+            }
+
 
             double angle1 = (origangle.motor1angle) * pi / 180;
             double angle2 = (origangle.motor2angle) * pi / 180;
@@ -85,6 +95,7 @@ namespace PCController
             double afterline1 = 0, afterangle1 = 0, afterangle3 = 0, afterangle4 = 0;
 
             StreamWriter angleFileWriter = new StreamWriter("moveangle.txt");
+
             /*
                 //check if the distance is able to move
                 tmpline1=pow(arm1long,2)+pow(arm2long,2)-2*arm1long*arm2long*cos(angle3);
@@ -94,11 +105,20 @@ namespace PCController
                 }
                 //
             */
+
             for (count = 0; count < pointsnum; count++)
             {
 
                 tmpline1 = Math.Pow(arm1long, 2) + Math.Pow(arm2long, 2) - 2 * arm1long * arm2long * Math.Cos(angle3);
                 tmpline1 = Math.Sqrt(tmpline1);
+
+                if (tmpline1 == 0)
+                {
+                    Program.form.showWarnning(string.Format("tmpline1 = {0:f3}", tmpline1));
+                    angleFileWriter.Close();
+                    return null;
+                }
+
 
                 tmpangle8 = (Math.Pow(tmpline1, 2) + Math.Pow(arm1long, 2) - Math.Pow(arm2long, 2)) / (2 * arm1long * tmpline1);
                 tmpangle8 = Math.Acos(tmpangle8);
@@ -113,6 +133,14 @@ namespace PCController
 
                 afterangle3 = (Math.Pow(arm2long, 2) + Math.Pow(arm1long, 2) - Math.Pow(afterline1, 2)) / (2 * arm1long * arm2long);
                 afterangle3 = Math.Acos(afterangle3);
+
+
+                if (afterline1 == 0)
+                {
+                    Program.form.showWarnning(string.Format("afterline1 = {0:f3}", afterline1));
+                    angleFileWriter.Close();
+                    return null;
+                }
 
                 tmpangle9 = (Math.Pow(afterline1, 2) + Math.Pow(arm1long, 2) - Math.Pow(arm2long, 2)) / (2 * arm1long * afterline1);
                 tmpangle9 = Math.Acos(tmpangle9);
@@ -132,6 +160,14 @@ namespace PCController
 
                 //Program.form.mesPrintln(String.Format("angle1:{0:f} ,angle3:{1:f} ,angle4:{2:f}", afterangle1 * 180 / pi, afterangle3 * 180 / pi, afterangle4 * 180 / pi));
 
+
+                if (afterangle1 == double.NaN || afterangle3 == double.NaN)
+                {
+                    Program.form.showWarnning(string.Format("afterangle1 = {0:f3},afterangle3 = {1:f3}", afterangle1, afterangle3));
+                    angleFileWriter.Close();
+                    return null;
+                }
+
                 angleFileWriter.WriteLine("{0:f12},{1:f12}", afterangle1 * 180 / pi, afterangle3 * 180 / pi);
 
                 angle1 = afterangle1;
@@ -147,7 +183,6 @@ namespace PCController
             return afterangle;
         }
 
-        public static int pointCount;
 
         public static void Initialize(double[,] coordinate, double distance, double ratio)
         {

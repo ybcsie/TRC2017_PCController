@@ -119,13 +119,13 @@ namespace PCController
         {
             startGenNC("initializer.txt");
 
-            ncfile.WriteLine("@10 := 1");
+            ncfile.WriteLine("@10 := 1;");
             ncfile.WriteLine("WHILE (@10 = 1) DO");
 
             ncfile.WriteLine("IF (@11 = 1) THEN");
             //ncfile.WriteLine("WAIT();");
             ncfile.WriteLine(getMovCode());
-            ncfile.WriteLine("@11 := 0");
+            ncfile.WriteLine("@11 := 0;");
             ncfile.WriteLine("END_IF");
 
             ncfile.WriteLine("SLEEP();");
@@ -139,7 +139,7 @@ namespace PCController
             string output = "";
             int gvarNO = 100;
 
-            for (int i = 0; i < RoutPlanning.pointCount; i++)
+            for (int i = 0; i < 10; i++)
             {
                 output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ10 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
             }
