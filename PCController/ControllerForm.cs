@@ -160,15 +160,15 @@ namespace PCController
             int i = 0;
             while (currNode != null)
             {
-                SyntecClient.writeSingleVar(100 + i++, (double)currNode.one);
-                SyntecClient.writeSingleVar(100 + i++, (double)currNode.three);
-                SyntecClient.writeSingleVar(100 + i++, (double)currNode.two);
-                SyntecClient.writeSingleVar(100 + i++, (double)currNode.four);
+                SyntecClient.writeGVar(100 + i++, (double)currNode.one);
+                SyntecClient.writeGVar(100 + i++, (double)currNode.three);
+                SyntecClient.writeGVar(100 + i++, (double)currNode.two);
+                SyntecClient.writeGVar(100 + i++, (double)currNode.four);
 
                 currNode = currNode.nextangle;
             }
 
-            SyntecClient.writeSingleVar(11, 1);
+            SyntecClient.writeGVar(11, 1);
         }
 
 
@@ -270,19 +270,7 @@ namespace PCController
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            /*
-            syntec.writeSingleVar(10, 0);
-            setState(syntec.readSingleVar(10).ToString());
-            */
-            //syntec.setPos();
-
-            /*
-            ThreadsController.addThreadAndStartByFunc(TRCClient.connect);
-            Thread.Sleep(200);
-            ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
-            */
-
-            linearMOV();
+            //linearMOV();
 
 
         }
@@ -292,7 +280,7 @@ namespace PCController
             int no = Convert.ToInt32(num_gvarNo.Value);
             double val = Convert.ToDouble(num_gvarValue.Value);
 
-            SyntecClient.writeSingleVar(no, val);
+            SyntecClient.writeGVar(no, val);
 
             setState("Write global " + no.ToString() + " to value " + val.ToString() + " successful!");
 
@@ -325,6 +313,86 @@ namespace PCController
         private void bt_setOrigin_Click(object sender, EventArgs e)
         {
             SyntecClient.setOrigin();
+        }
+
+        private void bt_JOG1P_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
+        }
+
+        private void bt_JOG1P_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG2P_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(2, SyntecClient.JOGMode.POSITIVE);
+        }
+
+        private void bt_JOG2P_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG3P_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
+        }
+
+        private void bt_JOG3P_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG4P_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(4, SyntecClient.JOGMode.POSITIVE);
+        }
+
+        private void bt_JOG4P_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG1N_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
+        }
+
+        private void bt_JOG1N_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG2N_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(2, SyntecClient.JOGMode.NEGATIVE);
+        }
+
+        private void bt_JOG2N_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG3N_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
+        }
+
+        private void bt_JOG3N_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_JOG4N_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(4, SyntecClient.JOGMode.NEGATIVE);
+        }
+
+        private void bt_JOG4N_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
         }
     }
 

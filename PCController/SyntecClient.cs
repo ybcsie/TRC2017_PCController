@@ -21,6 +21,21 @@ namespace PCController
         public static string[] AxisName = null, Unit = null;
         public static float[] Mach = null, Abs = null, Rel = null, Dist = null;
 
+        public static class ControlMode
+        {
+            public const int AUTO = 2;
+            public const int JOG = 4;
+            public const int SET_ORIGIN = 7;
+
+        }
+
+        public static class JOGMode
+        {
+            public const int STOP = 0;
+            public const int POSITIVE = 1;
+            public const int NEGATIVE = 2;
+
+        }
 
 
         //
@@ -100,7 +115,7 @@ namespace PCController
             return var;
         }
 
-        public static void writeSingleVar(int no,double val)
+        public static void writeGVar(int no,double val)
         {
             cnc.WRITE_macro_single(no, val);
             Program.form.mesPrintln(string.Format("SyntectClient: Write global var @{0:d} = {1:f3}", no, val));
@@ -113,15 +128,40 @@ namespace PCController
             cnc.WRITE_plc_register(addr, addr, new int[] { val });
         }
 
+        public static void writeReg(int addrStart, int addrEnd, int[] vals)
+        {
+            cnc.WRITE_plc_register(addrStart, addrEnd, vals);
+        }
+
+        public static void writeCBit(int addr,bool val)
+        {
+            cnc.WRITE_plc_cbit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
+        }
+
+        public static void setControlMode(int mode)
+        {
+            writeReg(13, mode);
+        }
+
         public static void setOrigin()
         {
-            writeReg(13, 7);
+            setControlMode(ControlMode.SET_ORIGIN);
             writeReg(15208, 7);
-            writeReg(13, 2);
 
         }
 
+        public static void JOG(int axis, int axisMode)
+        {
+            setControlMode(ControlMode.JOG);
+            writeReg(20 + axis, axisMode);
+        }
 
+        public static void JOG(int axis1Mode, int axis2Mode, int axis3Mode, int axis4Mode)
+        {
+            setControlMode(ControlMode.JOG);
+            writeReg(21, 24, new int[] { axis1Mode, axis2Mode, axis3Mode, axis4Mode });
+
+        }
 
         public static void setPos()
         {
@@ -137,6 +177,9 @@ namespace PCController
             if (AxisName.Length > 0)
             {
                 cnc.WRITE_relpos(AxisName[0], pos[0]);
+                cnc.WRITE_relpos(AxisName[1], pos[1]);
+                cnc.WRITE_relpos(AxisName[2], pos[2]);
+                cnc.WRITE_relpos(AxisName[3], pos[3]);
             }
         }
 

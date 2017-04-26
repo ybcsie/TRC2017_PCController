@@ -62,6 +62,15 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.bt_setOrigin = new System.Windows.Forms.Button();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.bt_JOG4N = new System.Windows.Forms.Button();
+            this.bt_JOG4P = new System.Windows.Forms.Button();
+            this.bt_JOG3N = new System.Windows.Forms.Button();
+            this.bt_JOG3P = new System.Windows.Forms.Button();
+            this.bt_JOG2N = new System.Windows.Forms.Button();
+            this.bt_JOG2P = new System.Windows.Forms.Button();
+            this.bt_JOG1N = new System.Windows.Forms.Button();
+            this.bt_JOG1P = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
@@ -72,6 +81,7 @@
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tB_SyntecIP
@@ -169,12 +179,12 @@
             // 
             this.num_gvarNo.Location = new System.Drawing.Point(65, 131);
             this.num_gvarNo.Maximum = new decimal(new int[] {
-            99999,
+            999999,
             0,
             0,
             0});
             this.num_gvarNo.Name = "num_gvarNo";
-            this.num_gvarNo.Size = new System.Drawing.Size(54, 22);
+            this.num_gvarNo.Size = new System.Drawing.Size(69, 22);
             this.num_gvarNo.TabIndex = 11;
             this.num_gvarNo.Value = new decimal(new int[] {
             10,
@@ -203,7 +213,7 @@
             // num_gvarValue
             // 
             this.num_gvarValue.DecimalPlaces = 3;
-            this.num_gvarValue.Location = new System.Drawing.Point(166, 131);
+            this.num_gvarValue.Location = new System.Drawing.Point(181, 131);
             this.num_gvarValue.Name = "num_gvarValue";
             this.num_gvarValue.Size = new System.Drawing.Size(100, 22);
             this.num_gvarValue.TabIndex = 15;
@@ -235,7 +245,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(125, 136);
+            this.label5.Location = new System.Drawing.Point(140, 136);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 12);
             this.label5.TabIndex = 18;
@@ -265,6 +275,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -438,6 +449,112 @@
             this.bt_TRCCommStart.UseVisualStyleBackColor = true;
             this.bt_TRCCommStart.Click += new System.EventHandler(this.bt_TRCCommStart_Click);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.bt_JOG4N);
+            this.tabPage3.Controls.Add(this.bt_JOG4P);
+            this.tabPage3.Controls.Add(this.bt_JOG3N);
+            this.tabPage3.Controls.Add(this.bt_JOG3P);
+            this.tabPage3.Controls.Add(this.bt_JOG2N);
+            this.tabPage3.Controls.Add(this.bt_JOG2P);
+            this.tabPage3.Controls.Add(this.bt_JOG1N);
+            this.tabPage3.Controls.Add(this.bt_JOG1P);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(292, 330);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "JOG";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // bt_JOG4N
+            // 
+            this.bt_JOG4N.Location = new System.Drawing.Point(153, 241);
+            this.bt_JOG4N.Name = "bt_JOG4N";
+            this.bt_JOG4N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG4N.TabIndex = 17;
+            this.bt_JOG4N.Text = "JOG C4 -";
+            this.bt_JOG4N.UseVisualStyleBackColor = true;
+            this.bt_JOG4N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseDown);
+            this.bt_JOG4N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseUp);
+            // 
+            // bt_JOG4P
+            // 
+            this.bt_JOG4P.Location = new System.Drawing.Point(34, 241);
+            this.bt_JOG4P.Name = "bt_JOG4P";
+            this.bt_JOG4P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG4P.TabIndex = 16;
+            this.bt_JOG4P.Text = "JOG C4 +";
+            this.bt_JOG4P.UseVisualStyleBackColor = true;
+            this.bt_JOG4P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseDown);
+            this.bt_JOG4P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseUp);
+            // 
+            // bt_JOG3N
+            // 
+            this.bt_JOG3N.Location = new System.Drawing.Point(153, 165);
+            this.bt_JOG3N.Name = "bt_JOG3N";
+            this.bt_JOG3N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG3N.TabIndex = 15;
+            this.bt_JOG3N.Text = "JOG C3 -";
+            this.bt_JOG3N.UseVisualStyleBackColor = true;
+            this.bt_JOG3N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseDown);
+            this.bt_JOG3N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseUp);
+            // 
+            // bt_JOG3P
+            // 
+            this.bt_JOG3P.Location = new System.Drawing.Point(34, 165);
+            this.bt_JOG3P.Name = "bt_JOG3P";
+            this.bt_JOG3P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG3P.TabIndex = 14;
+            this.bt_JOG3P.Text = "JOG C3 +";
+            this.bt_JOG3P.UseVisualStyleBackColor = true;
+            this.bt_JOG3P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseDown);
+            this.bt_JOG3P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseUp);
+            // 
+            // bt_JOG2N
+            // 
+            this.bt_JOG2N.Location = new System.Drawing.Point(153, 89);
+            this.bt_JOG2N.Name = "bt_JOG2N";
+            this.bt_JOG2N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG2N.TabIndex = 13;
+            this.bt_JOG2N.Text = "JOG C2 -";
+            this.bt_JOG2N.UseVisualStyleBackColor = true;
+            this.bt_JOG2N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseDown);
+            this.bt_JOG2N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseUp);
+            // 
+            // bt_JOG2P
+            // 
+            this.bt_JOG2P.Location = new System.Drawing.Point(34, 89);
+            this.bt_JOG2P.Name = "bt_JOG2P";
+            this.bt_JOG2P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG2P.TabIndex = 12;
+            this.bt_JOG2P.Text = "JOG C2 +";
+            this.bt_JOG2P.UseVisualStyleBackColor = true;
+            this.bt_JOG2P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseDown);
+            this.bt_JOG2P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseUp);
+            // 
+            // bt_JOG1N
+            // 
+            this.bt_JOG1N.Location = new System.Drawing.Point(153, 13);
+            this.bt_JOG1N.Name = "bt_JOG1N";
+            this.bt_JOG1N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG1N.TabIndex = 11;
+            this.bt_JOG1N.Text = "JOG C1 -";
+            this.bt_JOG1N.UseVisualStyleBackColor = true;
+            this.bt_JOG1N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseDown);
+            this.bt_JOG1N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseUp);
+            // 
+            // bt_JOG1P
+            // 
+            this.bt_JOG1P.Location = new System.Drawing.Point(34, 13);
+            this.bt_JOG1P.Name = "bt_JOG1P";
+            this.bt_JOG1P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG1P.TabIndex = 10;
+            this.bt_JOG1P.Text = "JOG C1 +";
+            this.bt_JOG1P.UseVisualStyleBackColor = true;
+            this.bt_JOG1P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1P_MouseDown);
+            this.bt_JOG1P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1P_MouseUp);
+            // 
             // tB_mesPrint
             // 
             this.tB_mesPrint.Location = new System.Drawing.Point(318, 32);
@@ -476,6 +593,7 @@
             this.tableLayoutPanel2.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -518,6 +636,15 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button bt_TRCCommStart;
         private System.Windows.Forms.Button bt_setOrigin;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button bt_JOG4N;
+        private System.Windows.Forms.Button bt_JOG4P;
+        private System.Windows.Forms.Button bt_JOG3N;
+        private System.Windows.Forms.Button bt_JOG3P;
+        private System.Windows.Forms.Button bt_JOG2N;
+        private System.Windows.Forms.Button bt_JOG2P;
+        private System.Windows.Forms.Button bt_JOG1N;
+        private System.Windows.Forms.Button bt_JOG1P;
     }
 }
 
