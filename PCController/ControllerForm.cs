@@ -195,6 +195,7 @@ namespace PCController
             int i = 0;
             for (i = 0; i < 10; i++)
             {
+                //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
                 go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
             }
 

@@ -17,6 +17,11 @@ namespace PCController
             decimal[,] savedata = new decimal[100, 4];
             int i, number, count;
             decimal afterz;
+            int[] cassetteA = new int[6]; 
+            int[] cassetteB = new int[6];//紀錄六片wafer在cassette中的位置
+            int outnum = 0;//已從cassetteA取出之wafer數
+            int putnum = 0;//已放入cassetteB之wafer數
+            double casetspacing = 6.4;//mm
 
             int tesknum = 0;
 
@@ -24,6 +29,13 @@ namespace PCController
 
             ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=0.0 FJ20;");
 
+            //測試用，隨意指定wafer所在cassette位置
+            for (i = 0; i < 6; i++)
+            {
+                cassetteA[i] = 4 * i + 4;
+                cassetteB[5 - i] = 4 * i + 4;
+            }
+            //
 
             for (i = 0; scheduling[i, 0] != 0; i++)
             {
@@ -154,15 +166,13 @@ namespace PCController
             return output;
         }
 
-        private static int waitaccess(int access, int communication)
+        private static void waitaccess(int access, int communication)
         {
-            ncfile.WriteLine("SETDO({0:d},1);", communication);
+            ncfile.WriteLine("@{0:d}=1;", communication);
             ncfile.WriteLine("WHILE (@{0:d}=0) DO", access);
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE");
-            ncfile.WriteLine("SETDO({0:d},0);", access);
-
-            return 1;
+            ncfile.WriteLine("@{0:d}=0;", access);
 
         }
         private static decimal suck(int touch)
@@ -191,11 +201,11 @@ namespace PCController
 
         private static int sendcomplete(int complete, int communication)
         {
-            ncfile.WriteLine("SETDO({0:d},1);", communication);
-            ncfile.WriteLine("WHILE (READDO({0:d})=0) DO", complete);
+            ncfile.WriteLine("@{0:d}=1;", communication);
+            ncfile.WriteLine("WHILE (@{0:d}=0) DO", complete);
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE;");
-            ncfile.WriteLine("SETDO({0:d},0);", complete);
+            ncfile.WriteLine("@{0:d}=0;", complete);
 
             return 0;
 

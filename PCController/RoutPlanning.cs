@@ -71,7 +71,7 @@ namespace PCController
             double arm1long = ArmData.longbase;
             double arm2long = arm1long * (ArmData.longrate2);
             double arm3long = arm1long * (ArmData.longrate3);
-
+            //Program.form.showWarnning(string.Format("arm1long = {0:f3}, arm2long = {1:f3},arm3long = {2:f3}", arm1long, arm2long, arm3long));
 
             if (arm1long == 0 || arm2long == 0 || arm3long == 0)
             {
@@ -80,12 +80,13 @@ namespace PCController
             }
 
 
-            double angle1 = (origangle.motor1angle) * pi / 180;
+            double angle1 = (180-(origangle.motor1angle)) * pi / 180;
             double angle2 = (origangle.motor2angle) * pi / 180;
-            double angle3 = (origangle.motor3angle) * pi / 180;
-            double angle4 = (origangle.motor4angle) * pi / 180;
+            double angle3 = (180-(origangle.motor3angle)) * pi / 180;
+            double angle4 = (180+(origangle.motor4angle)) * pi / 180;
 
-            Program.form.mesPrintln(String.Format("initial angle of 1,3,4:{0:f},{1:f},{2:f}", origangle.motor1angle, origangle.motor3angle, origangle.motor4angle));
+
+            Program.form.mesPrintln(String.Format("initial angle of 1,3,4:{0:f},{1:f},{2:f}", angle1, angle3, angle4));
 
             double tmpangle1, tmpangle7, tmpangle8, tmpangle4, tmpangle2, tmpangle9, tmpangle6;
             double tmpline1;//origangle2,arm1,arm2
@@ -168,7 +169,9 @@ namespace PCController
                     return null;
                 }
 
-                angleFileWriter.WriteLine("{0:f12},{1:f12}", afterangle1 * 180 / pi, afterangle3 * 180 / pi);
+
+
+                angleFileWriter.WriteLine("{0:f12},{1:f12}", 180-(afterangle1 * 180 / pi), 180-(afterangle3 * 180 / pi));
 
                 angle1 = afterangle1;
                 angle3 = afterangle3;
@@ -202,7 +205,7 @@ namespace PCController
             double armlong2 = armlong1 * ArmData.longrate2;
             double armlong3 = armlong1 * ArmData.longrate3;
             const double pi = 3.1415926;
-
+            //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
             //calculate the real(x,y)coordinate(realcd) of each platform
             for (i = 0; i < 5; i++)
@@ -280,16 +283,16 @@ namespace PCController
                 tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
                 coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                 coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
-                coordinate[i, 0] = tmpangle1 + coordinate[i, 0];
+                coordinate[i, 0] = 180-(tmpangle1 + coordinate[i, 0]);
                 coordinate[i, 1] = measureangle[i, 1];
                 coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
-                coordinate[i, 2] = (Math.Acos(coordinate[i, 2])) * 180 / pi;
+                coordinate[i, 2] = 180-((Math.Acos(coordinate[i, 2])) * 180 / pi);
                 coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
                 coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
                 tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
                 tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
                 tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
-                coordinate[i, 3] = 180 - tmpangle2 - coordinate[i, 3];
+                coordinate[i, 3] = (180 - tmpangle2 - coordinate[i, 3])-180;
                 coordinate[i+5, 0] = coordinate[i, 0];
                 coordinate[i+5, 1] = coordinate[i, 1];
                 coordinate[i + 5, 2] = coordinate[i, 2];
@@ -326,7 +329,7 @@ namespace PCController
 
             StreamWriter angleFileWriter = new StreamWriter("moveangle.txt");
 
-            AngleList list = new AngleList(90 - (decimal)angle1, (decimal)angle2, 180 - (decimal)angle3, (decimal)angle4-180);
+            AngleList list = new AngleList((decimal)angle1, (decimal)angle2,(decimal)angle3, (decimal)angle4);
             Angle currnode = list.headAngle;
 
             decimal tmpangle = (decimal)angle4;
@@ -343,9 +346,9 @@ namespace PCController
                     tmpangle += ((data[i, 0] - data[i - 1, 0]) + (data[i, 1] - data[i - 1, 1]));
                 }
 
-                angleFileWriter.WriteLine("{0:f12},{1:f12},{2:f12}", 90 - data[i, 0], 180 - data[i, 1],  tmpangle-180);
+                angleFileWriter.WriteLine("{0:f12},{1:f12},{2:f12}", data[i, 0], data[i, 1],  tmpangle);
 
-                currnode.creatNextNode(90 - data[i, 0], (decimal)angle2, 180 - data[i, 1], tmpangle-180);
+                currnode.creatNextNode(data[i, 0], (decimal)angle2,data[i, 1], tmpangle);
                 currnode = currnode.nextangle;
 
             }
