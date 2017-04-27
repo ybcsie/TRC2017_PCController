@@ -30,12 +30,6 @@ namespace PCController
             tB_TRCIP.Text = TRCClient.DEFAULT_IP;
             tB_TRCPort.Text = TRCClient.DEFAULT_PORT.ToString();
 
-
-            bt_upload.Enabled = false;
-            bt_cycStart.Enabled = false;
-            bt_writeGVar.Enabled = false;
-            bt_readGVar.Enabled = false;
-
             //test
             //bt_test.Enabled = false;
 
@@ -47,7 +41,6 @@ namespace PCController
             ArmData.longbase = 305;
             ArmData.longrate2 = 0.5868852;
             ArmData.longrate3 = 1.154918032;
-
 
             mesPrintln("Ready...");
 
@@ -113,28 +106,30 @@ namespace PCController
             if (SyntecClient.isConnected())
             {
                 bt_SyntecConnect.Text = "Connected";
-                bt_upload.Enabled = true;
-                bt_cycStart.Enabled = true;
-                bt_writeGVar.Enabled = true;
-                bt_readGVar.Enabled = true;
+
+                panelTestFunc.Enabled = true;
+                panelJOG.Enabled = true;
 
                 label_syntecBusy.Text = SyntecClient.isBusy() ? "Busy" : "Idle";
 
-                label_pos.Text = SyntecClient.Rel[0].ToString() + " " + SyntecClient.Rel[1].ToString() + " " + SyntecClient.Rel[2].ToString() + " " + SyntecClient.Rel[3].ToString();
+                if (SyntecClient.Rel != null)
+                    label_pos.Text = string.Format("C1 = {0:f3}   C2 = {1:f3}   C3 = {2:f3}   C4 = {3:f3}", SyntecClient.Rel[0], SyntecClient.Rel[1], SyntecClient.Rel[2], SyntecClient.Rel[3]);
+                else
+                    label_pos.Text = "Unable to get position";
 
             }
             else
             {
                 bt_SyntecConnect.Text = initBtText_SyntecConnect;
                 bt_SyntecConnect.Enabled = true;
-                bt_upload.Enabled = false;
-                bt_cycStart.Enabled = false;
-                bt_writeGVar.Enabled = false;
-                bt_readGVar.Enabled = false;
+
+                panelTestFunc.Enabled = false;
+                panelJOG.Enabled = false;
+
             }
 
 
-            if(TRCClient.isConnected())
+            if (TRCClient.isConnected())
             {
                 bt_TRCConnect.Text = "Connected";
             }
@@ -393,6 +388,20 @@ namespace PCController
         private void bt_JOG4N_MouseUp(object sender, MouseEventArgs e)
         {
             SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
+        }
+
+        private void bt_writeO_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                SyntecClient.writeOBit(Convert.ToInt32(num_obitNo.Value), rBt_obitT.Checked);
+                while (SyntecClient.isBusy())
+                {
+                    Thread.Sleep(50);
+                }
+
+                mesPrintln("Obit setting successed.");
+            });
         }
     }
 

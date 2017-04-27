@@ -20,7 +20,7 @@ namespace PCController
 
             int tesknum = 0;
 
-            startGenNC("mainjob.txt");
+            startGenNC(SyntecClient.NCFileName.MAIN_JOB);
 
             ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=0.0 FJ20;");
 
@@ -131,6 +131,13 @@ namespace PCController
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE");
 
+            endGenNC();
+        }
+
+        public static void genObitSetterNC(int addr, bool val)
+        {
+            startGenNC(SyntecClient.NCFileName.OBIT_SETTER);
+            ncfile.WriteLine("SETDO({0:d},{1:d});", addr, val ? 1 : 0);
             endGenNC();
         }
 

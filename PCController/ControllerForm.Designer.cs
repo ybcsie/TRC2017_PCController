@@ -60,17 +60,24 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.panelTestFunc = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.num_obitNo = new System.Windows.Forms.NumericUpDown();
+            this.rBt_obitF = new System.Windows.Forms.RadioButton();
+            this.rBt_obitT = new System.Windows.Forms.RadioButton();
+            this.bt_writeO = new System.Windows.Forms.Button();
             this.bt_setOrigin = new System.Windows.Forms.Button();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.bt_JOG4N = new System.Windows.Forms.Button();
-            this.bt_JOG4P = new System.Windows.Forms.Button();
-            this.bt_JOG3N = new System.Windows.Forms.Button();
-            this.bt_JOG3P = new System.Windows.Forms.Button();
-            this.bt_JOG2N = new System.Windows.Forms.Button();
-            this.bt_JOG2P = new System.Windows.Forms.Button();
-            this.bt_JOG1N = new System.Windows.Forms.Button();
+            this.panelJOG = new System.Windows.Forms.FlowLayoutPanel();
             this.bt_JOG1P = new System.Windows.Forms.Button();
+            this.bt_JOG1N = new System.Windows.Forms.Button();
+            this.bt_JOG2P = new System.Windows.Forms.Button();
+            this.bt_JOG2N = new System.Windows.Forms.Button();
+            this.bt_JOG3P = new System.Windows.Forms.Button();
+            this.bt_JOG3N = new System.Windows.Forms.Button();
+            this.bt_JOG4P = new System.Windows.Forms.Button();
+            this.bt_JOG4N = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
@@ -81,7 +88,10 @@
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.panelTestFunc.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.panelJOG.SuspendLayout();
             this.SuspendLayout();
             // 
             // tB_SyntecIP
@@ -104,7 +114,7 @@
             // 
             // bt_upload
             // 
-            this.bt_upload.Location = new System.Drawing.Point(112, 6);
+            this.bt_upload.Location = new System.Drawing.Point(109, 3);
             this.bt_upload.Name = "bt_upload";
             this.bt_upload.Size = new System.Drawing.Size(75, 23);
             this.bt_upload.TabIndex = 2;
@@ -114,14 +124,14 @@
             // 
             // tB_fileName
             // 
-            this.tB_fileName.Location = new System.Drawing.Point(6, 6);
+            this.tB_fileName.Location = new System.Drawing.Point(3, 3);
             this.tB_fileName.Name = "tB_fileName";
             this.tB_fileName.Size = new System.Drawing.Size(100, 22);
             this.tB_fileName.TabIndex = 3;
             // 
             // bt_cycStart
             // 
-            this.bt_cycStart.Location = new System.Drawing.Point(112, 35);
+            this.bt_cycStart.Location = new System.Drawing.Point(109, 38);
             this.bt_cycStart.Name = "bt_cycStart";
             this.bt_cycStart.Size = new System.Drawing.Size(75, 23);
             this.bt_cycStart.TabIndex = 4;
@@ -158,7 +168,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(211, 81);
+            this.bt_test.Location = new System.Drawing.Point(214, 289);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(75, 23);
             this.bt_test.TabIndex = 9;
@@ -177,7 +187,7 @@
             // 
             // num_gvarNo
             // 
-            this.num_gvarNo.Location = new System.Drawing.Point(65, 131);
+            this.num_gvarNo.Location = new System.Drawing.Point(62, 95);
             this.num_gvarNo.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -213,7 +223,7 @@
             // num_gvarValue
             // 
             this.num_gvarValue.DecimalPlaces = 3;
-            this.num_gvarValue.Location = new System.Drawing.Point(181, 131);
+            this.num_gvarValue.Location = new System.Drawing.Point(178, 95);
             this.num_gvarValue.Name = "num_gvarValue";
             this.num_gvarValue.Size = new System.Drawing.Size(100, 22);
             this.num_gvarValue.TabIndex = 15;
@@ -225,7 +235,7 @@
             // 
             // bt_writeGVar
             // 
-            this.bt_writeGVar.Location = new System.Drawing.Point(146, 173);
+            this.bt_writeGVar.Location = new System.Drawing.Point(143, 128);
             this.bt_writeGVar.Name = "bt_writeGVar";
             this.bt_writeGVar.Size = new System.Drawing.Size(75, 23);
             this.bt_writeGVar.TabIndex = 16;
@@ -236,7 +246,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 136);
+            this.label4.Location = new System.Drawing.Point(3, 100);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 17;
@@ -245,7 +255,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(140, 136);
+            this.label5.Location = new System.Drawing.Point(137, 100);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 12);
             this.label5.TabIndex = 18;
@@ -253,7 +263,7 @@
             // 
             // bt_readGVar
             // 
-            this.bt_readGVar.Location = new System.Drawing.Point(65, 173);
+            this.bt_readGVar.Location = new System.Drawing.Point(62, 128);
             this.bt_readGVar.Name = "bt_readGVar";
             this.bt_readGVar.Size = new System.Drawing.Size(75, 23);
             this.bt_readGVar.TabIndex = 19;
@@ -263,7 +273,7 @@
             // 
             // bt_genNC
             // 
-            this.bt_genNC.Location = new System.Drawing.Point(211, 6);
+            this.bt_genNC.Location = new System.Drawing.Point(208, 3);
             this.bt_genNC.Name = "bt_genNC";
             this.bt_genNC.Size = new System.Drawing.Size(75, 23);
             this.bt_genNC.TabIndex = 20;
@@ -279,7 +289,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(300, 356);
+            this.tabControl1.Size = new System.Drawing.Size(320, 356);
             this.tabControl1.TabIndex = 23;
             // 
             // tabPage1
@@ -289,7 +299,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(292, 330);
+            this.tabPage1.Size = new System.Drawing.Size(312, 330);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Connection";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -300,7 +310,7 @@
             this.groupBox1.Controls.Add(this.bt_TRCConnect);
             this.groupBox1.Location = new System.Drawing.Point(6, 146);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(273, 170);
+            this.groupBox1.Size = new System.Drawing.Size(297, 170);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "TRC Server Connection";
@@ -320,7 +330,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(267, 104);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(291, 104);
             this.tableLayoutPanel1.TabIndex = 25;
             // 
             // tB_TRCIP
@@ -376,7 +386,7 @@
             this.groupBox2.Controls.Add(this.tableLayoutPanel2);
             this.groupBox2.Location = new System.Drawing.Point(6, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(273, 120);
+            this.groupBox2.Size = new System.Drawing.Size(300, 120);
             this.groupBox2.TabIndex = 26;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Syntec Controller Connection";
@@ -393,7 +403,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(267, 57);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(294, 57);
             this.tableLayoutPanel2.TabIndex = 25;
             // 
             // label6
@@ -408,30 +418,102 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.bt_setOrigin);
+            this.tabPage2.Controls.Add(this.panelTestFunc);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
-            this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.bt_genNC);
             this.tabPage2.Controls.Add(this.bt_test);
-            this.tabPage2.Controls.Add(this.num_gvarNo);
-            this.tabPage2.Controls.Add(this.num_gvarValue);
-            this.tabPage2.Controls.Add(this.bt_readGVar);
-            this.tabPage2.Controls.Add(this.bt_writeGVar);
-            this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Controls.Add(this.bt_upload);
-            this.tabPage2.Controls.Add(this.bt_cycStart);
-            this.tabPage2.Controls.Add(this.tB_fileName);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(292, 330);
+            this.tabPage2.Size = new System.Drawing.Size(312, 330);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Test Functions";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // panelTestFunc
+            // 
+            this.panelTestFunc.Controls.Add(this.label9);
+            this.panelTestFunc.Controls.Add(this.tB_fileName);
+            this.panelTestFunc.Controls.Add(this.num_obitNo);
+            this.panelTestFunc.Controls.Add(this.bt_cycStart);
+            this.panelTestFunc.Controls.Add(this.rBt_obitF);
+            this.panelTestFunc.Controls.Add(this.bt_upload);
+            this.panelTestFunc.Controls.Add(this.rBt_obitT);
+            this.panelTestFunc.Controls.Add(this.label5);
+            this.panelTestFunc.Controls.Add(this.bt_writeO);
+            this.panelTestFunc.Controls.Add(this.bt_writeGVar);
+            this.panelTestFunc.Controls.Add(this.bt_setOrigin);
+            this.panelTestFunc.Controls.Add(this.bt_readGVar);
+            this.panelTestFunc.Controls.Add(this.num_gvarValue);
+            this.panelTestFunc.Controls.Add(this.label4);
+            this.panelTestFunc.Controls.Add(this.num_gvarNo);
+            this.panelTestFunc.Controls.Add(this.bt_genNC);
+            this.panelTestFunc.Enabled = false;
+            this.panelTestFunc.Location = new System.Drawing.Point(6, 6);
+            this.panelTestFunc.Name = "panelTestFunc";
+            this.panelTestFunc.Size = new System.Drawing.Size(300, 266);
+            this.panelTestFunc.TabIndex = 26;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(39, 196);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(28, 12);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "Obit:";
+            // 
+            // num_obitNo
+            // 
+            this.num_obitNo.Location = new System.Drawing.Point(73, 191);
+            this.num_obitNo.Maximum = new decimal(new int[] {
+            999999,
+            0,
+            0,
+            0});
+            this.num_obitNo.Name = "num_obitNo";
+            this.num_obitNo.Size = new System.Drawing.Size(69, 22);
+            this.num_obitNo.TabIndex = 25;
+            this.num_obitNo.Value = new decimal(new int[] {
+            320,
+            0,
+            0,
+            0});
+            // 
+            // rBt_obitF
+            // 
+            this.rBt_obitF.AutoSize = true;
+            this.rBt_obitF.Checked = true;
+            this.rBt_obitF.Location = new System.Drawing.Point(191, 194);
+            this.rBt_obitF.Name = "rBt_obitF";
+            this.rBt_obitF.Size = new System.Drawing.Size(39, 16);
+            this.rBt_obitF.TabIndex = 24;
+            this.rBt_obitF.TabStop = true;
+            this.rBt_obitF.Text = "Off";
+            this.rBt_obitF.UseVisualStyleBackColor = true;
+            // 
+            // rBt_obitT
+            // 
+            this.rBt_obitT.AutoSize = true;
+            this.rBt_obitT.Location = new System.Drawing.Point(148, 194);
+            this.rBt_obitT.Name = "rBt_obitT";
+            this.rBt_obitT.Size = new System.Drawing.Size(37, 16);
+            this.rBt_obitT.TabIndex = 24;
+            this.rBt_obitT.Text = "On";
+            this.rBt_obitT.UseVisualStyleBackColor = true;
+            // 
+            // bt_writeO
+            // 
+            this.bt_writeO.Location = new System.Drawing.Point(97, 224);
+            this.bt_writeO.Name = "bt_writeO";
+            this.bt_writeO.Size = new System.Drawing.Size(75, 23);
+            this.bt_writeO.TabIndex = 23;
+            this.bt_writeO.Text = "Write Obit";
+            this.bt_writeO.UseVisualStyleBackColor = true;
+            this.bt_writeO.Click += new System.EventHandler(this.bt_writeO_Click);
+            // 
             // bt_setOrigin
             // 
-            this.bt_setOrigin.Location = new System.Drawing.Point(211, 35);
+            this.bt_setOrigin.Location = new System.Drawing.Point(208, 38);
             this.bt_setOrigin.Name = "bt_setOrigin";
             this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
             this.bt_setOrigin.TabIndex = 22;
@@ -441,7 +523,7 @@
             // 
             // bt_TRCCommStart
             // 
-            this.bt_TRCCommStart.Location = new System.Drawing.Point(64, 287);
+            this.bt_TRCCommStart.Location = new System.Drawing.Point(21, 289);
             this.bt_TRCCommStart.Name = "bt_TRCCommStart";
             this.bt_TRCCommStart.Size = new System.Drawing.Size(157, 23);
             this.bt_TRCCommStart.TabIndex = 21;
@@ -451,102 +533,35 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.bt_JOG4N);
-            this.tabPage3.Controls.Add(this.bt_JOG4P);
-            this.tabPage3.Controls.Add(this.bt_JOG3N);
-            this.tabPage3.Controls.Add(this.bt_JOG3P);
-            this.tabPage3.Controls.Add(this.bt_JOG2N);
-            this.tabPage3.Controls.Add(this.bt_JOG2P);
-            this.tabPage3.Controls.Add(this.bt_JOG1N);
-            this.tabPage3.Controls.Add(this.bt_JOG1P);
+            this.tabPage3.Controls.Add(this.panelJOG);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(292, 330);
+            this.tabPage3.Size = new System.Drawing.Size(312, 330);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "JOG";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // bt_JOG4N
+            // panelJOG
             // 
-            this.bt_JOG4N.Location = new System.Drawing.Point(153, 241);
-            this.bt_JOG4N.Name = "bt_JOG4N";
-            this.bt_JOG4N.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG4N.TabIndex = 17;
-            this.bt_JOG4N.Text = "JOG C4 -";
-            this.bt_JOG4N.UseVisualStyleBackColor = true;
-            this.bt_JOG4N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseDown);
-            this.bt_JOG4N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseUp);
-            // 
-            // bt_JOG4P
-            // 
-            this.bt_JOG4P.Location = new System.Drawing.Point(34, 241);
-            this.bt_JOG4P.Name = "bt_JOG4P";
-            this.bt_JOG4P.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG4P.TabIndex = 16;
-            this.bt_JOG4P.Text = "JOG C4 +";
-            this.bt_JOG4P.UseVisualStyleBackColor = true;
-            this.bt_JOG4P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseDown);
-            this.bt_JOG4P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseUp);
-            // 
-            // bt_JOG3N
-            // 
-            this.bt_JOG3N.Location = new System.Drawing.Point(153, 165);
-            this.bt_JOG3N.Name = "bt_JOG3N";
-            this.bt_JOG3N.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG3N.TabIndex = 15;
-            this.bt_JOG3N.Text = "JOG C3 -";
-            this.bt_JOG3N.UseVisualStyleBackColor = true;
-            this.bt_JOG3N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseDown);
-            this.bt_JOG3N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseUp);
-            // 
-            // bt_JOG3P
-            // 
-            this.bt_JOG3P.Location = new System.Drawing.Point(34, 165);
-            this.bt_JOG3P.Name = "bt_JOG3P";
-            this.bt_JOG3P.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG3P.TabIndex = 14;
-            this.bt_JOG3P.Text = "JOG C3 +";
-            this.bt_JOG3P.UseVisualStyleBackColor = true;
-            this.bt_JOG3P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseDown);
-            this.bt_JOG3P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseUp);
-            // 
-            // bt_JOG2N
-            // 
-            this.bt_JOG2N.Location = new System.Drawing.Point(153, 89);
-            this.bt_JOG2N.Name = "bt_JOG2N";
-            this.bt_JOG2N.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG2N.TabIndex = 13;
-            this.bt_JOG2N.Text = "JOG C2 -";
-            this.bt_JOG2N.UseVisualStyleBackColor = true;
-            this.bt_JOG2N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseDown);
-            this.bt_JOG2N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseUp);
-            // 
-            // bt_JOG2P
-            // 
-            this.bt_JOG2P.Location = new System.Drawing.Point(34, 89);
-            this.bt_JOG2P.Name = "bt_JOG2P";
-            this.bt_JOG2P.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG2P.TabIndex = 12;
-            this.bt_JOG2P.Text = "JOG C2 +";
-            this.bt_JOG2P.UseVisualStyleBackColor = true;
-            this.bt_JOG2P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseDown);
-            this.bt_JOG2P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseUp);
-            // 
-            // bt_JOG1N
-            // 
-            this.bt_JOG1N.Location = new System.Drawing.Point(153, 13);
-            this.bt_JOG1N.Name = "bt_JOG1N";
-            this.bt_JOG1N.Size = new System.Drawing.Size(100, 70);
-            this.bt_JOG1N.TabIndex = 11;
-            this.bt_JOG1N.Text = "JOG C1 -";
-            this.bt_JOG1N.UseVisualStyleBackColor = true;
-            this.bt_JOG1N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseDown);
-            this.bt_JOG1N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseUp);
+            this.panelJOG.Controls.Add(this.bt_JOG1P);
+            this.panelJOG.Controls.Add(this.bt_JOG1N);
+            this.panelJOG.Controls.Add(this.bt_JOG2P);
+            this.panelJOG.Controls.Add(this.bt_JOG2N);
+            this.panelJOG.Controls.Add(this.bt_JOG3P);
+            this.panelJOG.Controls.Add(this.bt_JOG3N);
+            this.panelJOG.Controls.Add(this.bt_JOG4P);
+            this.panelJOG.Controls.Add(this.bt_JOG4N);
+            this.panelJOG.Enabled = false;
+            this.panelJOG.Location = new System.Drawing.Point(38, 6);
+            this.panelJOG.Name = "panelJOG";
+            this.panelJOG.Padding = new System.Windows.Forms.Padding(3);
+            this.panelJOG.Size = new System.Drawing.Size(220, 313);
+            this.panelJOG.TabIndex = 25;
             // 
             // bt_JOG1P
             // 
-            this.bt_JOG1P.Location = new System.Drawing.Point(34, 13);
+            this.bt_JOG1P.Location = new System.Drawing.Point(6, 6);
             this.bt_JOG1P.Name = "bt_JOG1P";
             this.bt_JOG1P.Size = new System.Drawing.Size(100, 70);
             this.bt_JOG1P.TabIndex = 10;
@@ -555,14 +570,91 @@
             this.bt_JOG1P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1P_MouseDown);
             this.bt_JOG1P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1P_MouseUp);
             // 
+            // bt_JOG1N
+            // 
+            this.bt_JOG1N.Location = new System.Drawing.Point(112, 6);
+            this.bt_JOG1N.Name = "bt_JOG1N";
+            this.bt_JOG1N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG1N.TabIndex = 11;
+            this.bt_JOG1N.Text = "JOG C1 -";
+            this.bt_JOG1N.UseVisualStyleBackColor = true;
+            this.bt_JOG1N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseDown);
+            this.bt_JOG1N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG1N_MouseUp);
+            // 
+            // bt_JOG2P
+            // 
+            this.bt_JOG2P.Location = new System.Drawing.Point(6, 82);
+            this.bt_JOG2P.Name = "bt_JOG2P";
+            this.bt_JOG2P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG2P.TabIndex = 12;
+            this.bt_JOG2P.Text = "JOG C2 +";
+            this.bt_JOG2P.UseVisualStyleBackColor = true;
+            this.bt_JOG2P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseDown);
+            this.bt_JOG2P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2P_MouseUp);
+            // 
+            // bt_JOG2N
+            // 
+            this.bt_JOG2N.Location = new System.Drawing.Point(112, 82);
+            this.bt_JOG2N.Name = "bt_JOG2N";
+            this.bt_JOG2N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG2N.TabIndex = 13;
+            this.bt_JOG2N.Text = "JOG C2 -";
+            this.bt_JOG2N.UseVisualStyleBackColor = true;
+            this.bt_JOG2N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseDown);
+            this.bt_JOG2N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG2N_MouseUp);
+            // 
+            // bt_JOG3P
+            // 
+            this.bt_JOG3P.Location = new System.Drawing.Point(6, 158);
+            this.bt_JOG3P.Name = "bt_JOG3P";
+            this.bt_JOG3P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG3P.TabIndex = 14;
+            this.bt_JOG3P.Text = "JOG C3 +";
+            this.bt_JOG3P.UseVisualStyleBackColor = true;
+            this.bt_JOG3P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseDown);
+            this.bt_JOG3P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3P_MouseUp);
+            // 
+            // bt_JOG3N
+            // 
+            this.bt_JOG3N.Location = new System.Drawing.Point(112, 158);
+            this.bt_JOG3N.Name = "bt_JOG3N";
+            this.bt_JOG3N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG3N.TabIndex = 15;
+            this.bt_JOG3N.Text = "JOG C3 -";
+            this.bt_JOG3N.UseVisualStyleBackColor = true;
+            this.bt_JOG3N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseDown);
+            this.bt_JOG3N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG3N_MouseUp);
+            // 
+            // bt_JOG4P
+            // 
+            this.bt_JOG4P.Location = new System.Drawing.Point(6, 234);
+            this.bt_JOG4P.Name = "bt_JOG4P";
+            this.bt_JOG4P.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG4P.TabIndex = 16;
+            this.bt_JOG4P.Text = "JOG C4 +";
+            this.bt_JOG4P.UseVisualStyleBackColor = true;
+            this.bt_JOG4P.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseDown);
+            this.bt_JOG4P.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4P_MouseUp);
+            // 
+            // bt_JOG4N
+            // 
+            this.bt_JOG4N.Location = new System.Drawing.Point(112, 234);
+            this.bt_JOG4N.Name = "bt_JOG4N";
+            this.bt_JOG4N.Size = new System.Drawing.Size(100, 70);
+            this.bt_JOG4N.TabIndex = 17;
+            this.bt_JOG4N.Text = "JOG C4 -";
+            this.bt_JOG4N.UseVisualStyleBackColor = true;
+            this.bt_JOG4N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseDown);
+            this.bt_JOG4N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseUp);
+            // 
             // tB_mesPrint
             // 
-            this.tB_mesPrint.Location = new System.Drawing.Point(318, 32);
+            this.tB_mesPrint.Location = new System.Drawing.Point(338, 32);
             this.tB_mesPrint.Multiline = true;
             this.tB_mesPrint.Name = "tB_mesPrint";
             this.tB_mesPrint.ReadOnly = true;
             this.tB_mesPrint.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tB_mesPrint.Size = new System.Drawing.Size(459, 332);
+            this.tB_mesPrint.Size = new System.Drawing.Size(571, 332);
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
@@ -570,7 +662,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(794, 526);
+            this.ClientSize = new System.Drawing.Size(921, 526);
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label_pos);
@@ -592,8 +684,11 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
+            this.panelTestFunc.ResumeLayout(false);
+            this.panelTestFunc.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            this.panelJOG.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -645,6 +740,13 @@
         private System.Windows.Forms.Button bt_JOG2P;
         private System.Windows.Forms.Button bt_JOG1N;
         private System.Windows.Forms.Button bt_JOG1P;
+        private System.Windows.Forms.Button bt_writeO;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown num_obitNo;
+        private System.Windows.Forms.RadioButton rBt_obitF;
+        private System.Windows.Forms.RadioButton rBt_obitT;
+        private System.Windows.Forms.Panel panelTestFunc;
+        private System.Windows.Forms.FlowLayoutPanel panelJOG;
     }
 }
 

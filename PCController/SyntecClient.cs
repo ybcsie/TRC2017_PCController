@@ -16,7 +16,7 @@ namespace PCController
     {
         public const short SUCCESSFUL = (short)SyntecRemoteCNC.ErrorCode.NormalTermination;
         public const string DEFAULT_IP = "192.168.1.110";
-        public const string DEFAULT_NCFILENAME = "mainjob.txt";
+        public const string DEFAULT_NCFILENAME = NCFileName.MAIN_JOB;
 
         public static string[] AxisName = null, Unit = null;
         public static float[] Mach = null, Abs = null, Rel = null, Dist = null;
@@ -102,6 +102,8 @@ namespace PCController
 
         public static void cycleStart()
         {
+            setControlMode(ControlMode.AUTO);
+
             cnc.WRITE_plc_register(19, 19, new int[1] { 1 });
             Thread.Sleep(300);
             cnc.WRITE_plc_register(19, 19, new int[1] { 0 });
@@ -133,9 +135,20 @@ namespace PCController
             cnc.WRITE_plc_register(addrStart, addrEnd, vals);
         }
 
-        public static void writeCBit(int addr,bool val)
+        public static void writeOBit(int addr,bool val)
         {
-            cnc.WRITE_plc_cbit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
+            Program.form.mesPrintln("SyntecClient: Setting Obit... Please wait.");
+            NCGen.genObitSetterNC(addr, val);
+            uploadNCFile(NCFileName.OBIT_SETTER);
+            cycleStart();
+
+        }
+
+        public static class NCFileName
+        {
+            public const string INITIALIZER = "initializer.txt";
+            public const string MAIN_JOB = "mainjob.txt";
+            public const string OBIT_SETTER = "obitsetter.txt";
         }
 
         public static void setControlMode(int mode)
