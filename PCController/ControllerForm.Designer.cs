@@ -434,6 +434,7 @@
             this.panelTestFunc.Controls.Add(this.label9);
             this.panelTestFunc.Controls.Add(this.tB_fileName);
             this.panelTestFunc.Controls.Add(this.num_obitNo);
+            this.panelTestFunc.Controls.Add(this.bt_genNC);
             this.panelTestFunc.Controls.Add(this.bt_cycStart);
             this.panelTestFunc.Controls.Add(this.rBt_obitF);
             this.panelTestFunc.Controls.Add(this.bt_upload);
@@ -446,7 +447,6 @@
             this.panelTestFunc.Controls.Add(this.num_gvarValue);
             this.panelTestFunc.Controls.Add(this.label4);
             this.panelTestFunc.Controls.Add(this.num_gvarNo);
-            this.panelTestFunc.Controls.Add(this.bt_genNC);
             this.panelTestFunc.Enabled = false;
             this.panelTestFunc.Location = new System.Drawing.Point(6, 6);
             this.panelTestFunc.Name = "panelTestFunc";

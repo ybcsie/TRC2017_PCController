@@ -339,11 +339,11 @@ namespace PCController
             {
                 if (i == 0)
                 {
-                    tmpangle += ((data[i, 0] - (decimal)angle1) + (data[i, 1] - (decimal)angle3));
+                    tmpangle -= ((data[i, 0] - (decimal)angle1) + (data[i, 1] - (decimal)angle3));
                 }
                 else
                 {
-                    tmpangle += ((data[i, 0] - data[i - 1, 0]) + (data[i, 1] - data[i - 1, 1]));
+                    tmpangle -= ((data[i, 0] - data[i - 1, 0]) + (data[i, 1] - data[i - 1, 1]));
                 }
 
                 angleFileWriter.WriteLine("{0:f12},{1:f12},{2:f12}", data[i, 0], data[i, 1],  tmpangle);
