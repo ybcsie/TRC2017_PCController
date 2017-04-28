@@ -113,7 +113,7 @@ namespace PCController
                 label_syntecBusy.Text = SyntecClient.isBusy() ? "Busy" : "Idle";
 
                 if (SyntecClient.Rel != null)
-                    label_pos.Text = string.Format("C1 = {0:f3}   C2 = {1:f3}   C3 = {2:f3}   C4 = {3:f3}", SyntecClient.Rel[0], SyntecClient.Rel[1], SyntecClient.Rel[2], SyntecClient.Rel[3]);
+                    label_pos.Text = string.Format("C1 = {0:f3}   C2 = {1:f3}   C3 = {2:f3}   C4 = {3:f3}", SyntecClient.Mach[0], SyntecClient.Mach[1], SyntecClient.Mach[2], SyntecClient.Mach[3]);
                 else
                     label_pos.Text = "Unable to get position";
 
@@ -148,7 +148,7 @@ namespace PCController
                 return;
 
 
-            AngleList linearAngleList = RoutPlanning.routplanning(SyntecClient.Rel[0], SyntecClient.Rel[2], SyntecClient.Rel[1], SyntecClient.Rel[3], 50, 10);
+            AngleList linearAngleList = RoutPlanning.routplanning(SyntecClient.Mach[0], SyntecClient.Mach[2], SyntecClient.Mach[1], SyntecClient.Mach[3], 50, 10);
 
             Angle currNode = linearAngleList.headAngle;
 
@@ -266,7 +266,7 @@ namespace PCController
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            //linearMOV();
+            linearMOV();
 
 
         }
