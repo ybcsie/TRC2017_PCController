@@ -21,6 +21,8 @@ namespace PCController
             }
             scheduleing[0, 0] = 1;
             scheduleing[0, 1] = 5;
+            scheduleing[1, 0] = 2;
+            scheduleing[1, 1] = 4;
             /*
                 scheduleing[1][0]=2;
                 scheduleing[1][1]=6;

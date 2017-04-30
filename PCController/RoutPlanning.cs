@@ -71,6 +71,10 @@ namespace PCController
             double arm1long = ArmData.longbase;
             double arm2long = arm1long * (ArmData.longrate2);
             double arm3long = arm1long * (ArmData.longrate3);
+            double angle1;
+            double angle2;
+            double angle3;
+            double angle4;
             //Program.form.showWarnning(string.Format("arm1long = {0:f3}, arm2long = {1:f3},arm3long = {2:f3}", arm1long, arm2long, arm3long));
 
             if (arm1long == 0 || arm2long == 0 || arm3long == 0)
@@ -79,14 +83,22 @@ namespace PCController
                 return null;
             }
 
+            if (origangle.motor3angle > 0)
+            {
+                angle1 = (180 - (origangle.motor1angle)) * pi / 180;
+                angle2 = (origangle.motor2angle) * pi / 180;
+                angle3 = (180 - (origangle.motor3angle)) * pi / 180;
+                angle4 = (180 + (origangle.motor4angle)) * pi / 180;
+            }
+            else
+            {
+                angle1 = (origangle.motor1angle) * pi / 180;
+                angle2 = (origangle.motor2angle) * pi / 180;
+                angle3 = (180 + (origangle.motor3angle)) * pi / 180;
+                angle4 = (180 - (origangle.motor4angle)) * pi / 180;
+            }
 
-            double angle1 = (180-(origangle.motor1angle)) * pi / 180;
-            double angle2 = (origangle.motor2angle) * pi / 180;
-            double angle3 = (180-(origangle.motor3angle)) * pi / 180;
-            double angle4 = (180+(origangle.motor4angle)) * pi / 180;
-
-
-            Program.form.mesPrintln(String.Format("initial angle of 1,3,4:{0:f},{1:f},{2:f}", angle1, angle3, angle4));
+            Program.form.mesPrintln(String.Format("initial angle of 1,2,3,4:{0:f},{1:f},{2:f},{3:f}", origangle.motor1angle, origangle.motor2angle, origangle.motor3angle, origangle.motor4angle));
 
             double tmpangle1, tmpangle7, tmpangle8, tmpangle4, tmpangle2, tmpangle9, tmpangle6;
             double tmpline1;//origangle2,arm1,arm2
@@ -126,8 +138,14 @@ namespace PCController
 
                 tmpangle7 = (Math.Pow(tmpline1, 2) + Math.Pow(arm2long, 2) - Math.Pow(arm1long, 2)) / (2 * arm2long * tmpline1);
                 tmpangle7 = Math.Acos(tmpangle7);
-
-                tmpangle4 = angle4 + tmpangle7;
+                if (pi-tmpangle7>=angle4)
+                {
+                    tmpangle4 = angle4 + tmpangle7;
+                }
+                else
+                {
+                    tmpangle4 = 2*pi - angle4 - tmpangle7;
+                }
 
                 afterline1 = Math.Pow(tmpline1, 2) + Math.Pow(movelong, 2) - 2 * tmpline1 * movelong * Math.Cos(tmpangle4);
                 afterline1 = Math.Sqrt(afterline1);
@@ -155,10 +173,16 @@ namespace PCController
 
                 tmpangle6 = Math.Acos(tmpangle6);
 
-                afterangle1 = angle1 - (tmpangle8 - tmpangle9 - tmpangle6);//
-
-                afterangle4 = pi - (pi - tmpangle4 - tmpangle6) - (pi - afterangle3 - tmpangle9);
-
+                if (pi - tmpangle7 >= angle4)
+                {
+                    afterangle1 = angle1 - (tmpangle8 - tmpangle9 - tmpangle6);//
+                    afterangle4 = pi - (pi - tmpangle4 - tmpangle6) - (pi - afterangle3 - tmpangle9);
+                }
+                else
+                {
+                    afterangle1 = angle1 - (tmpangle8 - tmpangle9 + tmpangle6);//
+                    afterangle4 = pi + (pi - tmpangle4 - tmpangle6) - (pi - afterangle3 - tmpangle9);
+                }
                 //Program.form.mesPrintln(String.Format("angle1:{0:f} ,angle3:{1:f} ,angle4:{2:f}", afterangle1 * 180 / pi, afterangle3 * 180 / pi, afterangle4 * 180 / pi));
 
 
@@ -169,10 +193,14 @@ namespace PCController
                     return null;
                 }
 
-
-
-                angleFileWriter.WriteLine("{0:f12},{1:f12}", 180-(afterangle1 * 180 / pi), 180-(afterangle3 * 180 / pi));
-
+                if (origangle.motor3angle > 0)
+                {
+                    angleFileWriter.WriteLine("{0:f12},{1:f12}", 180 - (afterangle1 * 180 / pi), 180 - (afterangle3 * 180 / pi));
+                }
+                else
+                {
+                    angleFileWriter.WriteLine("{0:f12},{1:f12}", (afterangle1 * 180 / pi), (afterangle3 * 180 / pi)-180);
+                }
                 angle1 = afterangle1;
                 angle3 = afterangle3;
                 angle4 = afterangle4;
@@ -220,16 +248,16 @@ namespace PCController
                 measureangle[i, 1] = 0;
             }
             double topanglez = 0, loweranglez = 0;
-            realcd[0, 0] = 3.0 * (ratio / 5);
-            realcd[0, 1] = 4.0* (ratio / 5);
-            realcd[1, 0] = 4.0 * (ratio / 5);
-            realcd[1, 1] = 3.0 * (ratio / 5);
-            realcd[2, 0] = 5.0 * (ratio / 5);
-            realcd[2, 1] = 0.0 * (ratio / 5);
-            realcd[3, 0] = 4.0 * (ratio / 5);
-            realcd[3, 1] = (-3) * (ratio / 5);
-            realcd[4, 0] = 3.0 * (ratio / 5);
-            realcd[4, 1] = (-4) * (ratio / 5);
+            realcd[0, 0] = (-3.9) * (ratio / 5);
+            realcd[0, 1] = 3.1* (ratio / 5);
+            realcd[1, 0] = (-2.9) * (ratio / 5);
+            realcd[1, 1] = 4.1 * (ratio / 5);
+            realcd[2, 0] = 0.1 * (ratio / 5);
+            realcd[2, 1] = 5.1 * (ratio / 5);
+            realcd[3, 0] = 3.1 * (ratio / 5);
+            realcd[3, 1] = 4.1 * (ratio / 5);
+            realcd[4, 0] = 4.1 * (ratio / 5);
+            realcd[4, 1] = 3.1 * (ratio / 5);
             //need to deleted
 
             //calculate the center of cycle
@@ -240,15 +268,15 @@ namespace PCController
 
                 cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
                 cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
-                if (realcd[i + 1, 1] - realcd[i, 1] < 0)
+                if (realcd[i + 1, 0] - realcd[i, 0] < 0)
                 {
-                    dx = realcd[i + 1, 0] - realcd[i, 0];
-                    dy = realcd[i + 1, 1] - realcd[i, 1];
+                    dx = realcd[i, 0] - realcd[i+1, 0];
+                    dy = realcd[i, 1] - realcd[i+1, 1];
                 }
                 else
                 {
-                    dx = realcd[i, 0] - realcd[i + 1, 0];
-                    dy = realcd[i, 1] - realcd[i + 1, 1];
+                    dx = realcd[i + 1, 0] - realcd[i, 0];
+                    dy = realcd[i + 1, 1] - realcd[i, 1];
                 }
                 l = Math.Sqrt(dx * dx + dy * dy);
                 h = Math.Sqrt(ratio * ratio - (l / 2) * (l / 2));
@@ -266,7 +294,7 @@ namespace PCController
             double tmplong2 = 0;//avcenter to reference
             double tmpangle1 = 0;//tmplong and y axis;
             double tmpangle2 = 0;//tmplong and (avcenter to reference)
-
+            double judgevector = 0;
 
             for (i = 0; i < 5; i++)
             {
@@ -278,25 +306,70 @@ namespace PCController
 
             for (i = 0; i < 5; i++)
             {
-                tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
-                tmpangle1 = (reference[i, 1] * 1) / (tmplong1);
-                tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
-                coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
-                coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
-                coordinate[i, 0] = 180-(tmpangle1 + coordinate[i, 0]);
-                coordinate[i, 1] = measureangle[i, 1];
-                coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
-                coordinate[i, 2] = 180-((Math.Acos(coordinate[i, 2])) * 180 / pi);
-                coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
-                coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
-                tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
-                tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
-                tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
-                coordinate[i, 3] = (180 - tmpangle2 - coordinate[i, 3])-180;
-                coordinate[i+5, 0] = coordinate[i, 0];
-                coordinate[i+5, 1] = coordinate[i, 1];
-                coordinate[i + 5, 2] = coordinate[i, 2];
-                coordinate[i + 5, 3] = coordinate[i, 3];
+                if (reference[i, 0] <= 0)
+                {
+                    tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
+                    tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);
+                    tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
+                    coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
+                    coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
+                    coordinate[i, 0] = 180 - (tmpangle1 + coordinate[i, 0]);
+                    coordinate[i, 1] = measureangle[i, 1];
+                    coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
+                    coordinate[i, 2] = 180 - ((Math.Acos(coordinate[i, 2])) * 180 / pi);
+                    coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
+                    coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
+                    tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
+                    tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
+                    tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
+
+                    judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
+                    if (judgevector<=0)
+                    {
+                        coordinate[i, 3] = (-1) * (tmpangle2 + coordinate[i, 3]);
+                    }
+                    else
+                    {
+                        coordinate[i, 3] = (-1) * (coordinate[i, 3] - tmpangle2);
+                    }
+
+                    coordinate[i + 5, 0] = coordinate[i, 0];
+                    coordinate[i + 5, 1] = coordinate[i, 1];
+                    coordinate[i + 5, 2] = coordinate[i, 2];
+                    coordinate[i + 5, 3] = coordinate[i, 3];
+                }
+                else
+                {
+                    tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
+                    tmpangle1 = ( reference[i, 0] * 1) / (tmplong1);
+                    tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
+                    coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
+                    coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
+                    coordinate[i, 0] = (tmpangle1 + coordinate[i, 0]);
+                    coordinate[i, 1] = measureangle[i, 1];
+                    coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
+                    coordinate[i, 2] = ((Math.Acos(coordinate[i, 2])) * 180 / pi)-180;
+                    coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
+                    coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
+                    tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
+                    tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
+                    tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
+                    
+                    judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
+                    if (judgevector >0)
+                    {
+                        coordinate[i, 3] = (1) * (tmpangle2 + coordinate[i, 3]);
+                    }
+                    else
+                    {
+                        coordinate[i, 3] = (1) * (coordinate[i, 3] - tmpangle2);
+                    }
+
+                    coordinate[i + 5, 0] = coordinate[i, 0];
+                    coordinate[i + 5, 1] = coordinate[i, 1];
+                    coordinate[i + 5, 2] = coordinate[i, 2];
+                    coordinate[i + 5, 3] = coordinate[i, 3];
+                }
                 Program.form.mesPrintln(string.Format("各平台直線進入初始四軸角度 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
             }
 
@@ -320,10 +393,17 @@ namespace PCController
             {
                 string[] strSplit = angleFileReader.ReadLine().Split(',');
 
+                
                 data[linenum, 0] = Convert.ToDecimal(strSplit[0]);
                 data[linenum, 1] = Convert.ToDecimal(strSplit[1]);
+                
             }
-
+            /*
+            angle1 = 10;
+            angle2 = 10;
+            angle3 = 10;
+            angle4 = 10;
+            */
             angleFileReader.Close();
 
 

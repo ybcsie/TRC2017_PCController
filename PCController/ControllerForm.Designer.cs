@@ -273,7 +273,7 @@
             // 
             // bt_genNC
             // 
-            this.bt_genNC.Location = new System.Drawing.Point(208, 3);
+            this.bt_genNC.Location = new System.Drawing.Point(188, 491);
             this.bt_genNC.Name = "bt_genNC";
             this.bt_genNC.Size = new System.Drawing.Size(75, 23);
             this.bt_genNC.TabIndex = 20;
@@ -434,7 +434,6 @@
             this.panelTestFunc.Controls.Add(this.label9);
             this.panelTestFunc.Controls.Add(this.tB_fileName);
             this.panelTestFunc.Controls.Add(this.num_obitNo);
-            this.panelTestFunc.Controls.Add(this.bt_genNC);
             this.panelTestFunc.Controls.Add(this.bt_cycStart);
             this.panelTestFunc.Controls.Add(this.rBt_obitF);
             this.panelTestFunc.Controls.Add(this.bt_upload);
@@ -666,6 +665,7 @@
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label_pos);
+            this.Controls.Add(this.bt_genNC);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label_syntecBusy);
