@@ -110,7 +110,7 @@ namespace PCController
                 panelTestFunc.Enabled = true;
                 panelJOG.Enabled = true;
 
-                label_syntecBusy.Text = SyntecClient.isBusy() ? "Busy" : "Idle";
+                label_syntecBusy.Text = SyntecClient.isBusy() ? "Busy" : SyntecClient.isPaused() ? "Paused" : "Idle";
 
                 if (SyntecClient.Rel != null)
                     label_pos.Text = string.Format("C1 = {0:f3}   C2 = {1:f3}   C3 = {2:f3}   C4 = {3:f3}", SyntecClient.Mach[0], SyntecClient.Mach[1], SyntecClient.Mach[2], SyntecClient.Mach[3]);
@@ -257,9 +257,16 @@ namespace PCController
 
         private void bt_cycStart_Click(object sender, EventArgs e)
         {
-            SyntecClient.cycleStart();
-            Thread.Sleep(300);
-            setState("Cycle started!");
+            if (SyntecClient.isBusy())
+            {
+                SyntecClient.cycleStop();
+                setState("Cycle stopped!");
+            }
+            else
+            {
+                SyntecClient.cycleStart();
+                setState("Cycle started!");
+            }
 
         }
 
@@ -403,6 +410,16 @@ namespace PCController
 
                 mesPrintln("Obit setting successed.");
             });
+        }
+
+        private void bt_servoSW_Click(object sender, EventArgs e)
+        {
+            SyntecClient.motorServoSwitch();
+        }
+
+        private void bt_cycleReset_Click(object sender, EventArgs e)
+        {
+            SyntecClient.cycleReset();
         }
     }
 

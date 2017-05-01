@@ -61,6 +61,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelTestFunc = new System.Windows.Forms.Panel();
+            this.bt_servoSW = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.num_obitNo = new System.Windows.Forms.NumericUpDown();
             this.rBt_obitF = new System.Windows.Forms.RadioButton();
@@ -79,6 +80,7 @@
             this.bt_JOG4P = new System.Windows.Forms.Button();
             this.bt_JOG4N = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
+            this.bt_cycleReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -131,11 +133,11 @@
             // 
             // bt_cycStart
             // 
-            this.bt_cycStart.Location = new System.Drawing.Point(109, 38);
+            this.bt_cycStart.Location = new System.Drawing.Point(97, 44);
             this.bt_cycStart.Name = "bt_cycStart";
-            this.bt_cycStart.Size = new System.Drawing.Size(75, 23);
+            this.bt_cycStart.Size = new System.Drawing.Size(100, 23);
             this.bt_cycStart.TabIndex = 4;
-            this.bt_cycStart.Text = "Cycle Start";
+            this.bt_cycStart.Text = "Cycle Start / Stop";
             this.bt_cycStart.UseVisualStyleBackColor = true;
             this.bt_cycStart.Click += new System.EventHandler(this.bt_cycStart_Click);
             // 
@@ -168,7 +170,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(214, 289);
+            this.bt_test.Location = new System.Drawing.Point(209, 301);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(75, 23);
             this.bt_test.TabIndex = 9;
@@ -187,7 +189,7 @@
             // 
             // num_gvarNo
             // 
-            this.num_gvarNo.Location = new System.Drawing.Point(62, 95);
+            this.num_gvarNo.Location = new System.Drawing.Point(62, 93);
             this.num_gvarNo.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -223,7 +225,7 @@
             // num_gvarValue
             // 
             this.num_gvarValue.DecimalPlaces = 3;
-            this.num_gvarValue.Location = new System.Drawing.Point(178, 95);
+            this.num_gvarValue.Location = new System.Drawing.Point(178, 93);
             this.num_gvarValue.Name = "num_gvarValue";
             this.num_gvarValue.Size = new System.Drawing.Size(100, 22);
             this.num_gvarValue.TabIndex = 15;
@@ -235,7 +237,7 @@
             // 
             // bt_writeGVar
             // 
-            this.bt_writeGVar.Location = new System.Drawing.Point(143, 128);
+            this.bt_writeGVar.Location = new System.Drawing.Point(143, 126);
             this.bt_writeGVar.Name = "bt_writeGVar";
             this.bt_writeGVar.Size = new System.Drawing.Size(75, 23);
             this.bt_writeGVar.TabIndex = 16;
@@ -246,7 +248,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 100);
+            this.label4.Location = new System.Drawing.Point(3, 98);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 17;
@@ -255,7 +257,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(137, 100);
+            this.label5.Location = new System.Drawing.Point(137, 98);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 12);
             this.label5.TabIndex = 18;
@@ -263,7 +265,7 @@
             // 
             // bt_readGVar
             // 
-            this.bt_readGVar.Location = new System.Drawing.Point(62, 128);
+            this.bt_readGVar.Location = new System.Drawing.Point(62, 126);
             this.bt_readGVar.Name = "bt_readGVar";
             this.bt_readGVar.Size = new System.Drawing.Size(75, 23);
             this.bt_readGVar.TabIndex = 19;
@@ -273,7 +275,7 @@
             // 
             // bt_genNC
             // 
-            this.bt_genNC.Location = new System.Drawing.Point(188, 491);
+            this.bt_genNC.Location = new System.Drawing.Point(209, 272);
             this.bt_genNC.Name = "bt_genNC";
             this.bt_genNC.Size = new System.Drawing.Size(75, 23);
             this.bt_genNC.TabIndex = 20;
@@ -421,6 +423,7 @@
             this.tabPage2.Controls.Add(this.panelTestFunc);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
             this.tabPage2.Controls.Add(this.bt_test);
+            this.tabPage2.Controls.Add(this.bt_genNC);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -431,6 +434,8 @@
             // 
             // panelTestFunc
             // 
+            this.panelTestFunc.Controls.Add(this.bt_cycleReset);
+            this.panelTestFunc.Controls.Add(this.bt_servoSW);
             this.panelTestFunc.Controls.Add(this.label9);
             this.panelTestFunc.Controls.Add(this.tB_fileName);
             this.panelTestFunc.Controls.Add(this.num_obitNo);
@@ -449,13 +454,23 @@
             this.panelTestFunc.Enabled = false;
             this.panelTestFunc.Location = new System.Drawing.Point(6, 6);
             this.panelTestFunc.Name = "panelTestFunc";
-            this.panelTestFunc.Size = new System.Drawing.Size(300, 266);
+            this.panelTestFunc.Size = new System.Drawing.Size(300, 260);
             this.panelTestFunc.TabIndex = 26;
+            // 
+            // bt_servoSW
+            // 
+            this.bt_servoSW.Location = new System.Drawing.Point(203, 44);
+            this.bt_servoSW.Name = "bt_servoSW";
+            this.bt_servoSW.Size = new System.Drawing.Size(86, 23);
+            this.bt_servoSW.TabIndex = 27;
+            this.bt_servoSW.Text = "Servo On / Off";
+            this.bt_servoSW.UseVisualStyleBackColor = true;
+            this.bt_servoSW.Click += new System.EventHandler(this.bt_servoSW_Click);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(39, 196);
+            this.label9.Location = new System.Drawing.Point(39, 186);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(28, 12);
             this.label9.TabIndex = 26;
@@ -463,7 +478,7 @@
             // 
             // num_obitNo
             // 
-            this.num_obitNo.Location = new System.Drawing.Point(73, 191);
+            this.num_obitNo.Location = new System.Drawing.Point(73, 181);
             this.num_obitNo.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -482,7 +497,7 @@
             // 
             this.rBt_obitF.AutoSize = true;
             this.rBt_obitF.Checked = true;
-            this.rBt_obitF.Location = new System.Drawing.Point(191, 194);
+            this.rBt_obitF.Location = new System.Drawing.Point(191, 184);
             this.rBt_obitF.Name = "rBt_obitF";
             this.rBt_obitF.Size = new System.Drawing.Size(39, 16);
             this.rBt_obitF.TabIndex = 24;
@@ -493,7 +508,7 @@
             // rBt_obitT
             // 
             this.rBt_obitT.AutoSize = true;
-            this.rBt_obitT.Location = new System.Drawing.Point(148, 194);
+            this.rBt_obitT.Location = new System.Drawing.Point(148, 184);
             this.rBt_obitT.Name = "rBt_obitT";
             this.rBt_obitT.Size = new System.Drawing.Size(37, 16);
             this.rBt_obitT.TabIndex = 24;
@@ -502,7 +517,7 @@
             // 
             // bt_writeO
             // 
-            this.bt_writeO.Location = new System.Drawing.Point(97, 224);
+            this.bt_writeO.Location = new System.Drawing.Point(97, 214);
             this.bt_writeO.Name = "bt_writeO";
             this.bt_writeO.Size = new System.Drawing.Size(75, 23);
             this.bt_writeO.TabIndex = 23;
@@ -512,7 +527,7 @@
             // 
             // bt_setOrigin
             // 
-            this.bt_setOrigin.Location = new System.Drawing.Point(208, 38);
+            this.bt_setOrigin.Location = new System.Drawing.Point(214, 2);
             this.bt_setOrigin.Name = "bt_setOrigin";
             this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
             this.bt_setOrigin.TabIndex = 22;
@@ -522,7 +537,7 @@
             // 
             // bt_TRCCommStart
             // 
-            this.bt_TRCCommStart.Location = new System.Drawing.Point(21, 289);
+            this.bt_TRCCommStart.Location = new System.Drawing.Point(33, 272);
             this.bt_TRCCommStart.Name = "bt_TRCCommStart";
             this.bt_TRCCommStart.Size = new System.Drawing.Size(157, 23);
             this.bt_TRCCommStart.TabIndex = 21;
@@ -657,6 +672,16 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
+            // bt_cycleReset
+            // 
+            this.bt_cycleReset.Location = new System.Drawing.Point(9, 44);
+            this.bt_cycleReset.Name = "bt_cycleReset";
+            this.bt_cycleReset.Size = new System.Drawing.Size(82, 23);
+            this.bt_cycleReset.TabIndex = 28;
+            this.bt_cycleReset.Text = "Cycle Reset";
+            this.bt_cycleReset.UseVisualStyleBackColor = true;
+            this.bt_cycleReset.Click += new System.EventHandler(this.bt_cycleReset_Click);
+            // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -665,7 +690,6 @@
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label_pos);
-            this.Controls.Add(this.bt_genNC);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label_syntecBusy);
@@ -747,6 +771,8 @@
         private System.Windows.Forms.RadioButton rBt_obitT;
         private System.Windows.Forms.Panel panelTestFunc;
         private System.Windows.Forms.FlowLayoutPanel panelJOG;
+        private System.Windows.Forms.Button bt_servoSW;
+        private System.Windows.Forms.Button bt_cycleReset;
     }
 }
 

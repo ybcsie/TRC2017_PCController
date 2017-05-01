@@ -144,6 +144,7 @@ namespace PCController
             startGenNC("initializer.txt");
 
             ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ10;", 30, 60, -70);
+
             ncfile.WriteLine("WAIT();");
 
             ncfile.WriteLine("@10 := 1;");
@@ -154,10 +155,10 @@ namespace PCController
             ncfile.WriteLine(getMovCode());
             ncfile.WriteLine("WAIT();");
             ncfile.WriteLine("@11 := 0;");
-            ncfile.WriteLine("END_IF");
+            ncfile.WriteLine("END_IF;"); 
 
             ncfile.WriteLine("SLEEP();");
-            ncfile.WriteLine("END_WHILE");
+            ncfile.WriteLine("END_WHILE;");
 
             endGenNC();
         }

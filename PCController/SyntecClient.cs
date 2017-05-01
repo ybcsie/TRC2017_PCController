@@ -81,6 +81,12 @@ namespace PCController
             return busy;
         }
 
+        public static bool isPaused()
+        {
+            refreshState();
+            return paused;
+        }
+
         public static short uploadNCFile(string ncSrc)
         {
             short result = cnc.UPLOAD_nc_mem(ncSrc);
@@ -104,10 +110,43 @@ namespace PCController
         {
             setControlMode(ControlMode.AUTO);
 
-            cnc.WRITE_plc_register(19, 19, new int[1] { 1 });
-            Thread.Sleep(300);
-            cnc.WRITE_plc_register(19, 19, new int[1] { 0 });
+            writeReg(19, 1);
+            Thread.Sleep(100);
+            writeReg(19, 0);
         }
+
+        public static void cycleStop()
+        {
+            writeReg(15206, 1);
+            Thread.Sleep(100);
+            writeReg(15206, 0);
+        }
+
+        public static void cycleReset()
+        {
+            writeReg(15207, 1);
+            Thread.Sleep(100);
+            writeReg(15207, 0);
+        }
+
+
+        public static void motorServoSwitch()
+        {
+            bool sw = readCBit(36) ? false : true;
+            writeCBit(36, sw);
+
+        }
+        public static bool readCBit(int addr)
+        {
+            byte[] val;
+            cnc.READ_plc_cbit(addr, addr, out val);
+
+            if (val != null)
+                return val[0] == 0 ? false : true;
+
+            return false;
+        }
+
 
         public static double readSingleVar(int no)
         {
@@ -133,6 +172,12 @@ namespace PCController
         public static void writeReg(int addrStart, int addrEnd, int[] vals)
         {
             cnc.WRITE_plc_register(addrStart, addrEnd, vals);
+        }
+
+        public static void writeCBit(int addr, bool val)
+        {
+            cnc.WRITE_plc_cbit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
+
         }
 
         public static void writeOBit(int addr,bool val)
@@ -203,6 +248,7 @@ namespace PCController
         private static SyntecRemoteCNC cnc = null;
         private static bool connected = false;
         private static bool busy = false;
+        private static bool paused = false;
 
 
         private static void refreshState()
@@ -254,10 +300,13 @@ namespace PCController
             }
 
             byte[] sbits = null;
-            cnc.READ_plc_sbit(0, 0, out sbits);
+            cnc.READ_plc_sbit(0, 1, out sbits);
 
             if (sbits != null)
+            {
                 busy = sbits[0] != 0 ? true : false;
+                paused = sbits[1] != 0 ? true : false;
+            }
         }
 
 
