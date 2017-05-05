@@ -152,8 +152,13 @@ namespace PCController
         {
             double var;
             cnc.READ_macro_single(no, out var);
-
-            return var;
+            if (var != null) { 
+                return var;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public static void writeGVar(int no,double val)
@@ -177,6 +182,16 @@ namespace PCController
         public static void writeCBit(int addr, bool val)
         {
             cnc.WRITE_plc_cbit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
+        }
+
+        public static int readReg(int addr)
+        {
+            int[] var;
+            cnc.READ_plc_register(addr, addr, out var);
+            if(var!=null)
+            return var[0];
+
+            return 0;
 
         }
 

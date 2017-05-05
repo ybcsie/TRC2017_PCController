@@ -13,7 +13,7 @@ namespace PCController
 
         public static void generator(AngleList[] go, int[,] scheduling)
         {
-            const int complete = 11, access = 10, suck=320, communication = 6;//O pin
+            const int complete = 11, access = 10, suck=320, communication = 1,GraborPut=2 ,zaxis=3 ;//
             decimal[,] savedata = new decimal[100, 4];
             int i, number, count;
             double afterz=0;
@@ -26,15 +26,57 @@ namespace PCController
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
 
             ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=0.0 FJ20;");
+            ncfile.WriteLine("@3:=0;");
+            ncfile.WriteLine("@100050:=0;");
+            ncfile.WriteLine("@1:=0;");
+            NCmain(communication);
 
-            //測試用，隨意指定wafer所在cassette位置
-            for (i = 0; i < 6; i++)
+            for (i = 0; i<10; i++)
             {
-                cassetteA[i] = 4 * i + 4;
-                cassetteB[5 - i] = 4 * i + 4;
-            }
-            //
+                count = 0;
+                Angle tmp = go[i].headAngle;
+                ncfile.WriteLine("N{0:d};",(i+11));
+                ncfile.WriteLine("@1:=0;");
+                ncfile.WriteLine("@3:=0;");
+                ncfile.WriteLine("@100050:=0;");
+                while (tmp != null)
+                {
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
 
+                    savedata[count, 0] = tmp.one;
+                    savedata[count, 1] = tmp.two;
+                    savedata[count, 2] = tmp.three;
+                    savedata[count, 3] = tmp.four;
+
+                    tmp = tmp.nextangle;
+                    count++;
+                }
+                //ncfile.WriteLine("WAIT();");
+                count--;
+                Obitcontrol(suck, GraborPut);
+                ncfile.WriteLine("WAIT();");
+
+                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ10 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+
+                ncfile.WriteLine("WAIT();");
+
+                while (count != 0)
+                {
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ10 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                    count--;
+                }
+                ncfile.WriteLine("WAIT();");
+                ncfile.WriteLine("@100050:=1;");
+                ncfile.WriteLine("WAIT();");
+                ncfile.WriteLine("GOTO 1;");
+
+                //sendcomplete(complete, communication);//發送完成任務訊號，並等待確認
+
+            }
+
+
+            //
+            /*
             for (i = 0; scheduling[i, 0] != 0; i++)
             {
                 //catch
@@ -119,10 +161,38 @@ namespace PCController
                 //sendcomplete(complete, communication);
 
             }
-
+            */
             endGenNC();
 
         }
+
+        private static void NCmain(int communication)
+        {
+            ncfile.WriteLine("N1;");
+            ncfile.WriteLine("WHILE (@{0:d}=0) DO", communication);
+            ncfile.WriteLine("SLEEP();");
+            ncfile.WriteLine("END_WHILE");
+            ncfile.WriteLine("IF (@{0:d} = 1) THEN",communication);
+            ncfile.WriteLine("GOTO 11;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 2) THEN", communication);
+            ncfile.WriteLine("GOTO 12;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 3) THEN", communication);
+            ncfile.WriteLine("GOTO 13;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 4) THEN", communication);
+            ncfile.WriteLine("GOTO 14;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 5) THEN", communication);
+            ncfile.WriteLine("GOTO 15;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 7) THEN", communication);
+            ncfile.WriteLine("GOTO 17;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 8) THEN", communication);
+            ncfile.WriteLine("GOTO 18;", communication);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 9) THEN", communication);
+            ncfile.WriteLine("GOTO 19;", communication);
+            ncfile.WriteLine("ELSE");
+            ncfile.WriteLine("GOTO 1;");
+            ncfile.WriteLine("END_IF;");
+        }
+
 
 
         private static void startGenNC(string filename)
@@ -154,8 +224,9 @@ namespace PCController
             //ncfile.WriteLine("WAIT();");
             ncfile.WriteLine(getMovCode());
             ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("@11 := 0;");
-            ncfile.WriteLine("END_IF;"); 
+
+            ncfile.WriteLine("@100050 := 0;");
+            ncfile.WriteLine("END_IF");
 
             ncfile.WriteLine("SLEEP();");
             ncfile.WriteLine("END_WHILE;");
@@ -183,9 +254,13 @@ namespace PCController
             return output;
         }
 
-        private static void Obitcontrol(int pin, int command)//command: 0 for close,1 for open
+        private static void Obitcontrol(int Opin, int GraborPut)//command: 0 for close,1 for open
         {
-            ncfile.WriteLine("SETDO({0:d},{1:d});",pin,command);
+            ncfile.WriteLine("IF (@{0:d} = 0) THEN", GraborPut);
+            ncfile.WriteLine("SETDO({0:d},{1:d});",Opin,0);
+            ncfile.WriteLine("ELSEIF (@{0:d} = 1) THEN", GraborPut);
+            ncfile.WriteLine("SETDO({0:d},{1:d});", Opin, 1);
+            ncfile.WriteLine("END_IF;");
         }
 
         private static double movezaxis(double expvalue,double nowvalue)

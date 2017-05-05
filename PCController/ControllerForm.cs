@@ -176,10 +176,7 @@ namespace PCController
             const double distance = 180;
             //need modify
 
-            const int pointsnum = 50;
-
-
-
+            const int pointsnum = 35;
             double[,] coordinate = new double[10, 4];
             int[,] scheduleing = new int[100, 2];
             AngleList[] go = new AngleList[10];
@@ -204,12 +201,125 @@ namespace PCController
             //end plaining 
 
             //Nccode generator
-            NCGen.generator(go, scheduleing);
+            //NCGen.generator(go, scheduleing);
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(500);
+
+            
+
             mesPrintln("NCGen: NC Code generation is done.");
 
+            controlwhile(scheduleing, coordinate);
+            //test();
 
+        }
+
+        private void test()
+        {
+            double oversignal = 0;
+            while (oversignal == 0)
+            {//while接收控制器回傳動作結束@11=1;
+                oversignal = SyntecClient.readSingleVar(11);//@11
+
+            }
+            Program.form.mesPrintln("hihihi");
+        }
+
+
+        private void controlwhile(int[,] scheduleing, double[,] coordinate)
+        {
+            int WaferonHand = 0,WaferinCassettA =6 , WaferinCassettB = 0;
+            int[] WaferonChamber = new int[10];//1 for A,2 for B,3 for D,7 for C,8 for E,9 for F
+            int step=0,i=0;
+            double oversignal=0;
+            char[] correspondChambername = new char[10];
+
+            correspondChambername[1] = 'A';
+            correspondChambername[2] = 'B';
+            correspondChambername[3] = 'D';
+            correspondChambername[7] = 'C';
+            correspondChambername[8] = 'E';
+            correspondChambername[9] = 'F';
+
+            for (i = 0; i < 10; i++)
+            {
+                WaferonChamber[i] = 0;
+            }
+
+
+            //與server交握
+            while (scheduleing[step,0] != 0)
+            {
+
+                //發送動作許可請求
+                SyntecClient.writeReg(50, 0);//@11=0
+                SyntecClient.writeGVar(2, 0); //設定@2，抓為放0，亦即吸盤吸
+                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0],1]);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,0],2])
+                SyntecClient.writeGVar(1, scheduleing[step,0]);//設定@1為scheduleing[i,0]
+                //控制器進行動作
+                Program.form.mesPrintln(String.Format("Wait for grab {0:d}", scheduleing[step, 0]));
+
+                oversignal = SyntecClient.readReg(50);
+                while (oversignal==0)
+                {//while接收控制器回傳動作結束@11=1;
+                    Thread.Sleep(1000);
+                    oversignal = SyntecClient.readReg(50);
+                }
+                Program.form.mesPrintln("hihihi");
+                if (scheduleing[step, 0] == 4)
+                {
+                    WaferonHand = WaferinCassettA;
+                    WaferinCassettA--;
+                }
+                else
+                {
+                    if (WaferonChamber[scheduleing[step, 0]] == 0)
+                    {
+                        Program.form.showWarnning(string.Format("there is no Wafer on {0:d}", scheduleing[step, 0]));
+                    }
+                        WaferonHand = WaferonChamber[scheduleing[step, 0]];
+                        WaferonChamber[scheduleing[step, 0]] = 0;
+                }
+
+
+                SyntecClient.writeReg(50, 0);//@11=0
+                //發送執行結束許可
+
+                //發送動作許可請求
+                SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
+                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1], 1]);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,1],2])
+                SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
+                //控制器進行動作
+                Program.form.mesPrintln(String.Format("Wait for put {0:d}", scheduleing[step, 1]));
+
+                
+                oversignal = SyntecClient.readReg(50);
+                while (oversignal == 0)
+                {//while接收控制器回傳動作結束@11=1;
+                    Thread.Sleep(1000);
+                    oversignal = SyntecClient.readReg(50);//@11
+                }
+                Program.form.mesPrintln("hihihi");
+                if (scheduleing[step, 1] == 5)
+                {
+                    WaferinCassettB++;
+                }
+                else
+                {
+                    if (WaferonChamber[scheduleing[step, 1]] != 0)
+                    {
+                        Program.form.showWarnning(string.Format("there is Wafer on {0:d}", scheduleing[step, 1]));
+                    }
+                    WaferonChamber[scheduleing[step, 1]] = WaferonHand;
+                    WaferonHand = 0;
+                }
+                SyntecClient.writeReg(50, 0);//@11=0
+                //發送執行結束許可
+
+                step=step+1;
+                Thread.Sleep(500);
+
+            }
         }
 
         private void setState(string state)

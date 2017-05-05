@@ -236,7 +236,7 @@ namespace PCController
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
             //calculate the real(x,y)coordinate(realcd) of each platform
-            for (i = 0; i < 5; i++)
+            for (i = 0; i < 3; i++)
             {
                 realcd[i, 0] = (armlong1 * Math.Cos(measureangle[i, 0])) + (armlong2 * Math.Cos(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Cos(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3]));
                 realcd[i, 1] = (armlong1 * Math.Sin(measureangle[i, 0])) + (armlong2 * Math.Sin(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Sin(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3])); ;
@@ -248,16 +248,16 @@ namespace PCController
                 measureangle[i, 1] = 0;
             }
             double topanglez = 0, loweranglez = 0;
-            realcd[0, 0] = (-3.9) * (ratio / 5);
-            realcd[0, 1] = 3.1* (ratio / 5);
-            realcd[1, 0] = (-2.9) * (ratio / 5);
-            realcd[1, 1] = 4.1 * (ratio / 5);
-            realcd[2, 0] = 0.1 * (ratio / 5);
-            realcd[2, 1] = 5.1 * (ratio / 5);
-            realcd[3, 0] = 3.1 * (ratio / 5);
-            realcd[3, 1] = 4.1 * (ratio / 5);
-            realcd[4, 0] = 4.1 * (ratio / 5);
-            realcd[4, 1] = 3.1 * (ratio / 5);
+            realcd[0, 0] = -741.824;
+            realcd[0, 1] = 241.033255;
+            realcd[1, 0] = -458.4725;
+            realcd[1, 1] = 631.033255;
+            realcd[2, 0] = 0;
+            realcd[2, 1] = 780;
+            realcd[3, 0] = 458.4725;
+            realcd[3, 1] = 631.033255;
+            realcd[4, 0] = 741.824;
+            realcd[4, 1] = 241.033255;
             //need to deleted
 
             //calculate the center of cycle

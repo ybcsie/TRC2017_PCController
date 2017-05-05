@@ -17,8 +17,13 @@ MOVJ C1=@132 C2=@133 C3=@134 C4=@135 FJ10 PL5;
 MOVJ C1=@136 C2=@137 C3=@138 C4=@139 FJ10 PL5;
 
 WAIT();
+<<<<<<< HEAD
 @11 := 0;
 END_IF;
+=======
+@100050 := 0;
+END_IF
+>>>>>>> change nccode control mode
 SLEEP();
 END_WHILE;
 M30;
