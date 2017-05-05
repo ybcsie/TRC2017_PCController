@@ -25,7 +25,7 @@ namespace PCController
 
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
 
-            ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=0.0 FJ20;");
+            ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=40.0 FJ20;");
             ncfile.WriteLine("@3:=0;");
             ncfile.WriteLine("@100050:=0;");
             ncfile.WriteLine("@1:=0;");
@@ -41,8 +41,8 @@ namespace PCController
                 ncfile.WriteLine("@100050:=0;");
                 while (tmp != null)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ10 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
-
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
+                    //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
                     savedata[count, 0] = tmp.one;
                     savedata[count, 1] = tmp.two;
                     savedata[count, 2] = tmp.three;
@@ -56,13 +56,14 @@ namespace PCController
                 Obitcontrol(suck, GraborPut);
                 ncfile.WriteLine("WAIT();");
 
-                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ10 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
-
+                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                 ncfile.WriteLine("WAIT();");
 
                 while (count != 0)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ10 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                    //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                     count--;
                 }
                 ncfile.WriteLine("WAIT();");
@@ -215,6 +216,7 @@ namespace PCController
 
             ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ10;", 90, 110, -110);
 
+
             ncfile.WriteLine("WAIT();");
 
             ncfile.WriteLine("@10 := 1;");
@@ -239,15 +241,11 @@ namespace PCController
             ncfile.WriteLine("N2;");
             ncfile.WriteLine(getMovCode(2));
             ncfile.WriteLine("WAIT();");
-<<<<<<< HEAD
+
 
             ncfile.WriteLine("@100050 := 0;");
             ncfile.WriteLine("END_IF");
-=======
-            ncfile.WriteLine("@11 := 0;");
-            ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("GOTO 1;");
->>>>>>> initializer
+
 
             ncfile.WriteLine("N3;");
             ncfile.WriteLine(getMovCode(100));

@@ -235,6 +235,8 @@ namespace PCController
             const double pi = 3.1415926;
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
+            
+
             //calculate the real(x,y)coordinate(realcd) of each platform
             for (i = 0; i < 3; i++)
             {
@@ -245,8 +247,20 @@ namespace PCController
             //for test,because no measureangle
             for (i = 0; i < 10; i++)
             {
-                measureangle[i, 1] = 0;
+                measureangle[i, 1] = 40;
             }
+            /*
+            measureangle[0, 1] = 40;
+            measureangle[1, 1] = 40;
+            measureangle[2, 1] = 40;
+            measureangle[3, 1] = 40;
+            measureangle[4, 1] = 40;
+            measureangle[5, 1] = 40;
+            measureangle[6, 1] = 40;
+            measureangle[7, 1] = 40;
+            measureangle[8, 1] = 40;
+            measureangle[9, 1] = 40;
+            */
             double topanglez = 0, loweranglez = 0;
             realcd[0, 0] = -741.824;
             realcd[0, 1] = 241.033255;
@@ -314,7 +328,7 @@ namespace PCController
                     coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
                     coordinate[i, 0] = 180 - (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1];
+                    coordinate[i, 1] = measureangle[i, 1]+16;
                     coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     coordinate[i, 2] = 180 - ((Math.Acos(coordinate[i, 2])) * 180 / pi);
                     coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);

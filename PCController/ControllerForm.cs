@@ -217,15 +217,15 @@ namespace PCController
             //end plaining 
 
             //Nccode generator
-            //NCGen.generator(go, scheduleing);
+            NCGen.generator(go, scheduleing);
 
-            //Thread.Sleep(500);
+            Thread.Sleep(500);
 
             
 
             mesPrintln("NCGen: NC Code generation is done.");
 
-            controlwhile(scheduleing, coordinate);
+            //controlwhile(scheduleing, coordinate);
             //test();
 
         }
@@ -270,7 +270,7 @@ namespace PCController
                 //發送動作許可請求
                 SyntecClient.writeReg(50, 0);//@11=0
                 SyntecClient.writeGVar(2, 0); //設定@2，抓為放0，亦即吸盤吸
-                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0],1]);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,0],2])
+                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0]-1,1]-16);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,0],2])
                 SyntecClient.writeGVar(1, scheduleing[step,0]);//設定@1為scheduleing[i,0]
                 //控制器進行動作
                 Program.form.mesPrintln(String.Format("Wait for grab {0:d}", scheduleing[step, 0]));
@@ -303,7 +303,7 @@ namespace PCController
 
                 //發送動作許可請求
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
-                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1], 1]);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,1],2])
+                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1]-1, 1]-16);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,1],2])
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                 //控制器進行動作
                 Program.form.mesPrintln(String.Format("Wait for put {0:d}", scheduleing[step, 1]));
