@@ -210,28 +210,53 @@ namespace PCController
         }
 
         public static void genInitNC()
-        {
+        {/*
             startGenNC("initializer.txt");
 
-            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ10;", 30, 60, -70);
+            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ10;", 90, 110, -110);
 
             ncfile.WriteLine("WAIT();");
 
             ncfile.WriteLine("@10 := 1;");
-            ncfile.WriteLine("WHILE (@10 = 1) DO");
-
-            ncfile.WriteLine("IF (@11 = 1) THEN");
-            //ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine(getMovCode());
+            ncfile.WriteLine("@11 := 0;");
             ncfile.WriteLine("WAIT();");
+
+            ncfile.WriteLine("N1;");
+            ncfile.WriteLine("SLEEP();");
+
+            ncfile.WriteLine("IF (@11 = 1) THEN"); //move forward
+            ncfile.WriteLine("GOTO 2;");
+            ncfile.WriteLine("END_IF;");
+
+            ncfile.WriteLine("IF (@11 = 2) THEN"); //search linearly
+            ncfile.WriteLine("GOTO 3;");
+            ncfile.WriteLine("END_IF;");
+
+
+            ncfile.WriteLine("GOTO 1;");
+
+
+            ncfile.WriteLine("N2;");
+            ncfile.WriteLine(getMovCode(2));
+            ncfile.WriteLine("WAIT();");
+<<<<<<< HEAD
 
             ncfile.WriteLine("@100050 := 0;");
             ncfile.WriteLine("END_IF");
+=======
+            ncfile.WriteLine("@11 := 0;");
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("GOTO 1;");
+>>>>>>> initializer
 
-            ncfile.WriteLine("SLEEP();");
-            ncfile.WriteLine("END_WHILE;");
+            ncfile.WriteLine("N3;");
+            ncfile.WriteLine(getMovCode(100));
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("@11 := 0;");
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("GOTO 1;");
 
-            endGenNC();
+            endGenNC();*/
         }
 
         public static void genObitSetterNC(int addr, bool val)
@@ -241,18 +266,51 @@ namespace PCController
             endGenNC();
         }
 
-        private static string getMovCode()
+        private static string getMovCode(int pointCount)
         {
             string output = "";
             int gvarNO = 100;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < pointCount; i++)
             {
-                output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ10 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
+                output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ3 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
             }
 
             return output;
         }
+
+        /*
+        private static string getSearchCode(int pointCount)
+        {
+            string output = "";
+            int gvarNO = 100;
+
+            output += "FOR #1:=0 TO 100 BY 10 DO\r\n";
+            output += "MOVJ C1 =@[#1011+#1] C2=@[#1012+#1] C4=@[#1014+#1];\r\n";
+            output += "WAIT();\r\n";
+
+            output += "#11:=#11+1;\r\n";
+            output += "#12:=#12+1;\r\n";
+            output += "#13:=#13+1;\r\n";
+            output += "#14:=#14+1;\r\n";
+
+            output += "IF(READDI(320) = 1) THEN\r\n";
+
+            output += "GOTO 01;\r\n";
+
+            output += "END_IF\r\n";
+
+            END_FOR;
+"
+            for (int i = 0; i < pointCount; i++)
+            {
+                output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ3 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
+            }
+
+            return output;
+
+        }
+*/
 
         private static void Obitcontrol(int Opin, int GraborPut)//command: 0 for close,1 for open
         {

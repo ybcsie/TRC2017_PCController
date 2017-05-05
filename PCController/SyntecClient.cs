@@ -151,14 +151,17 @@ namespace PCController
         public static double readSingleVar(int no)
         {
             double var;
-            cnc.READ_macro_single(no, out var);
-            if (var != null) { 
-                return var;
-            }
-            else
+
+            try
             {
-                return 0;
+                cnc.READ_macro_single(no, out var);
             }
+            catch
+            {
+                var = 1;
+            }
+
+            return var;
         }
 
         public static void writeGVar(int no,double val)
@@ -266,7 +269,7 @@ namespace PCController
         private static bool paused = false;
 
 
-        private static void refreshState()
+        public static void refreshState()
         {
             if (cnc == null)
             {
@@ -282,7 +285,11 @@ namespace PCController
 
 
             short DecPoint = 0;
-            short result = cnc.READ_position(out AxisName, out DecPoint, out Unit, out Mach, out Abs, out Rel, out Dist);
+            float[] tmpM;
+
+            short result = cnc.READ_position(out AxisName, out DecPoint, out Unit, out tmpM, out Abs, out Rel, out Dist);
+            if (tmpM != null)
+                Mach = tmpM;
 
             if (result == 0)
             {

@@ -27,6 +27,9 @@ namespace PCController
             tB_SyntecIP.Text = SyntecClient.DEFAULT_IP;
             tB_fileName.Text = SyntecClient.DEFAULT_NCFILENAME;
 
+            tB_fileName.Text = "initializer.txt";// test initializer
+
+
             tB_TRCIP.Text = TRCClient.DEFAULT_IP;
             tB_TRCPort.Text = TRCClient.DEFAULT_PORT.ToString();
 
@@ -109,6 +112,8 @@ namespace PCController
 
                 panelTestFunc.Enabled = true;
                 panelJOG.Enabled = true;
+                panel_Initialize.Enabled = true;
+                bt_cycleReset.Enabled = true;
 
                 label_syntecBusy.Text = SyntecClient.isBusy() ? "Busy" : SyntecClient.isPaused() ? "Paused" : "Idle";
 
@@ -125,6 +130,8 @@ namespace PCController
 
                 panelTestFunc.Enabled = false;
                 panelJOG.Enabled = false;
+                panel_Initialize.Enabled = false;
+                bt_cycleReset.Enabled = false;
 
             }
 
@@ -142,23 +149,32 @@ namespace PCController
 
         }
 
-        private void linearMOV()
+        private void linearMOV(double distance,int pointCount)
         {
-            if (SyntecClient.readSingleVar(11) == 1)
-                return;
+            while (SyntecClient.readSingleVar(11) != 0)
+                Thread.Sleep(10);
 
+            SyntecClient.refreshState();
+            AngleList linearAngleList = RoutPlanning.routplanning(SyntecClient.Mach[0], SyntecClient.Mach[2], SyntecClient.Mach[1], SyntecClient.Mach[3], distance, pointCount);
 
-            AngleList linearAngleList = RoutPlanning.routplanning(SyntecClient.Mach[0], SyntecClient.Mach[2], SyntecClient.Mach[1], SyntecClient.Mach[3], 50, 10);
+            SyntecClient.writeGVar(12, pointCount);
 
             Angle currNode = linearAngleList.headAngle;
+
+            if (currNode != null)
+                currNode = currNode.nextangle;
+            else
+            {
+                showWarnning("motivation error!");
+                return;
+            }
 
             int i = 0;
             while (currNode != null)
             {
-                SyntecClient.writeGVar(100 + i++, (double)currNode.one);
-                SyntecClient.writeGVar(100 + i++, (double)currNode.three);
-                SyntecClient.writeGVar(100 + i++, (double)currNode.two);
-                SyntecClient.writeGVar(100 + i++, (double)currNode.four);
+                SyntecClient.writeGVar(1011 + 10*i, (double)currNode.one);
+                SyntecClient.writeGVar(1012 + 10*i, (double)currNode.three);
+                SyntecClient.writeGVar(1014 + 10*i++, (double)currNode.four);
 
                 currNode = currNode.nextangle;
             }
@@ -381,12 +397,6 @@ namespace PCController
         }
 
 
-        private void bt_test_Click(object sender, EventArgs e)
-        {
-            linearMOV();
-
-
-        }
 
         private void bt_writeGVar_Click(object sender, EventArgs e)
         {
@@ -530,6 +540,118 @@ namespace PCController
         private void bt_cycleReset_Click(object sender, EventArgs e)
         {
             SyntecClient.cycleReset();
+        }
+
+        private void bt_movForward_Click(object sender, EventArgs e)
+        {
+            if(checkBox_precise.Checked)
+                linearMOV(1, 2);
+            else
+                linearMOV(20, 2);
+        }
+
+        private void bt_startInit_Click(object sender, EventArgs e)
+        {
+
+            if ((SyntecClient.Mach[0] > 180 && SyntecClient.Mach[0] < 360) || SyntecClient.Mach[0] < 0)
+            {
+                /*
+                    SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
+                    while (SyntecClient.Mach[0] > 180 || SyntecClient.Mach[0] < 0)
+                    {
+                        Thread.Sleep(200);
+                    }
+                    SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+                */
+                showWarnning("jog to positive first");
+                return;
+            }
+
+            if ((SyntecClient.Mach[1] > 180 && SyntecClient.Mach[1] < 360) || SyntecClient.Mach[1] < 0)
+            {
+                /*
+                SyntecClient.JOG(2, SyntecClient.JOGMode.POSITIVE);
+                while (SyntecClient.Mach[1] > 180 || SyntecClient.Mach[1] < 0)
+                {
+                    Thread.Sleep(200);
+                }
+                SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+                */
+                showWarnning("jog to positive first");
+                return;
+            }
+
+            if ((SyntecClient.Mach[3] > 180 && SyntecClient.Mach[3] < 360) || SyntecClient.Mach[3] < 0)
+            {
+                /*
+                SyntecClient.JOG(4, SyntecClient.JOGMode.POSITIVE);
+                while (SyntecClient.Mach[3] > 180 || SyntecClient.Mach[3] < 0)
+                {
+                    Thread.Sleep(200);
+                }
+                SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
+                */
+                showWarnning("jog to positive first");
+                return;
+
+            }
+
+            SyntecClient.uploadNCFile(SyntecClient.NCFileName.INITIALIZER);
+
+            SyntecClient.cycleStart();
+            panel_Initializer.Enabled = true;
+
+            /*
+
+            while (SyntecClient.isBusy())
+                    Thread.Sleep(500);
+
+                panel_Initializer.Enabled = false;
+                */
+
+
+
+
+
+        }
+
+        private void bt_thetaP_Click(object sender, EventArgs e)
+        {
+            if (checkBox_precise.Checked)
+            {
+                while (SyntecClient.readSingleVar(11) != 0)
+                    Thread.Sleep(10);
+
+                SyntecClient.writeGVar(11, 5);
+            }
+            else
+            {
+                while (SyntecClient.readSingleVar(11) != 0)
+                    Thread.Sleep(10);
+
+                SyntecClient.writeGVar(11, 2);
+            }
+
+        }
+
+        private void bt_thetaN_Click(object sender, EventArgs e)
+        {
+            if (checkBox_precise.Checked)
+            {
+                while (SyntecClient.readSingleVar(11) != 0)
+                    Thread.Sleep(10);
+
+                SyntecClient.writeGVar(11, 6);
+            }
+            else
+            {
+                while (SyntecClient.readSingleVar(11) != 0)
+                    Thread.Sleep(10);
+
+                SyntecClient.writeGVar(11, 3);
+
+            }
+
         }
     }
 
