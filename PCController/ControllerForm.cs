@@ -212,12 +212,14 @@ namespace PCController
                 go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
             }
 
+
             //printf("fuck %LF %LF\n", go[0]->one, go[0]->nextangle->one);
 
             //end plaining 
 
             //Nccode generator
-            NCGen.generator(go, scheduleing);
+
+            //NCGen.generator(go, scheduleing);
 
             Thread.Sleep(500);
 

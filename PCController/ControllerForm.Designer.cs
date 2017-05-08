@@ -275,7 +275,9 @@
             // 
             // bt_genNC
             // 
+
             this.bt_genNC.Location = new System.Drawing.Point(103, 331);
+
             this.bt_genNC.Name = "bt_genNC";
             this.bt_genNC.Size = new System.Drawing.Size(75, 23);
             this.bt_genNC.TabIndex = 20;
@@ -423,7 +425,11 @@
             // 
             this.tabPage2.Controls.Add(this.panelTestFunc);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
+
             this.tabPage2.Controls.Add(this.bt_genNC);
+
+            //this.tabPage2.Controls.Add(this.bt_test);
+
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -458,6 +464,7 @@
             // 
             // bt_cycleReset
             // 
+
             this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.bt_cycleReset.Location = new System.Drawing.Point(352, 515);
             this.bt_cycleReset.Name = "bt_cycleReset";
@@ -465,6 +472,7 @@
             this.bt_cycleReset.TabIndex = 28;
             this.bt_cycleReset.Text = "Cycle Reset";
             this.bt_cycleReset.UseVisualStyleBackColor = false;
+
             this.bt_cycleReset.Click += new System.EventHandler(this.bt_cycleReset_Click);
             // 
             // bt_servoSW
@@ -774,6 +782,7 @@
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label_pos);
+            this.Controls.Add(this.bt_genNC);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label_syntecBusy);

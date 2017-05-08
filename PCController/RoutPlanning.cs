@@ -215,6 +215,160 @@ namespace PCController
         }
 
 
+        private static MotorAngle back(MotorAngle origangle, double distance, int pointsnum)
+        {
+            pointCount = pointsnum;
+
+            double pi = 3.1415926;
+            int count = 0;
+
+            double arm1long = ArmData.longbase;
+            double arm2long = arm1long * (ArmData.longrate2);
+            double arm3long = arm1long * (ArmData.longrate3);
+            double angle1;
+            double angle2;
+            double angle3;
+            double angle4;
+            //Program.form.showWarnning(string.Format("arm1long = {0:f3}, arm2long = {1:f3},arm3long = {2:f3}", arm1long, arm2long, arm3long));
+
+            if (arm1long == 0 || arm2long == 0 || arm3long == 0)
+            {
+                Program.form.showWarnning(string.Format("arm1long = {0:f3}, arm2long = {1:f3},arm3long = {2:f3}", arm1long, arm2long, arm3long));
+                return null;
+            }
+
+            if (origangle.motor3angle > 0)
+            {
+                angle1 = (180 - (origangle.motor1angle)) * pi / 180;
+                angle2 = (origangle.motor2angle) * pi / 180;
+                angle3 = (180 - (origangle.motor3angle)) * pi / 180;
+                angle4 = (180 + (origangle.motor4angle)) * pi / 180;
+            }
+            else
+            {
+                angle1 = (origangle.motor1angle) * pi / 180;
+                angle2 = (origangle.motor2angle) * pi / 180;
+                angle3 = (180 + (origangle.motor3angle)) * pi / 180;
+                angle4 = (180 - (origangle.motor4angle)) * pi / 180;
+            }
+
+            Program.form.mesPrintln(String.Format("initial angle of 1,2,3,4:{0:f},{1:f},{2:f},{3:f}", origangle.motor1angle, origangle.motor2angle, origangle.motor3angle, origangle.motor4angle));
+
+            double tmpangle1, tmpangle7, tmpangle8, tmpangle4, tmpangle2, tmpangle9, tmpangle6;
+            double tmpline1;//origangle2,arm1,arm2
+
+            double movelong = distance / pointsnum *(-1);
+
+            double afterline1 = 0, afterangle1 = 0, afterangle3 = 0, afterangle4 = 0;
+
+            StreamWriter angleFileWriter = new StreamWriter("moveangle.txt");
+
+            /*
+                //check if the distance is able to move
+                tmpline1=pow(arm1long,2)+pow(arm2long,2)-2*arm1long*arm2long*cos(angle3);
+                tmpline1=Math.Sqrt(tmpline1);
+                if(distance>(arm1long+arm2long)-tmpline1){
+                printf("the distance is too long,the longest distance is %f\n",tmpline1);
+                }
+                //
+            */
+
+            for (count = 0; count < pointsnum; count++)
+            {
+
+                tmpline1 = Math.Pow(arm1long, 2) + Math.Pow(arm2long, 2) - 2 * arm1long * arm2long * Math.Cos(angle3);
+                tmpline1 = Math.Sqrt(tmpline1);
+
+                if (tmpline1 == 0)
+                {
+                    Program.form.showWarnning(string.Format("tmpline1 = {0:f3}", tmpline1));
+                    angleFileWriter.Close();
+                    return null;
+                }
+
+
+                tmpangle8 = (Math.Pow(tmpline1, 2) + Math.Pow(arm1long, 2) - Math.Pow(arm2long, 2)) / (2 * arm1long * tmpline1);
+                tmpangle8 = Math.Acos(tmpangle8);
+
+                tmpangle7 = (Math.Pow(tmpline1, 2) + Math.Pow(arm2long, 2) - Math.Pow(arm1long, 2)) / (2 * arm2long * tmpline1);
+                tmpangle7 = Math.Acos(tmpangle7);
+//>>>>>>>>>>>>>>>
+                if (pi - tmpangle7 >= angle4)
+                {
+                    tmpangle4 = pi - angle4 - tmpangle7;
+                }
+                else
+                {
+                    tmpangle4 = angle4 + tmpangle7 -pi;
+                }
+//<<<<<<<<<<<<<<<<
+                afterline1 = Math.Pow(tmpline1, 2) + Math.Pow(movelong, 2) - 2 * tmpline1 * movelong * Math.Cos(tmpangle4);
+                afterline1 = Math.Sqrt(afterline1);
+
+                afterangle3 = (Math.Pow(arm2long, 2) + Math.Pow(arm1long, 2) - Math.Pow(afterline1, 2)) / (2 * arm1long * arm2long);
+                afterangle3 = Math.Acos(afterangle3);
+
+
+                if (afterline1 == 0)
+                {
+                    Program.form.showWarnning(string.Format("afterline1 = {0:f3}", afterline1));
+                    angleFileWriter.Close();
+                    return null;
+                }
+
+                tmpangle9 = (Math.Pow(afterline1, 2) + Math.Pow(arm1long, 2) - Math.Pow(arm2long, 2)) / (2 * arm1long * afterline1);
+                tmpangle9 = Math.Acos(tmpangle9);
+
+                tmpangle6 = (Math.Pow(tmpline1, 2) + Math.Pow(afterline1, 2) - Math.Pow(movelong, 2)) / (2 * tmpline1 * afterline1);
+                if (tmpangle6 > 1 && tmpangle6 < 1.0001)
+                {
+                    tmpangle6 = 1;
+                }
+
+
+                tmpangle6 = Math.Acos(tmpangle6);
+
+                if (pi - tmpangle7 >= angle4)
+                {
+                    afterangle1 = angle1 - (tmpangle8 + tmpangle6) + tmpangle9;//
+                    afterangle4 = pi - (pi - angle4 - tmpangle7) - (pi - afterangle3 - tmpangle9) - tmpangle6;
+                }
+                else
+                {
+                    afterangle1 = angle1 - tmpangle8 + tmpangle9 + tmpangle6;//
+                    afterangle4 = 2 * pi - (pi - afterangle3 - tmpangle9) - (pi - tmpangle6 - tmpangle4);
+                }
+                //Program.form.mesPrintln(String.Format("angle1:{0:f} ,angle3:{1:f} ,angle4:{2:f}", afterangle1 * 180 / pi, afterangle3 * 180 / pi, afterangle4 * 180 / pi));
+
+
+                if (afterangle1 == double.NaN || afterangle3 == double.NaN)
+                {
+                    Program.form.showWarnning(string.Format("afterangle1 = {0:f3},afterangle3 = {1:f3}", afterangle1, afterangle3));
+                    angleFileWriter.Close();
+                    return null;
+                }
+
+                if (origangle.motor3angle > 0)
+                {
+                    angleFileWriter.WriteLine("{0:f12},{1:f12}", 180 - (afterangle1 * 180 / pi), 180 - (afterangle3 * 180 / pi));
+                }
+                else
+                {
+                    angleFileWriter.WriteLine("{0:f12},{1:f12}", (afterangle1 * 180 / pi), (afterangle3 * 180 / pi) - 180);
+                }
+                angle1 = afterangle1;
+                angle3 = afterangle3;
+                angle4 = afterangle4;
+            }
+
+            angleFileWriter.Close();
+
+            MotorAngle afterangle = new MotorAngle(afterangle1, angle2, afterangle3, afterangle4);
+
+            return afterangle;
+        }
+
+
         public static void Initialize(double[,] coordinate, double distance, double ratio)
         {
 
@@ -395,7 +549,14 @@ namespace PCController
 
             MotorAngle origmotor = new MotorAngle(angle1, angle2, angle3, angle4);
 
-            calcu(origmotor, distance, pointsnum);
+            if (distance > 0)
+            {
+                calcu(origmotor, distance, pointsnum);
+            }
+            else
+            {
+                back(origmotor, distance, pointsnum);
+            }
 
             decimal[,] data = new decimal[100, 2];
 
