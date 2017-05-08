@@ -13,7 +13,7 @@ namespace PCController
 
         public static void generator(AngleList[] go, int[,] scheduling)
         {
-            const int complete = 11, access = 10, suck=320, communication = 1,GraborPut=2 ,zaxis=3 ;//
+            const int complete = 100050, access = 10, suck=320, communication = 1,GraborPut=2 ,beginzaxis=3 ,afterzaxis=4 ;//
             decimal[,] savedata = new decimal[100, 4];
             int i, number, count;
             double afterz=0;
@@ -27,21 +27,22 @@ namespace PCController
 
             ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=40.0 FJ20;");
             ncfile.WriteLine("@3:=0;");
-            ncfile.WriteLine("@100050:=0;");
+            ncfile.WriteLine("@4:=0;");
+            ncfile.WriteLine("@2:=0;");
+            ncfile.WriteLine("@{0:d}:=0;",complete);
             ncfile.WriteLine("@1:=0;");
             NCmain(communication);
 
-            for (i = 0; i<10; i++)
+            for (i = 1; i<11; i++)
             {
                 count = 0;
                 Angle tmp = go[i].headAngle;
-                ncfile.WriteLine("N{0:d};",(i+11));
+                ncfile.WriteLine("N{0:d};",(i+10));
                 ncfile.WriteLine("@1:=0;");
-                ncfile.WriteLine("@3:=0;");
-                ncfile.WriteLine("@100050:=0;");
+                ncfile.WriteLine("@{0:d}:=0;", complete);
                 while (tmp != null)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
                     //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
                     savedata[count, 0] = tmp.one;
                     savedata[count, 1] = tmp.two;
@@ -53,25 +54,31 @@ namespace PCController
                 }
                 //ncfile.WriteLine("WAIT();");
                 count--;
+                ncfile.WriteLine("WAIT();");
                 Obitcontrol(suck, GraborPut);
                 ncfile.WriteLine("WAIT();");
 
-                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
                 //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                 ncfile.WriteLine("WAIT();");
 
                 while (count != 0)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
                     //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                     count--;
                 }
                 ncfile.WriteLine("WAIT();");
-                ncfile.WriteLine("@100050:=1;");
+                ncfile.WriteLine("@{0:d}:=1;", complete);
                 ncfile.WriteLine("WAIT();");
                 ncfile.WriteLine("GOTO 1;");
 
                 //sendcomplete(complete, communication);//發送完成任務訊號，並等待確認
+
+                if (i==5 || i == 9)//若是第6第10平台則不需生成NCcode
+                {
+                    i++;
+                }
 
             }
 

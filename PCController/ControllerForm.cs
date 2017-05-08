@@ -192,14 +192,15 @@ namespace PCController
             const double distance = 180;
             //need modify
 
-            const int pointsnum = 35;
+            const int pointsnum = 30;
             double[,] coordinate = new double[10, 4];
+            double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
             AngleList[] go = new AngleList[10];
 
             //initialize coordinate
             RoutPlanning.Initialize(coordinate, distance, ratio);
-
+            RoutPlanning.checkcassette(cassettezaxis);
             //scheduleing
             Scheduler.ScheduleFunction(scheduleing);
 
@@ -219,15 +220,13 @@ namespace PCController
 
             //Nccode generator
 
-            //NCGen.generator(go, scheduleing);
+            NCGen.generator(go, scheduleing);
 
             Thread.Sleep(500);
 
-            
-
             mesPrintln("NCGen: NC Code generation is done.");
 
-            //controlwhile(scheduleing, coordinate);
+            controlwhile(scheduleing, coordinate, cassettezaxis);
             //test();
 
         }
@@ -244,7 +243,7 @@ namespace PCController
         }
 
 
-        private void controlwhile(int[,] scheduleing, double[,] coordinate)
+        private void controlwhile(int[,] scheduleing, double[,] coordinate, double[,] cassettezaxis)
         {
             int WaferonHand = 0,WaferinCassettA =6 , WaferinCassettB = 0;
             int[] WaferonChamber = new int[10];//1 for A,2 for B,3 for D,7 for C,8 for E,9 for F
@@ -270,9 +269,18 @@ namespace PCController
             {
 
                 //發送動作許可請求
-                SyntecClient.writeReg(50, 0);//@11=0
-                SyntecClient.writeGVar(2, 0); //設定@2，抓為放0，亦即吸盤吸
-                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0]-1,1]-16);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,0],2])
+                SyntecClient.writeReg(50, 0);//@100050=0
+                SyntecClient.writeGVar(2, 0); //設定@2，抓為0，亦即吸盤吸
+                if (scheduleing[step, 0] != 4)
+                {
+                    SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
+                    SyntecClient.writeGVar(4, coordinate[scheduleing[step, 0] - 1, 1] + 8);//設定@4,Z軸收回時高度(coordinate[scheduleing[step,0],1])
+                }
+                else
+                {
+                    SyntecClient.writeGVar(3, cassettezaxis[0, WaferinCassettA - 1] - 8);//設定@3,Z軸伸長至cassetteA時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2.4);//設定@4,Z軸收回時高度
+                }
                 SyntecClient.writeGVar(1, scheduleing[step,0]);//設定@1為scheduleing[i,0]
                 //控制器進行動作
                 Program.form.mesPrintln(String.Format("Wait for grab {0:d}", scheduleing[step, 0]));
@@ -283,7 +291,7 @@ namespace PCController
                     Thread.Sleep(1000);
                     oversignal = SyntecClient.readReg(50);
                 }
-                Program.form.mesPrintln("hihihi");
+                //Program.form.mesPrintln("hihihi");
                 if (scheduleing[step, 0] == 4)
                 {
                     WaferonHand = WaferinCassettA;
@@ -305,7 +313,16 @@ namespace PCController
 
                 //發送動作許可請求
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
-                SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1]-1, 1]-16);//設定@3,Z軸抓取時高度(coordinate[scheduleing[step,1],2])
+                if (scheduleing[step, 1] != 5)
+                {
+                    SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
+                    SyntecClient.writeGVar(4, coordinate[scheduleing[step, 1] - 1, 1] - 8);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
+                }
+                else
+                {
+                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2.4);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 8 );//設定@4,Z軸縮回時高度
+                }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                 //控制器進行動作
                 Program.form.mesPrintln(String.Format("Wait for put {0:d}", scheduleing[step, 1]));

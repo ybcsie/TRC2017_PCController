@@ -292,7 +292,7 @@ namespace PCController
 
                 tmpangle7 = (Math.Pow(tmpline1, 2) + Math.Pow(arm2long, 2) - Math.Pow(arm1long, 2)) / (2 * arm2long * tmpline1);
                 tmpangle7 = Math.Acos(tmpangle7);
-//>>>>>>>>>>>>>>>
+
                 if (pi - tmpangle7 >= angle4)
                 {
                     tmpangle4 = pi - angle4 - tmpangle7;
@@ -301,7 +301,7 @@ namespace PCController
                 {
                     tmpangle4 = angle4 + tmpangle7 -pi;
                 }
-//<<<<<<<<<<<<<<<<
+
                 afterline1 = Math.Pow(tmpline1, 2) + Math.Pow(movelong, 2) - 2 * tmpline1 * movelong * Math.Cos(tmpangle4);
                 afterline1 = Math.Sqrt(afterline1);
 
@@ -542,6 +542,17 @@ namespace PCController
             }
 
 
+        }
+        public static void checkcassette(double[,] checkcassette)
+        {
+            int i = 0;
+            double num = 0;
+            for (i = 5; i >= 0; i--)
+            {
+                checkcassette[0, i] = num ;
+                checkcassette[0, i] = num ;
+                num = num + 0.48;
+            }
         }
 
         public static AngleList routplanning(double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)
