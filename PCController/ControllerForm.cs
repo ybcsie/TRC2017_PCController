@@ -226,7 +226,7 @@ namespace PCController
 
             mesPrintln("NCGen: NC Code generation is done.");
 
-            controlwhile(scheduleing, coordinate, cassettezaxis);
+            //controlwhile(scheduleing, coordinate, cassettezaxis);
             //test();
 
         }

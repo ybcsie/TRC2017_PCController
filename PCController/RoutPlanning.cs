@@ -103,9 +103,59 @@ namespace PCController
             double tmpangle1, tmpangle7, tmpangle8, tmpangle4, tmpangle2, tmpangle9, tmpangle6;
             double tmpline1;//origangle2,arm1,arm2
 
-            double movelong = distance / pointsnum;
+            double movelong =0;
+            double longestmove = 0;
 
             double afterline1 = 0, afterangle1 = 0, afterangle3 = 0, afterangle4 = 0;
+
+
+
+            //判斷是否超過極限，若超過極限，則伸長至極限
+            tmpline1 = Math.Pow(arm1long, 2) + Math.Pow(arm2long, 2) - 2 * arm1long * arm2long * Math.Cos(angle3);
+            tmpline1 = Math.Sqrt(tmpline1);
+            tmpangle7 = (Math.Pow(tmpline1, 2) + Math.Pow(arm2long, 2) - Math.Pow(arm1long, 2)) / (2 * arm2long * tmpline1);
+            tmpangle7 = Math.Acos(tmpangle7);
+            if (pi - tmpangle7 >= angle4)
+            {
+                tmpangle6 = (tmpline1 * Math.Sin(tmpangle7 + angle4)) / (arm1long + arm2long);
+                tmpangle6 = Math.Asin(tmpangle6);
+                tmpangle6 = pi - tmpangle7 - tmpangle6 - angle4;
+                if (tmpangle6 <0.0001)
+                {
+                    longestmove = arm1long + arm2long - tmpline1;
+                }
+                else
+                {
+                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / (2 * pi - tmpangle7 - angle4);
+                }
+                Program.form.mesPrintln(String.Format("tmpline:{0:f},tmpangle7:{1:f},tmpangle6:{2:f},longestmove:{3:f}",tmpline1 ,tmpangle7,tmpangle6,longestmove));
+            }
+            else
+            {
+                tmpangle6 = (tmpline1 * Math.Sin(2*pi - tmpangle7 - angle4)) / (arm1long + arm2long);
+                tmpangle6 = Math.Asin(tmpangle6);
+                tmpangle6 = pi - tmpangle6 - (2 * pi - tmpangle7 - angle4);
+                if (tmpangle6 < 0.0001)
+                {
+                    longestmove = arm1long + arm2long - tmpline1;
+                }
+                else
+                {
+                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / (2 * pi - tmpangle7 - angle4);
+                }
+                Program.form.mesPrintln(String.Format("tmpline:{0:f},tmpangle7:{1:f},tmpangle6:{2:f},longestmove:{3:f}", tmpline1, tmpangle7, tmpangle6, longestmove));
+            }
+
+            if (distance > longestmove)
+            {
+                Program.form.showWarnning(string.Format("移動距離超出極限，自動重設距離為極限點 longest = {0:f3}", longestmove));
+                distance = longestmove;
+            }
+            movelong = distance / pointsnum;
+
+            tmpangle6 = 0;
+            tmpangle7 = 0;
+            tmpline1 = 0;
 
             StreamWriter angleFileWriter = new StreamWriter("moveangle.txt");
 
