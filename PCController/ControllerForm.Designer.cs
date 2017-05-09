@@ -60,7 +60,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelTestFunc = new System.Windows.Forms.Panel();
-            this.bt_cycleReset = new System.Windows.Forms.Button();
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.num_obitNo = new System.Windows.Forms.NumericUpDown();
@@ -87,6 +86,7 @@
             this.bt_thetaN = new System.Windows.Forms.Button();
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
+            this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
@@ -154,7 +154,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 513);
+            this.label1.Location = new System.Drawing.Point(16, 531);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(62, 12);
             this.label1.TabIndex = 5;
@@ -163,7 +163,7 @@
             // label_state
             // 
             this.label_state.AutoSize = true;
-            this.label_state.Location = new System.Drawing.Point(120, 513);
+            this.label_state.Location = new System.Drawing.Point(120, 531);
             this.label_state.Name = "label_state";
             this.label_state.Size = new System.Drawing.Size(31, 12);
             this.label_state.TabIndex = 6;
@@ -172,7 +172,7 @@
             // label_syntecBusy
             // 
             this.label_syntecBusy.AutoSize = true;
-            this.label_syntecBusy.Location = new System.Drawing.Point(122, 561);
+            this.label_syntecBusy.Location = new System.Drawing.Point(122, 579);
             this.label_syntecBusy.Name = "label_syntecBusy";
             this.label_syntecBusy.Size = new System.Drawing.Size(22, 12);
             this.label_syntecBusy.TabIndex = 7;
@@ -181,7 +181,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 561);
+            this.label2.Location = new System.Drawing.Point(18, 579);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 12);
             this.label2.TabIndex = 10;
@@ -207,7 +207,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 537);
+            this.label3.Location = new System.Drawing.Point(16, 555);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 12);
             this.label3.TabIndex = 13;
@@ -216,7 +216,7 @@
             // label_pos
             // 
             this.label_pos.AutoSize = true;
-            this.label_pos.Location = new System.Drawing.Point(120, 537);
+            this.label_pos.Location = new System.Drawing.Point(120, 555);
             this.label_pos.Name = "label_pos";
             this.label_pos.Size = new System.Drawing.Size(11, 12);
             this.label_pos.TabIndex = 14;
@@ -275,7 +275,7 @@
             // 
             // bt_genNC
             // 
-            this.bt_genNC.Location = new System.Drawing.Point(103, 331);
+            this.bt_genNC.Location = new System.Drawing.Point(103, 305);
             this.bt_genNC.Name = "bt_genNC";
             this.bt_genNC.Size = new System.Drawing.Size(75, 23);
             this.bt_genNC.TabIndex = 20;
@@ -292,7 +292,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(320, 489);
+            this.tabControl1.Size = new System.Drawing.Size(320, 410);
             this.tabControl1.TabIndex = 23;
             // 
             // tabPage1
@@ -302,7 +302,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(312, 463);
+            this.tabPage1.Size = new System.Drawing.Size(312, 384);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Connection";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -311,9 +311,9 @@
             // 
             this.groupBox1.Controls.Add(this.tableLayoutPanel1);
             this.groupBox1.Controls.Add(this.bt_TRCConnect);
-            this.groupBox1.Location = new System.Drawing.Point(6, 203);
+            this.groupBox1.Location = new System.Drawing.Point(6, 179);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(297, 203);
+            this.groupBox1.Size = new System.Drawing.Size(297, 190);
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "TRC Server Connection";
@@ -389,7 +389,7 @@
             this.groupBox2.Controls.Add(this.tableLayoutPanel2);
             this.groupBox2.Location = new System.Drawing.Point(6, 13);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(300, 161);
+            this.groupBox2.Size = new System.Drawing.Size(300, 149);
             this.groupBox2.TabIndex = 26;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Syntec Controller Connection";
@@ -427,7 +427,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(312, 463);
+            this.tabPage2.Size = new System.Drawing.Size(312, 384);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Test Functions";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -453,19 +453,8 @@
             this.panelTestFunc.Enabled = false;
             this.panelTestFunc.Location = new System.Drawing.Point(6, 6);
             this.panelTestFunc.Name = "panelTestFunc";
-            this.panelTestFunc.Size = new System.Drawing.Size(300, 301);
+            this.panelTestFunc.Size = new System.Drawing.Size(300, 283);
             this.panelTestFunc.TabIndex = 26;
-            // 
-            // bt_cycleReset
-            // 
-            this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_cycleReset.Location = new System.Drawing.Point(352, 515);
-            this.bt_cycleReset.Name = "bt_cycleReset";
-            this.bt_cycleReset.Size = new System.Drawing.Size(82, 56);
-            this.bt_cycleReset.TabIndex = 28;
-            this.bt_cycleReset.Text = "Cycle Reset";
-            this.bt_cycleReset.UseVisualStyleBackColor = false;
-            this.bt_cycleReset.Click += new System.EventHandler(this.bt_cycleReset_Click);
             // 
             // bt_servoSW
             // 
@@ -480,7 +469,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(39, 233);
+            this.label9.Location = new System.Drawing.Point(39, 222);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(28, 12);
             this.label9.TabIndex = 26;
@@ -488,7 +477,7 @@
             // 
             // num_obitNo
             // 
-            this.num_obitNo.Location = new System.Drawing.Point(73, 228);
+            this.num_obitNo.Location = new System.Drawing.Point(73, 217);
             this.num_obitNo.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -507,7 +496,7 @@
             // 
             this.rBt_obitF.AutoSize = true;
             this.rBt_obitF.Checked = true;
-            this.rBt_obitF.Location = new System.Drawing.Point(191, 231);
+            this.rBt_obitF.Location = new System.Drawing.Point(191, 220);
             this.rBt_obitF.Name = "rBt_obitF";
             this.rBt_obitF.Size = new System.Drawing.Size(39, 16);
             this.rBt_obitF.TabIndex = 24;
@@ -518,7 +507,7 @@
             // rBt_obitT
             // 
             this.rBt_obitT.AutoSize = true;
-            this.rBt_obitT.Location = new System.Drawing.Point(148, 231);
+            this.rBt_obitT.Location = new System.Drawing.Point(148, 220);
             this.rBt_obitT.Name = "rBt_obitT";
             this.rBt_obitT.Size = new System.Drawing.Size(37, 16);
             this.rBt_obitT.TabIndex = 24;
@@ -527,7 +516,7 @@
             // 
             // bt_writeO
             // 
-            this.bt_writeO.Location = new System.Drawing.Point(97, 261);
+            this.bt_writeO.Location = new System.Drawing.Point(97, 250);
             this.bt_writeO.Name = "bt_writeO";
             this.bt_writeO.Size = new System.Drawing.Size(75, 23);
             this.bt_writeO.TabIndex = 23;
@@ -547,7 +536,7 @@
             // 
             // bt_TRCCommStart
             // 
-            this.bt_TRCCommStart.Location = new System.Drawing.Point(67, 371);
+            this.bt_TRCCommStart.Location = new System.Drawing.Point(67, 341);
             this.bt_TRCCommStart.Name = "bt_TRCCommStart";
             this.bt_TRCCommStart.Size = new System.Drawing.Size(157, 23);
             this.bt_TRCCommStart.TabIndex = 21;
@@ -561,7 +550,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(312, 463);
+            this.tabPage3.Size = new System.Drawing.Size(312, 384);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "JOG";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -677,7 +666,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(312, 463);
+            this.tabPage4.Size = new System.Drawing.Size(312, 384);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Initialize";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -689,7 +678,7 @@
             this.panel_Initialize.Enabled = false;
             this.panel_Initialize.Location = new System.Drawing.Point(48, 44);
             this.panel_Initialize.Name = "panel_Initialize";
-            this.panel_Initialize.Size = new System.Drawing.Size(200, 360);
+            this.panel_Initialize.Size = new System.Drawing.Size(200, 309);
             this.panel_Initialize.TabIndex = 13;
             // 
             // bt_startInit
@@ -754,6 +743,17 @@
             this.bt_movForward.UseVisualStyleBackColor = true;
             this.bt_movForward.Click += new System.EventHandler(this.bt_movForward_Click);
             // 
+            // bt_cycleReset
+            // 
+            this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.bt_cycleReset.Location = new System.Drawing.Point(124, 441);
+            this.bt_cycleReset.Name = "bt_cycleReset";
+            this.bt_cycleReset.Size = new System.Drawing.Size(82, 56);
+            this.bt_cycleReset.TabIndex = 28;
+            this.bt_cycleReset.Text = "Cycle Reset";
+            this.bt_cycleReset.UseVisualStyleBackColor = false;
+            this.bt_cycleReset.Click += new System.EventHandler(this.bt_cycleReset_Click);
+            // 
             // tB_mesPrint
             // 
             this.tB_mesPrint.Location = new System.Drawing.Point(338, 32);
@@ -769,7 +769,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 592);
+            this.ClientSize = new System.Drawing.Size(921, 608);
             this.Controls.Add(this.bt_cycleReset);
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);

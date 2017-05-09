@@ -18,8 +18,21 @@ namespace PCController
         public const string DEFAULT_IP = "192.168.1.110";
         public const string DEFAULT_NCFILENAME = NCFileName.MAIN_JOB;
 
+
+        public static int state;
         public static string[] AxisName = null, Unit = null;
         public static float[] Mach = null, Abs = null, Rel = null, Dist = null;
+
+        public static double[] Pos = null;
+
+
+        public static class NCFileName
+        {
+            public const string INITIALIZER = "initializer.txt";
+            public const string MAIN_JOB = "mainjob.txt";
+            public const string OBIT_SETTER = "obitsetter.txt";
+        }
+
 
         public static class ControlMode
         {
@@ -36,7 +49,19 @@ namespace PCController
             public const int NEGATIVE = 2;
 
         }
+        public static class States
+        {
+            public const int ERROR = -1;
+            public const int IDLE = 0;
+            public const int BUSY = 1;
+            public const int PAUSED = 2;
 
+            public static string getStateStr(int state)
+            {
+                string[] stateStr = { "ERROR", "Idle", "Busy", "Paused" };
+                return stateStr[state + 1];
+            }
+        }
 
         //
         /*public functions*/
@@ -72,20 +97,16 @@ namespace PCController
 
         public static bool isConnected()
         {
-            refreshState();
+            getSate();
             return connected;
         }
+
         public static bool isBusy()
         {
-            refreshState();
-            return busy;
+            getSate();
+            return state == States.BUSY;
         }
 
-        public static bool isPaused()
-        {
-            refreshState();
-            return paused;
-        }
 
         public static short uploadNCFile(string ncSrc)
         {
@@ -93,12 +114,13 @@ namespace PCController
             if (result != SUCCESSFUL)
                 return result;
 
+            int timeOut = 25;
             //WaitForUploadFile
-            while (!cnc.isFileUploadDone)
-                Thread.Sleep(500);
+            while (!cnc.isFileUploadDone && timeOut-- > 0)
+                Thread.Sleep(200);
 
             result = cnc.FileUploadErrorCode;
-            if (result != SUCCESSFUL)
+            if (result != SUCCESSFUL|| timeOut < 0)
                 return result;
 
             cnc.WRITE_nc_main(ncSrc);
@@ -111,21 +133,21 @@ namespace PCController
             setControlMode(ControlMode.AUTO);
 
             writeReg(19, 1);
-            Thread.Sleep(100);
+            Thread.Sleep(50);
             writeReg(19, 0);
         }
 
         public static void cycleStop()
         {
             writeReg(15206, 1);
-            Thread.Sleep(100);
+            Thread.Sleep(50);
             writeReg(15206, 0);
         }
 
         public static void cycleReset()
         {
             writeReg(15207, 1);
-            Thread.Sleep(100);
+            Thread.Sleep(50);
             writeReg(15207, 0);
         }
 
@@ -207,16 +229,11 @@ namespace PCController
 
         }
 
-        public static class NCFileName
-        {
-            public const string INITIALIZER = "initializer.txt";
-            public const string MAIN_JOB = "mainjob.txt";
-            public const string OBIT_SETTER = "obitsetter.txt";
-        }
 
         public static void setControlMode(int mode)
         {
             writeReg(13, mode);
+            Thread.Sleep(50);
         }
 
         public static void setOrigin()
@@ -239,37 +256,54 @@ namespace PCController
 
         }
 
-        public static void setPos()
+
+        public static void getPos(out double[] Pos_in)
         {
-            if (cnc == null)
-            {
-                connected = false;
+            Pos_in = Pos;
+
+            float[] tmpM;
+
+            getMach(out tmpM);
+
+            if (tmpM == null)
                 return;
-            }
 
-            double[] pos = { 0, 0, 0, 0 };
+            //translate to + - form
+            Pos_in = new double[tmpM.Length];
 
-
-            if (AxisName.Length > 0)
+            for (int i = 0; i < tmpM.Length; i++)
             {
-                cnc.WRITE_relpos(AxisName[0], pos[0]);
-                cnc.WRITE_relpos(AxisName[1], pos[1]);
-                cnc.WRITE_relpos(AxisName[2], pos[2]);
-                cnc.WRITE_relpos(AxisName[3], pos[3]);
+                if (tmpM[i] > 180)
+                    Pos_in[i] = tmpM[i] - 360;
+                else
+                    Pos_in[i] = tmpM[i];
             }
+
+            return;
         }
 
-            
+
+        public static string stateStr()
+        {
+            return States.getStateStr(state);
+        }
+
+
+        public static void refresh()
+        {
+            getSate();
+            getPos(out Pos);
+        }
+
+
         /*private*/
         //
+
         private static string remoteIP;
         private static SyntecRemoteCNC cnc = null;
         private static bool connected = false;
-        private static bool busy = false;
-        private static bool paused = false;
 
-
-        public static void refreshState()
+        private static void getSate()
         {
             if (cnc == null)
             {
@@ -283,54 +317,54 @@ namespace PCController
                 return;
             }
 
+            connected = true;
 
-            short DecPoint = 0;
-            float[] tmpM;
-
-            short result = cnc.READ_position(out AxisName, out DecPoint, out Unit, out tmpM, out Abs, out Rel, out Dist);
-            if (tmpM != null)
-                Mach = tmpM;
-
-            if (result == 0)
-            {
-                connected = true;
-
-                if (AxisName.Length > 0)
-                {
-                    //label1.Text = AxisName[0] + " : " + Mach[0].ToString();
-                }
-                if (AxisName.Length > 1)
-                {
-                    //label2.Text = AxisName[1] + " : " + Mach[1].ToString();
-                }
-                if (AxisName.Length > 2)
-                {
-                    //label3.Text = AxisName[2] + " : " + Mach[2].ToString();
-                }
-                if (AxisName.Length > 3)
-                {
-                    //label4.Text = AxisName[3] + " : " + Mach[3].ToString();
-                }
-            }
-            else
-            {
-                connected = false;
-                //label1.Text = "Err : " + result.ToString();
-                //label2.Text = "Err : " + result.ToString();
-                //label3.Text = "Err : " + result.ToString();
-                //label4.Text = "Err : " + result.ToString();
-            }
 
             byte[] sbits = null;
             cnc.READ_plc_sbit(0, 1, out sbits);
 
             if (sbits != null)
             {
-                busy = sbits[0] != 0 ? true : false;
-                paused = sbits[1] != 0 ? true : false;
+                state = sbits[0] == 0 ? States.IDLE : sbits[1] == 0 ? States.BUSY : States.PAUSED;
             }
+            else
+                state = States.ERROR;
         }
 
+
+        private static void getMach(out float[] Mach_in)
+        {
+            Mach_in = Mach;
+
+            if (!connected)
+                return;
+
+            float[] tmpM;
+            short DecPoint = 0;
+            short result = -1;
+            int retryCounter = 5;
+
+            result = cnc.READ_position(out AxisName, out DecPoint, out Unit, out tmpM, out Abs, out Rel, out Dist);
+            while (retryCounter-- > 0 && result != SUCCESSFUL)
+            {
+                Thread.Sleep(5);
+                result = cnc.READ_position(out AxisName, out DecPoint, out Unit, out tmpM, out Abs, out Rel, out Dist);
+            }
+
+            if (result == SUCCESSFUL)
+            {
+                Mach = new float[tmpM.Length];
+                Mach_in = new float[tmpM.Length];
+
+                tmpM.CopyTo(Mach, 0);
+                tmpM.CopyTo(Mach_in, 0);
+
+                return;
+            }
+
+            state = States.ERROR;
+
+        }
 
     }
 }
