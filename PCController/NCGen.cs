@@ -217,12 +217,21 @@ namespace PCController
             ncfile.Close();
         }
 
-        public static void genInitNC()
-        {/*
+        private static string[] initNCLines =
+        {
+            "G90 MOVJ C1=120. C2=120. C3=50. C4=60.;",
+            "",
+            ""
+        };
+
+        public static void genInitNC(int step)
+        {
             startGenNC("initializer.txt");
 
-            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ10;", 90, 110, -110);
+            ncfile.WriteLine(initNCLines[step - 1]);
 
+
+            /*
 
             ncfile.WriteLine("WAIT();");
 
@@ -261,7 +270,10 @@ namespace PCController
             ncfile.WriteLine("WAIT();");
             ncfile.WriteLine("GOTO 1;");
 
-            endGenNC();*/
+            */
+
+
+            endGenNC();
         }
 
         public static void genObitSetterNC(int addr, bool val)

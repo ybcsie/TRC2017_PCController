@@ -46,13 +46,6 @@ namespace PCController
 
         }
 
-        ~ControllerForm()
-        {
-            ThreadsController.abortAllThreads();
-            TRCClient.disconnect();
-            SyntecClient.disconnect();
-        }
-
 
         /*
          * public functions
@@ -100,6 +93,15 @@ namespace PCController
          * private functions
          * 
          */
+
+        private void ControllerForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ThreadsController.abortAllThreads();
+            TRCClient.disconnect();
+            SyntecClient.disconnect();
+        }
+
+
 
         private void timer300ms_Tick(object sender, EventArgs e)
         {
@@ -236,7 +238,11 @@ namespace PCController
 
             mesPrintln("NCGen: NC Code generation is done.");
 
-            //controlwhile(scheduleing, coordinate, cassettezaxis);
+
+            SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
+
+            SyntecClient.cycleStart();
+                controlwhile(scheduleing, coordinate, cassettezaxis);
             //test();
 
         }
@@ -450,8 +456,7 @@ namespace PCController
 
         private void bt_genNC_Click(object sender, EventArgs e)
         {
-            auto();
-            NCGen.genInitNC();
+            ThreadsController.addThreadAndStartByFunc(auto);
 
         }
 
@@ -589,68 +594,125 @@ namespace PCController
         {
             ThreadsController.addThreadAndStartByFunc(() =>
             {
+                SyntecClient.writeReg(25, 0);//cancle init mode
+                SyntecClient.writeReg(17, 150);//JOG Speed
 
-                if ((SyntecClient.Mach[0] > 180 && SyntecClient.Mach[0] < 360) || SyntecClient.Mach[0] < 0)
+                SyntecClient.cycleReset();
+
+                mesPrintln("Initializer: adjusting the angle of each axis");
+
+                //C1
+                while (SyntecClient.Pos[0] < 0)
                 {
-                    /*
-                        SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
-                        while (SyntecClient.Mach[0] > 180 || SyntecClient.Mach[0] < 0)
-                        {
-                            Thread.Sleep(200);
-                        }
-                        SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
-                    */
-                    showWarnning("jog to positive first");
-                    return;
+                    mesPrintln("Initializer: JOG C1...");
+                    SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
+                    Thread.Sleep(300);
                 }
 
-                if ((SyntecClient.Mach[1] > 180 && SyntecClient.Mach[1] < 360) || SyntecClient.Mach[1] < 0)
+                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+
+                mesPrintln("Initializer: C1 OK!");
+
+                //C2
+                while (SyntecClient.Pos[1] < 0)
                 {
-                    /*
+                    mesPrintln("Initializer: JOG C2...");
                     SyntecClient.JOG(2, SyntecClient.JOGMode.POSITIVE);
-                    while (SyntecClient.Mach[1] > 180 || SyntecClient.Mach[1] < 0)
-                    {
-                        Thread.Sleep(200);
-                    }
-                    SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
-                    */
-                    showWarnning("jog to positive first");
-                    return;
+                    Thread.Sleep(300);
                 }
 
-                if ((SyntecClient.Mach[3] > 180 && SyntecClient.Mach[3] < 360) || SyntecClient.Mach[3] < 0)
+                SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+
+                mesPrintln("Initializer: C2 OK!");
+
+                //C3
+                while (SyntecClient.Pos[2] < 0)
                 {
-                    /*
-                    SyntecClient.JOG(4, SyntecClient.JOGMode.POSITIVE);
-                    while (SyntecClient.Mach[3] > 180 || SyntecClient.Mach[3] < 0)
-                    {
-                        Thread.Sleep(200);
-                    }
-                    SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
-                    */
-                    showWarnning("jog to positive first");
-                    return;
-
+                    mesPrintln("Initializer: JOG C3...");
+                    SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
+                    Thread.Sleep(300);
                 }
+
+                SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+                mesPrintln("Initializer: C3 OK!");
+
+                //C4
+                while (SyntecClient.Pos[3] < 0)
+                {
+                    mesPrintln("Initializer: JOG C4...");
+                    SyntecClient.JOG(4, SyntecClient.JOGMode.POSITIVE);
+                    Thread.Sleep(300);
+                }
+
+                SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
+
+                mesPrintln("Initializer: C4 OK!");
+
+
+                mesPrintln("Initializer: Starting initializer...");
+
+                runInitAndWait(1);
+
+
+
+                //origin finder
+
+                double[] org = new double[4];
+                double[] tmpPos = new double[2];
+
+                double[] pos;
+
+
+                SyntecClient.writeReg(17, 30);//JOG Speed
+
+                //init C1
+                mesPrintln("Initializer: Init C1...");
+                SyntecClient.writeReg(25, 1);
+
+                SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
+
+                while (!SyntecClient.readIBit(331))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+
+                SyntecClient.getPos(out pos);
+                tmpPos[0] = pos[0];
+
+                SyntecClient.getPos(out pos);
+                tmpPos[1] = pos[0];
+
+                org[0] = (tmpPos[0] + tmpPos[1]) / 2;
 
                 SyntecClient.writeGVar(1010, 10);
                 SyntecClient.writeGVar(1020, 10);
                 SyntecClient.writeGVar(1040, 10);
 
-                SyntecClient.uploadNCFile(SyntecClient.NCFileName.INITIALIZER);
-
-                SyntecClient.cycleStart();
-                initRunning = true;
-
-
-                while (!SyntecClient.isBusy())
-                    Thread.Sleep(500);
-
-                while (SyntecClient.isBusy())
-                    Thread.Sleep(500);
 
                 initRunning = false;
+                mesPrintln("Initializer: Done!");
+
             });
+        }
+        private void runInitAndWait(int step)
+        {
+            SyntecClient.cycleReset();
+
+            NCGen.genInitNC(step);
+
+            SyntecClient.uploadNCFile(SyntecClient.NCFileName.INITIALIZER);
+
+            SyntecClient.cycleStart();
+            initRunning = true;
+
+            while (!SyntecClient.isBusy())
+                Thread.Sleep(800);
+
+            while (!SyntecClient.isIdle())
+                Thread.Sleep(800);
+
+            Thread.Sleep(800);
         }
 
         private void bt_thetaP_Click(object sender, EventArgs e)
@@ -690,6 +752,18 @@ namespace PCController
                     SyntecClient.writeGVar(11, 3);
             });
         }
+
+        private void bt_test_Click(object sender, EventArgs e)
+        {
+            SyntecClient.writeReg(17, 150);//JOG Speed
+
+        }
+
+        private void bt_start_Click(object sender, EventArgs e)
+        {
+            //controlwhile(scheduleing, coordinate, cassettezaxis);
+        }
+
     }
 
 
@@ -732,7 +806,7 @@ namespace PCController
             }
         }
 
-        private const int MAX_COUNT = 10;
+        private const int MAX_COUNT = 500;
         private static int threadsCount = 0;
         private static Thread[] threads = null;
 

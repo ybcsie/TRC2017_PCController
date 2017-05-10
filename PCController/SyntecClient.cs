@@ -107,6 +107,12 @@ namespace PCController
             return state == States.BUSY;
         }
 
+        public static bool isIdle()
+        {
+            getSate();
+            return state == States.IDLE;
+        }
+
 
         public static short uploadNCFile(string ncSrc)
         {
@@ -158,6 +164,19 @@ namespace PCController
             writeCBit(36, sw);
 
         }
+
+        public static bool readIBit(int addr)
+        {
+            byte[] val;
+            cnc.READ_plc_ibit(addr, addr, out val);
+
+            if (val != null)
+                return val[0] == 0 ? false : true;
+
+            return false;
+        }
+
+
         public static bool readCBit(int addr)
         {
             byte[] val;
@@ -168,6 +187,7 @@ namespace PCController
 
             return false;
         }
+
 
 
         public static double readSingleVar(int no)
@@ -208,6 +228,14 @@ namespace PCController
         {
             cnc.WRITE_plc_cbit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
         }
+
+
+        public static void writeIBit(int addr, bool val)
+        {
+            cnc.WRITE_plc_ibit(addr, addr, val ? new byte[] { 1 } : new byte[] { 0 });
+        }
+
+
 
         public static int readReg(int addr)
         {

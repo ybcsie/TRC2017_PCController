@@ -88,6 +88,8 @@
             this.bt_movForward = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
+            this.bt_test = new System.Windows.Forms.Button();
+            this.bt_start = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -143,9 +145,9 @@
             // 
             // bt_cycStart
             // 
-            this.bt_cycStart.Location = new System.Drawing.Point(97, 48);
+            this.bt_cycStart.Location = new System.Drawing.Point(190, 3);
             this.bt_cycStart.Name = "bt_cycStart";
-            this.bt_cycStart.Size = new System.Drawing.Size(100, 56);
+            this.bt_cycStart.Size = new System.Drawing.Size(101, 22);
             this.bt_cycStart.TabIndex = 4;
             this.bt_cycStart.Text = "Cycle Start / Stop";
             this.bt_cycStart.UseVisualStyleBackColor = true;
@@ -434,7 +436,6 @@
             // 
             // panelTestFunc
             // 
-            this.panelTestFunc.Controls.Add(this.bt_servoSW);
             this.panelTestFunc.Controls.Add(this.label9);
             this.panelTestFunc.Controls.Add(this.tB_fileName);
             this.panelTestFunc.Controls.Add(this.num_obitNo);
@@ -458,12 +459,13 @@
             // 
             // bt_servoSW
             // 
-            this.bt_servoSW.Location = new System.Drawing.Point(203, 48);
+            this.bt_servoSW.BackColor = System.Drawing.Color.Crimson;
+            this.bt_servoSW.Location = new System.Drawing.Point(27, 441);
             this.bt_servoSW.Name = "bt_servoSW";
             this.bt_servoSW.Size = new System.Drawing.Size(86, 56);
             this.bt_servoSW.TabIndex = 27;
             this.bt_servoSW.Text = "Servo On / Off";
-            this.bt_servoSW.UseVisualStyleBackColor = true;
+            this.bt_servoSW.UseVisualStyleBackColor = false;
             this.bt_servoSW.Click += new System.EventHandler(this.bt_servoSW_Click);
             // 
             // label9
@@ -526,7 +528,7 @@
             // 
             // bt_setOrigin
             // 
-            this.bt_setOrigin.Location = new System.Drawing.Point(214, 2);
+            this.bt_setOrigin.Location = new System.Drawing.Point(16, 55);
             this.bt_setOrigin.Name = "bt_setOrigin";
             this.bt_setOrigin.Size = new System.Drawing.Size(75, 23);
             this.bt_setOrigin.TabIndex = 22;
@@ -765,11 +767,34 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
+            // bt_test
+            // 
+            this.bt_test.Location = new System.Drawing.Point(791, 526);
+            this.bt_test.Name = "bt_test";
+            this.bt_test.Size = new System.Drawing.Size(75, 23);
+            this.bt_test.TabIndex = 28;
+            this.bt_test.Text = "Test";
+            this.bt_test.UseVisualStyleBackColor = true;
+            this.bt_test.Click += new System.EventHandler(this.bt_test_Click);
+            // 
+            // bt_start
+            // 
+            this.bt_start.Location = new System.Drawing.Point(236, 458);
+            this.bt_start.Name = "bt_start";
+            this.bt_start.Size = new System.Drawing.Size(75, 23);
+            this.bt_start.TabIndex = 29;
+            this.bt_start.Text = "Start";
+            this.bt_start.UseVisualStyleBackColor = true;
+            this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
+            // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 608);
+            this.Controls.Add(this.bt_servoSW);
+            this.Controls.Add(this.bt_start);
+            this.Controls.Add(this.bt_test);
             this.Controls.Add(this.bt_cycleReset);
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
@@ -781,6 +806,7 @@
             this.Controls.Add(this.label1);
             this.Name = "ControllerForm";
             this.Text = "PCController";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControllerForm_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).EndInit();
             this.tabControl1.ResumeLayout(false);
@@ -868,5 +894,7 @@
         private System.Windows.Forms.Button bt_thetaN;
         private System.Windows.Forms.Button bt_thetaP;
         private System.Windows.Forms.CheckBox checkBox_precise;
+        private System.Windows.Forms.Button bt_test;
+        private System.Windows.Forms.Button bt_start;
     }
 }
