@@ -715,11 +715,34 @@ namespace PCController
                 double[] pos;
 
 
-                SyntecClient.writeReg(17, 30);//JOG Speed
+                SyntecClient.writeReg(17, 20);//JOG Speed
+
+                //init C3
+                mesPrintln("Initializer: Init C3...");
+
+                SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
+
+                while (SyntecClient.readIBit(333))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+
+                SyntecClient.writeReg(25, 1);
+
+                SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
+
+                while (!SyntecClient.readIBit(333))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+                SyntecClient.getPos(out pos);
+
+                org[2] = pos[2];
 
                 //init C1
                 mesPrintln("Initializer: Init C1...");
-                SyntecClient.writeReg(25, 1);
 
                 SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
 
@@ -735,6 +758,28 @@ namespace PCController
                 tmpPos[1] = pos[0];
 
                 org[0] = (tmpPos[0] + tmpPos[1]) / 2;
+
+                /*
+                //init C2
+                mesPrintln("Initializer: Init C2...");
+
+                SyntecClient.JOG(2, SyntecClient.JOGMode.NEGATIVE);
+
+                while (!SyntecClient.readIBit(332))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+
+                SyntecClient.getPos(out pos);
+                tmpPos[0] = pos[1];
+
+                SyntecClient.getPos(out pos);
+                tmpPos[1] = pos[1];
+
+                org[1] = (tmpPos[0] + tmpPos[1]) / 2;
+                */
+
+                SyntecClient.writeReg(25, 0);
 
                 SyntecClient.writeGVar(1010, 10);
                 SyntecClient.writeGVar(1020, 10);
