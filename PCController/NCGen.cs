@@ -11,9 +11,10 @@ namespace PCController
     {
         private static StreamWriter ncfile;
 
-        public static void generator(AngleList[] go, int[,] scheduling)
+        public static void generator(AngleList[] go)
         {
-            const int complete = 100050, access = 10, suck=320, communication = 1,GraborPut=2 ,beginzaxis=3 ,afterzaxis=4 ;//
+            const int complete = 100050, access = 5, suck=320, communication = 1,GraborPut=2 ,beginzaxis=3 ,afterzaxis=4 ,changedirector=6;//
+            const double topangle =100;
             decimal[,] savedata = new decimal[100, 4];
             int i, number, count;
             double afterz=0;
@@ -24,30 +25,57 @@ namespace PCController
             double casetspacing = 6.4;//mm
 
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
-
-            ncfile.WriteLine("MOVJ C1=0.0 C2=0.0 C3=0.0 C4=40.0 FJ20;");
-            ncfile.WriteLine("@3:=0;");
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("MOVJ C1=125.936 C2=-125.680 C4=89.744 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C3=0 FJ10 PL10;");
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("@5:=0;");
             ncfile.WriteLine("@4:=0;");
             ncfile.WriteLine("@2:=0;");
-            ncfile.WriteLine("@{0:d}:=0;",complete);
+            ncfile.WriteLine("@3:=0;");
             ncfile.WriteLine("@1:=0;");
+            ncfile.WriteLine("@{0:d}:=0;",complete);
             NCmain(communication);
 
-            for (i = 1; i<11; i++)
+            for (i = 0; i<10; i++)
             {
                 count = 0;
                 Angle tmp = go[i].headAngle;
-                ncfile.WriteLine("N{0:d};",(i+10));
+                ncfile.WriteLine("N{0:d};",(i+11));
                 ncfile.WriteLine("@1:=0;");
-                ncfile.WriteLine("@{0:d}:=0;", complete);
+                //ncfile.WriteLine("@{0:d}:=0;", complete);
                 while (tmp != null)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                    if (count == 0)
+                    {
+                        ncfile.WriteLine("IF (@{0:d} = 1) THEN", changedirector);
+                        ncfile.WriteLine("SETDO({0:d},{1:d});", changedirector, 0);
+                        ncfile.WriteLine("MOVJ C3={0:f3} FJ10 PL10;", topangle);
+                        ncfile.WriteLine("WAIT();");
+                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C4={2:f3} FJ20 PL10;", tmp.one, tmp.three, tmp.four);
+                        ncfile.WriteLine("MOVJ C3=@{0:d} FJ10 PL10;", beginzaxis);
+                        ncfile.WriteLine("ELSEIF (@{0:d} = 0) THEN", changedirector);
+                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                        ncfile.WriteLine("END_IF;");
+                    }
+                    else
+                    {
+                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                    }
                     //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
                     savedata[count, 0] = tmp.one;
                     savedata[count, 1] = tmp.two;
                     savedata[count, 2] = tmp.three;
                     savedata[count, 3] = tmp.four;
+                    if (count == 0)
+                    {
+                        ncfile.WriteLine("WAIT();");
+                        ncfile.WriteLine("WHILE(@{0:d} = 0) DO",access);
+                        ncfile.WriteLine("SLEEP();");
+                        ncfile.WriteLine("END_WHILE");
+                        ncfile.WriteLine("@5:=0;");
+                        ncfile.WriteLine("WAIT();");
+                    }
 
                     tmp = tmp.nextangle;
                     count++;
@@ -75,7 +103,7 @@ namespace PCController
 
                 //sendcomplete(complete, communication);//發送完成任務訊號，並等待確認
 
-                if (i==5 || i == 9)//若是第6第10平台則不需生成NCcode
+                if (i==4 || i == 8)//若是第6第10平台則不需生成NCcode
                 {
                     i++;
                 }

@@ -427,55 +427,54 @@ namespace PCController
             */
             //int[,] coordinate = new int[10, 4];
             int i;
+            int count = 0;
             double[,] measureangle = new double[10, 4];
-            double[,] realcd = new double[5, 2];
+            double[,] realcd = new double[10, 2];
             double[] centerx = new double[4];
             double[] centery = new double[4];
             double avcx, avcy;
-            double[,] reference = new double[5, 2];
+            double[,] reference = new double[10, 2];
             double armlong1 = ArmData.longbase;
             double armlong2 = armlong1 * ArmData.longrate2;
             double armlong3 = armlong1 * ArmData.longrate3;
             const double pi = 3.1415926;
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
-            
-
-            //calculate the real(x,y)coordinate(realcd) of each platform
-            for (i = 0; i < 3; i++)
-            {
-                realcd[i, 0] = (armlong1 * Math.Cos(measureangle[i, 0])) + (armlong2 * Math.Cos(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Cos(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3]));
-                realcd[i, 1] = (armlong1 * Math.Sin(measureangle[i, 0])) + (armlong2 * Math.Sin(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Sin(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3])); ;
-            }
-            //
-            //for test,because no measureangle
             for (i = 0; i < 10; i++)
             {
-                measureangle[i, 1] = 40;
+                measureangle[i, 1] = 40;//for test,because no measureangle
+                measureangle[i, 0] = 0;
             }
-            /*
-            measureangle[0, 1] = 40;
-            measureangle[1, 1] = 40;
-            measureangle[2, 1] = 40;
-            measureangle[3, 1] = 40;
-            measureangle[4, 1] = 40;
-            measureangle[5, 1] = 40;
-            measureangle[6, 1] = 40;
-            measureangle[7, 1] = 40;
-            measureangle[8, 1] = 40;
-            measureangle[9, 1] = 40;
-            */
+
+            //calculate the real(x,y)coordinate(realcd) of each platform
+            for (i = 0; i < 10; i++)
+            {
+                if (measureangle[i, 0] !=0)
+                {
+                    realcd[i, 0] = (armlong1 * Math.Cos(measureangle[i, 0])) + (armlong2 * Math.Cos(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Cos(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3]));
+                    realcd[i, 1] = (armlong1 * Math.Sin(measureangle[i, 0])) + (armlong2 * Math.Sin(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Sin(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3])); ;
+                }
+                else
+                {
+                    realcd[i, 0] = -1;
+                    realcd[i, 1] = -1;
+                }
+
+            }
+            //
             double topanglez = 0, loweranglez = 0;
             realcd[0, 0] = -741.824;
             realcd[0, 1] = 241.033255;
             realcd[1, 0] = -458.4725;
             realcd[1, 1] = 631.033255;
+            /*
             realcd[2, 0] = 0;
             realcd[2, 1] = 780;
             realcd[3, 0] = 458.4725;
             realcd[3, 1] = 631.033255;
             realcd[4, 0] = 741.824;
             realcd[4, 1] = 241.033255;
+            */
             //need to deleted
 
             //calculate the center of cycle
@@ -483,30 +482,52 @@ namespace PCController
 
             for (i = 0; i < 4; i++)
             {
-
-                cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
-                cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
-                if (realcd[i + 1, 0] - realcd[i, 0] < 0)
+                if (realcd[i, 0] != -1 && realcd[i + 1, 0] != -1)
                 {
-                    dx = realcd[i, 0] - realcd[i+1, 0];
-                    dy = realcd[i, 1] - realcd[i+1, 1];
+                    cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
+                    cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
+                    if (realcd[i + 1, 0] - realcd[i, 0] < 0)
+                    {
+                        dx = realcd[i, 0] - realcd[i + 1, 0];
+                        dy = realcd[i, 1] - realcd[i + 1, 1];
+                    }
+                    else
+                    {
+                        dx = realcd[i + 1, 0] - realcd[i, 0];
+                        dy = realcd[i + 1, 1] - realcd[i, 1];
+                    }
+                    l = Math.Sqrt(dx * dx + dy * dy);
+                    h = Math.Sqrt(ratio * ratio - (l / 2) * (l / 2));
+                    tdx = (-1) * h * dy / l;
+                    tdy = h * dx / l;
+                    centerx[i] = cx - tdx;
+                    centery[i] = cy - tdy;
+                    count++;
                 }
-                else
-                {
-                    dx = realcd[i + 1, 0] - realcd[i, 0];
-                    dy = realcd[i + 1, 1] - realcd[i, 1];
-                }
-                l = Math.Sqrt(dx * dx + dy * dy);
-                h = Math.Sqrt(ratio * ratio - (l / 2) * (l / 2));
-                tdx = (-1) * h * dy / l;
-                tdy = h * dx / l;
-                centerx[i] = cx - tdx;
-                centery[i] = cy - tdy;
             }
-            avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / 4;
-            avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / 4;
-            Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f}", avcx, avcy));
+            avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / count;
+            avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / count;
+            Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f} count:{2:d}", avcx, avcy,count));
             //calculate center
+
+            for (i = 0; i < 10; i++)
+            {
+                if (realcd[i, 0] == -1)
+                {
+                    if (i < 5 )
+                    {
+                        realcd[i, 0] =avcx+ ((realcd[0, 0] - avcx) * Math.Cos(-1 *36 * i * pi / 180)) - ((realcd[0, 1] - avcy) * Math.Sin(-1 *36 * i * pi / 180));
+                        realcd[i, 1] =avcy+ ((realcd[0, 0] - avcx) * Math.Sin(-1 * 36 * i * pi / 180)) + ((realcd[0, 1] - avcy) * Math.Cos(-1 * 36 * i * pi / 180));
+                        //Program.form.mesPrintln(String.Format("..... i:{0:d} x:{1:f} y: {2:f}", i,realcd[i,0], realcd[i,1]));
+                    }
+                    else
+                    {
+                        realcd[i, 0] = realcd[i - 5, 0];
+                        realcd[i, 1] = realcd[i - 5, 1];
+                    }
+                }
+            }
+
 
             double tmplong1 = 0;//original pointer to forth modor
             double tmplong2 = 0;//avcenter to reference
@@ -514,7 +535,7 @@ namespace PCController
             double tmpangle2 = 0;//tmplong and (avcenter to reference)
             double judgevector = 0;
 
-            for (i = 0; i < 5; i++)
+            for (i = 0; i < 10; i++)
             {
                 reference[i, 0] = avcx + (realcd[i, 0] - avcx) * ((ratio - distance - armlong3) / ratio);
                 reference[i, 1] = avcy + (realcd[i, 1] - avcy) * ((ratio - distance - armlong3) / ratio);
@@ -522,7 +543,7 @@ namespace PCController
                 Program.form.mesPrintln(string.Format("各平台直線進入點  x:{0:f} y:{1:f}", reference[i, 0], reference[i, 1]));
             }
 
-            for (i = 0; i < 5; i++)
+            for (i = 0; i < 10; i++)
             {
                 if (reference[i, 0] <= 0)
                 {
@@ -550,11 +571,12 @@ namespace PCController
                     {
                         coordinate[i, 3] = (-1) * (coordinate[i, 3] - tmpangle2);
                     }
-
+                    /*
                     coordinate[i + 5, 0] = coordinate[i, 0];
-                    coordinate[i + 5, 1] = coordinate[i, 1];
+                    coordinate[i + 5, 1] = 20;
                     coordinate[i + 5, 2] = coordinate[i, 2];
                     coordinate[i + 5, 3] = coordinate[i, 3];
+                    */
                 }
                 else
                 {
@@ -564,7 +586,7 @@ namespace PCController
                     coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
                     coordinate[i, 0] = (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1];
+                    coordinate[i, 1] = measureangle[i, 1]+16;
                     coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     coordinate[i, 2] = ((Math.Acos(coordinate[i, 2])) * 180 / pi)-180;
                     coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
@@ -582,11 +604,12 @@ namespace PCController
                     {
                         coordinate[i, 3] = (1) * (coordinate[i, 3] - tmpangle2);
                     }
-
+                    /*
                     coordinate[i + 5, 0] = coordinate[i, 0];
                     coordinate[i + 5, 1] = coordinate[i, 1];
                     coordinate[i + 5, 2] = coordinate[i, 2];
                     coordinate[i + 5, 3] = coordinate[i, 3];
+                    */
                 }
                 Program.form.mesPrintln(string.Format("各平台直線進入初始四軸角度 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
             }
@@ -596,7 +619,7 @@ namespace PCController
         public static void checkcassette(double[,] checkcassette)
         {
             int i = 0;
-            double num = 0;
+            double num = 12;
             for (i = 5; i >= 0; i--)
             {
                 checkcassette[0, i] = num ;

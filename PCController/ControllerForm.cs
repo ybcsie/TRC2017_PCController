@@ -89,6 +89,7 @@ namespace PCController
         private string initBtText_TRCConnect;
         private string initBtText_SyntecConnect;
 
+
         /*
          * private functions
          * 
@@ -203,11 +204,10 @@ namespace PCController
 
             const double distance = 180;
             //need modify
-
-            const int pointsnum = 30;
             double[,] coordinate = new double[10, 4];
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
+            const int pointsnum = 30;
             AngleList[] go = new AngleList[10];
 
             //initialize coordinate
@@ -232,18 +232,20 @@ namespace PCController
 
             //Nccode generator
 
-            NCGen.generator(go, scheduleing);
+            NCGen.generator(go);
 
             Thread.Sleep(500);
 
             mesPrintln("NCGen: NC Code generation is done.");
 
 
-            SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
-
-            SyntecClient.cycleStart();
-                controlwhile(scheduleing, coordinate, cassettezaxis);
-            //test();
+            //Thread startcontrol = new Thread();
+            
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                //ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
+            });
+            
 
         }
 
@@ -259,13 +261,16 @@ namespace PCController
         }
 
 
-        private void controlwhile(int[,] scheduleing, double[,] coordinate, double[,] cassettezaxis)
+        private static void controlwhile(int[,] scheduleing, double[,] coordinate, double[,] cassettezaxis)
         {
             int WaferonHand = 0, WaferinCassettA = 6, WaferinCassettB = 0;
             int[] WaferonChamber = new int[10];//1 for A,2 for B,3 for D,7 for C,8 for E,9 for F
             int step = 0, i = 0;
             double oversignal = 0;
             char[] correspondChambername = new char[10];
+            int director = 0,predirector=0;
+
+            Program.form.mesPrintln(string.Format("fuck on {0:d}", scheduleing[5, 0]));
 
             correspondChambername[1] = 'A';
             correspondChambername[2] = 'B';
@@ -278,15 +283,33 @@ namespace PCController
             {
                 WaferonChamber[i] = 0;
             }
-
-
+            SyntecClient.writeGVar(5, 0);
+            SyntecClient.writeGVar(6, 0);
             //與server交握
             while (scheduleing[step, 0] != 0)
             {
+                if (scheduleing[step, 0]==1 || scheduleing[step, 0]==2 || scheduleing[step, 0] ==6)
+                {
+                    director = 1;
+                }
+                else
+                {
+                    director = 0;
+                }
+                if (director != predirector)
+                {
+                    SyntecClient.writeGVar(6, 1);
+                }
+                else
+                {
+                    SyntecClient.writeGVar(6, 0);
+                }
+                predirector = director;
+                director = 0;
 
-                //發送動作許可請求
                 SyntecClient.writeReg(50, 0);//@100050=0
                 SyntecClient.writeGVar(2, 0); //設定@2，抓為0，亦即吸盤吸
+
                 if (scheduleing[step, 0] != 4)
                 {
                     SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
@@ -297,14 +320,21 @@ namespace PCController
                     SyntecClient.writeGVar(3, cassettezaxis[0, WaferinCassettA - 1] - 8);//設定@3,Z軸伸長至cassetteA時高度
                     SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2.4);//設定@4,Z軸收回時高度
                 }
-                SyntecClient.writeGVar(1, scheduleing[step, 0]);//設定@1為scheduleing[i,0]
-                                                                //控制器進行動作
+
+                SyntecClient.writeGVar(1, scheduleing[step,0]);//設定@1為scheduleing[i,0]
+                //控制器進行第一動作
+                Thread.Sleep(3000);
+                Program.form.mesPrintln("write 5 1");
+                SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
+                //控制器進行接下動作
+
+
                 Program.form.mesPrintln(String.Format("Wait for grab {0:d}", scheduleing[step, 0]));
 
                 oversignal = SyntecClient.readReg(50);
                 while (oversignal == 0)
                 {//while接收控制器回傳動作結束@11=1;
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     oversignal = SyntecClient.readReg(50);
                 }
                 //Program.form.mesPrintln("hihihi");
@@ -324,6 +354,24 @@ namespace PCController
                 }
 
 
+                if (scheduleing[step, 1] == 1 || scheduleing[step, 1] == 2 || scheduleing[step, 1] == 6)
+                {
+                    director = 1;
+                }
+                else
+                {
+                    director = 0;
+                }
+                if (director != predirector)
+                {
+                    SyntecClient.writeGVar(6, 1);
+                }
+                else
+                {
+                    SyntecClient.writeGVar(6, 0);
+                }
+                predirector = director;
+                director = 0;
                 SyntecClient.writeReg(50, 0);//@11=0
                                              //發送執行結束許可
 
@@ -342,15 +390,17 @@ namespace PCController
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作
                 Program.form.mesPrintln(String.Format("Wait for put {0:d}", scheduleing[step, 1]));
-
-
+                //控制器進行第一動作
+                Thread.Sleep(3000);
+                Program.form.mesPrintln("write 5 1");
+                SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
+                                             //控制器進行接下動作
                 oversignal = SyntecClient.readReg(50);
                 while (oversignal == 0)
-                {//while接收控制器回傳動作結束@11=1;
-                    Thread.Sleep(1000);
-                    oversignal = SyntecClient.readReg(50);//@11
+                {//while接收控制器回傳動作結束@100050=1;
+                    Thread.Sleep(500);
+                    oversignal = SyntecClient.readReg(50);//@100050
                 }
-                Program.form.mesPrintln("hihihi");
                 if (scheduleing[step, 1] == 5)
                 {
                     WaferinCassettB++;
@@ -371,6 +421,7 @@ namespace PCController
                 Thread.Sleep(500);
 
             }
+            Program.form.showWarnning("mission end");
         }
 
         private void setState(string state)

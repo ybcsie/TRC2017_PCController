@@ -748,7 +748,9 @@
             // bt_cycleReset
             // 
             this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_cycleReset.Location = new System.Drawing.Point(124, 441);
+
+            this.bt_cycleReset.Location = new System.Drawing.Point(642, 515);
+
             this.bt_cycleReset.Name = "bt_cycleReset";
             this.bt_cycleReset.Size = new System.Drawing.Size(82, 56);
             this.bt_cycleReset.TabIndex = 28;
