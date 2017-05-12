@@ -646,9 +646,11 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(() =>
             {
                 SyntecClient.writeReg(25, 0);//cancle init mode
-                SyntecClient.writeReg(17, 150);//JOG Speed
-
                 SyntecClient.cycleReset();
+
+                /*
+                SyntecClient.setJOGSpeed(70);
+
 
                 mesPrintln("Initializer: adjusting the angle of each axis");
 
@@ -699,11 +701,9 @@ namespace PCController
                 SyntecClient.JOG(4, SyntecClient.JOGMode.STOP);
 
                 mesPrintln("Initializer: C4 OK!");
-
+                */
 
                 mesPrintln("Initializer: Starting initializer...");
-
-                runInitAndWait(1);
 
 
 
@@ -715,11 +715,12 @@ namespace PCController
                 double[] pos;
 
 
-                SyntecClient.writeReg(17, 20);//JOG Speed
+                SyntecClient.setJOGSpeed(30);
 
                 //init C3
                 mesPrintln("Initializer: Init C3...");
 
+                SyntecClient.writeReg(25, 0);
                 SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
 
                 while (SyntecClient.readIBit(333))
@@ -727,9 +728,7 @@ namespace PCController
 
                 SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
 
-
                 SyntecClient.writeReg(25, 1);
-
                 SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
 
                 while (!SyntecClient.readIBit(333))
@@ -737,32 +736,13 @@ namespace PCController
 
                 SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
 
-                SyntecClient.getPos(out pos);
+                SyntecClient.setOrigin(3);
 
-                org[2] = pos[2];
 
-                //init C1
-                mesPrintln("Initializer: Init C1...");
-
-                SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
-
-                while (!SyntecClient.readIBit(331))
-                    Thread.Sleep(500);
-
-                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
-
-                SyntecClient.getPos(out pos);
-                tmpPos[0] = pos[0];
-
-                SyntecClient.getPos(out pos);
-                tmpPos[1] = pos[0];
-
-                org[0] = (tmpPos[0] + tmpPos[1]) / 2;
-
-                /*
                 //init C2
                 mesPrintln("Initializer: Init C2...");
 
+                Thread.Sleep(300);
                 SyntecClient.JOG(2, SyntecClient.JOGMode.NEGATIVE);
 
                 while (!SyntecClient.readIBit(332))
@@ -777,14 +757,36 @@ namespace PCController
                 tmpPos[1] = pos[1];
 
                 org[1] = (tmpPos[0] + tmpPos[1]) / 2;
-                */
+
+
+                //init C1
+                mesPrintln("Initializer: Init C1...");
+
+                Thread.Sleep(300);
+                SyntecClient.writeReg(25, 0);
+                SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
+
+                while (SyntecClient.readIBit(331))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+
+                SyntecClient.writeReg(25, 1);
+                SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
+
+                while (!SyntecClient.readIBit(331))
+                    Thread.Sleep(500);
+
+                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
+
+                SyntecClient.setOrigin(1);
+
 
                 SyntecClient.writeReg(25, 0);
+                SyntecClient.setJOGSpeed(150);
+                //runInitAndWait(1);
 
-                SyntecClient.writeGVar(1010, 10);
-                SyntecClient.writeGVar(1020, 10);
-                SyntecClient.writeGVar(1040, 10);
-
+                //runInitAndWait(2);
 
                 initRunning = false;
                 mesPrintln("Initializer: Done!");
@@ -851,7 +853,33 @@ namespace PCController
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            SyntecClient.writeReg(17, 150);//JOG Speed
+            //SyntecClient.writeReg(17, 150);//JOG Speed
+
+            SyntecClient.setJOGSpeed(30);
+
+            //catch Z
+            mesPrintln("Catch Z...");
+
+            SyntecClient.writeReg(25, 0);
+            SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
+
+            while (SyntecClient.readIBit(335))
+                Thread.Sleep(500);
+
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+            SyntecClient.writeReg(25, 1);
+            SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
+
+            while (!SyntecClient.readIBit(335))
+                Thread.Sleep(500);
+
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+            SyntecClient.writeReg(25, 0);
+
+            mesPrintln("Done");
+
 
         }
 

@@ -266,15 +266,25 @@ namespace PCController
 
         public static void setOrigin()
         {
+            setOrigin(7);
+        }
+
+        public static void setOrigin(int axis)
+        {
             setControlMode(ControlMode.SET_ORIGIN);
-            writeReg(15208, 7);
+            writeReg(15208, axis);
+        }
+
+        public static void setJOGSpeed(int percent)
+        {
+            writeReg(17, percent);
 
         }
 
-        public static void JOG(int axis, int axisMode)
+        public static void JOG(int axis, int mode)
         {
             setControlMode(ControlMode.JOG);
-            writeReg(20 + axis, axisMode);
+            writeReg(20 + axis, mode);
         }
 
         public static void JOG(int axis1Mode, int axis2Mode, int axis3Mode, int axis4Mode)
@@ -283,6 +293,38 @@ namespace PCController
             writeReg(21, 24, new int[] { axis1Mode, axis2Mode, axis3Mode, axis4Mode });
 
         }
+
+        /*
+        public static void JOGOver(int axis, double angle)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                cycleReset();
+
+                double[] curPos;
+                getPos(out curPos);
+
+                if (angle > curPos[axis - 1])
+                    while (curPos[axis - 1] < angle)
+                    {
+                        JOG(axis, JOGMode.POSITIVE);
+                        Thread.Sleep(300);
+                        getPos(out curPos);
+                    }
+                else
+                    while (curPos[axis - 1] > angle)
+                    {
+                        JOG(axis, JOGMode.NEGATIVE);
+                        Thread.Sleep(300);
+                        getPos(out curPos);
+                    }
+
+                JOG(axis, JOGMode.STOP);
+
+
+            });
+        }
+        */
 
 
         public static void getPos(out double[] Pos_in)
