@@ -440,12 +440,47 @@ namespace PCController
             const double pi = 3.1415926;
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
+
             for (i = 0; i < 10; i++)
             {
-                measureangle[i, 1] = 40;//for test,because no measureangle
+                if (i < 5)
+                {
+                    measureangle[i, 1] = 130;//for test,because no measureangle
+                }
+                else
+                {
+                    measureangle[i, 1] = 20;
+                }
                 measureangle[i, 0] = 0;
             }
-
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>定初始點(第二軸是C3!!)
+/*
+            measureangle[0, 0] =;
+            measureangle[0, 1] =;
+            measureangle[0, 2] =;
+            measureangle[0, 3] =;
+            measureangle[1, 0] =;
+            measureangle[1, 1] =;
+            measureangle[1, 2] =;
+            measureangle[1, 3] =;
+            measureangle[2, 0] =;
+            measureangle[2, 1] =;
+            measureangle[2, 2] =;
+            measureangle[2, 3] =;
+            measureangle[6, 0] =;
+            measureangle[6, 1] =;
+            measureangle[6, 2] =;
+            measureangle[6, 3] =;
+            measureangle[7, 0] =;
+            measureangle[7, 1] =;
+            measureangle[7, 2] =;
+            measureangle[7, 3] =;
+            measureangle[8, 0] =;
+            measureangle[8, 1] =;
+            measureangle[8, 2] =;
+            measureangle[8, 3] =;
+*/
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             //calculate the real(x,y)coordinate(realcd) of each platform
             for (i = 0; i < 10; i++)
             {
@@ -463,6 +498,7 @@ namespace PCController
             }
             //
             double topanglez = 0, loweranglez = 0;
+//>>>>>>>>>>>>>>>>test
             realcd[0, 0] = -741.824;
             realcd[0, 1] = 241.033255;
             realcd[1, 0] = -458.4725;
@@ -545,7 +581,7 @@ namespace PCController
 
             for (i = 0; i < 10; i++)
             {
-                if (reference[i, 0] <= 0)
+                if (reference[i, 0] < 0.001)
                 {
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);
@@ -553,7 +589,7 @@ namespace PCController
                     coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
                     coordinate[i, 0] = 180 - (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1]+16;
+                    coordinate[i, 1] = measureangle[i, 1];
                     coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     coordinate[i, 2] = 180 - ((Math.Acos(coordinate[i, 2])) * 180 / pi);
                     coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
@@ -586,7 +622,7 @@ namespace PCController
                     coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
                     coordinate[i, 0] = (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1]+16;
+                    coordinate[i, 1] = measureangle[i, 1];
                     coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     coordinate[i, 2] = ((Math.Acos(coordinate[i, 2])) * 180 / pi)-180;
                     coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
@@ -619,13 +655,28 @@ namespace PCController
         public static void checkcassette(double[,] checkcassette)
         {
             int i = 0;
-            double num = 12;
-            for (i = 5; i >= 0; i--)
+            double num = 130;
+
+            for (i = 5; i >= 0; i--)//0最高   5最低
             {
                 checkcassette[0, i] = num ;
                 checkcassette[0, i] = num ;
                 num = num + 0.48;
             }
+            /*
+            checkcassette[0, 0] = ;
+            checkcassette[0, 1] = ;
+            checkcassette[0, 2] = ;
+            checkcassette[0, 3] = ;
+            checkcassette[0, 4] = ;
+            checkcassette[0, 5] = ;
+            */
+            checkcassette[1, 0] = checkcassette[0, 0];
+            checkcassette[1, 1] = checkcassette[0, 1];
+            checkcassette[1, 2] = checkcassette[0, 2];
+            checkcassette[1, 3] = checkcassette[0, 3];
+            checkcassette[1, 4] = checkcassette[0, 4];
+            checkcassette[1, 5] = checkcassette[0, 5];
         }
 
         public static AngleList routplanning(double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)

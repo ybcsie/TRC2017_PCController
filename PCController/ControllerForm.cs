@@ -39,8 +39,8 @@ namespace PCController
             timer300ms.Enabled = true;
 
             ArmData.longbase = 305;
-            ArmData.longrate2 = 0.5868852;
-            ArmData.longrate3 = 1.154918032;
+            ArmData.longrate2 = 0.5901;
+            ArmData.longrate3 = 1.25655;
 
             mesPrintln("Ready...");
 
@@ -202,7 +202,7 @@ namespace PCController
 
             //need modify
 
-            const double distance = 180;
+            const double distance = 200;
             //need modify
             double[,] coordinate = new double[10, 4];
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
@@ -222,7 +222,7 @@ namespace PCController
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
-                go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance, pointsnum);
+                go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance+20, pointsnum);
             }
 
 
@@ -243,7 +243,7 @@ namespace PCController
             
             ThreadsController.addThreadAndStartByFunc(() =>
             {
-                //ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
+              ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
             });
             
 
@@ -268,7 +268,7 @@ namespace PCController
             int step = 0, i = 0;
             double oversignal = 0;
             char[] correspondChambername = new char[10];
-            int director = 0,predirector=0;
+            int director = 0,predirector=1;
 
             Program.form.mesPrintln(string.Format("fuck on {0:d}", scheduleing[5, 0]));
 
@@ -288,7 +288,7 @@ namespace PCController
             //與server交握
             while (scheduleing[step, 0] != 0)
             {
-                if (scheduleing[step, 0]==1 || scheduleing[step, 0]==2 || scheduleing[step, 0] ==6)
+                if (scheduleing[step, 0]==1 || scheduleing[step, 0]==2 || scheduleing[step, 0] ==7 || scheduleing[step, 0] == 8 || scheduleing[step, 0] == 3)
                 {
                     director = 1;
                 }
@@ -354,7 +354,7 @@ namespace PCController
                 }
 
 
-                if (scheduleing[step, 1] == 1 || scheduleing[step, 1] == 2 || scheduleing[step, 1] == 6)
+                if (scheduleing[step, 1] == 1 || scheduleing[step, 1] == 2 || scheduleing[step, 1] == 7 || scheduleing[step, 1] == 8 || scheduleing[step, 1] == 3)
                 {
                     director = 1;
                 }
@@ -373,7 +373,7 @@ namespace PCController
                 predirector = director;
                 director = 0;
                 SyntecClient.writeReg(50, 0);//@11=0
-                                             //發送執行結束許可
+                //發送執行結束許可
 
                 //發送動作許可請求
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
