@@ -60,7 +60,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.panelTestFunc = new System.Windows.Forms.Panel();
-            this.bt_servoSW = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.num_obitNo = new System.Windows.Forms.NumericUpDown();
             this.rBt_obitF = new System.Windows.Forms.RadioButton();
@@ -69,6 +68,9 @@
             this.bt_setOrigin = new System.Windows.Forms.Button();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.num_JOGSpeed = new System.Windows.Forms.NumericUpDown();
+            this.cB_initModeOn = new System.Windows.Forms.CheckBox();
             this.panelJOG = new System.Windows.Forms.FlowLayoutPanel();
             this.bt_JOG1P = new System.Windows.Forms.Button();
             this.bt_JOG1N = new System.Windows.Forms.Button();
@@ -86,6 +88,7 @@
             this.bt_thetaN = new System.Windows.Forms.Button();
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
+            this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             this.bt_test = new System.Windows.Forms.Button();
@@ -102,6 +105,7 @@
             this.panelTestFunc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).BeginInit();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).BeginInit();
             this.panelJOG.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.panel_Initialize.SuspendLayout();
@@ -457,17 +461,6 @@
             this.panelTestFunc.Size = new System.Drawing.Size(300, 283);
             this.panelTestFunc.TabIndex = 26;
             // 
-            // bt_servoSW
-            // 
-            this.bt_servoSW.BackColor = System.Drawing.Color.Crimson;
-            this.bt_servoSW.Location = new System.Drawing.Point(27, 441);
-            this.bt_servoSW.Name = "bt_servoSW";
-            this.bt_servoSW.Size = new System.Drawing.Size(86, 56);
-            this.bt_servoSW.TabIndex = 27;
-            this.bt_servoSW.Text = "Servo On / Off";
-            this.bt_servoSW.UseVisualStyleBackColor = false;
-            this.bt_servoSW.Click += new System.EventHandler(this.bt_servoSW_Click);
-            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -548,6 +541,9 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label10);
+            this.tabPage3.Controls.Add(this.num_JOGSpeed);
+            this.tabPage3.Controls.Add(this.cB_initModeOn);
             this.tabPage3.Controls.Add(this.panelJOG);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -556,6 +552,56 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "JOG";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("微軟正黑體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label10.Location = new System.Drawing.Point(265, 337);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(30, 27);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "%";
+            // 
+            // num_JOGSpeed
+            // 
+            this.num_JOGSpeed.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.num_JOGSpeed.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.Location = new System.Drawing.Point(167, 334);
+            this.num_JOGSpeed.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.Name = "num_JOGSpeed";
+            this.num_JOGSpeed.Size = new System.Drawing.Size(91, 32);
+            this.num_JOGSpeed.TabIndex = 27;
+            this.num_JOGSpeed.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.ValueChanged += new System.EventHandler(this.num_JOGSpeed_ValueChanged);
+            // 
+            // cB_initModeOn
+            // 
+            this.cB_initModeOn.AutoSize = true;
+            this.cB_initModeOn.Location = new System.Drawing.Point(24, 344);
+            this.cB_initModeOn.Name = "cB_initModeOn";
+            this.cB_initModeOn.Size = new System.Drawing.Size(111, 16);
+            this.cB_initModeOn.TabIndex = 26;
+            this.cB_initModeOn.Text = "Initialize Mode On";
+            this.cB_initModeOn.UseVisualStyleBackColor = true;
+            this.cB_initModeOn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cB_initModeOn_MouseClick);
             // 
             // panelJOG
             // 
@@ -745,12 +791,21 @@
             this.bt_movForward.UseVisualStyleBackColor = true;
             this.bt_movForward.Click += new System.EventHandler(this.bt_movForward_Click);
             // 
+            // bt_servoSW
+            // 
+            this.bt_servoSW.BackColor = System.Drawing.Color.Crimson;
+            this.bt_servoSW.Location = new System.Drawing.Point(27, 441);
+            this.bt_servoSW.Name = "bt_servoSW";
+            this.bt_servoSW.Size = new System.Drawing.Size(86, 56);
+            this.bt_servoSW.TabIndex = 27;
+            this.bt_servoSW.Text = "Servo On / Off";
+            this.bt_servoSW.UseVisualStyleBackColor = false;
+            this.bt_servoSW.Click += new System.EventHandler(this.bt_servoSW_Click);
+            // 
             // bt_cycleReset
             // 
             this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-
             this.bt_cycleReset.Location = new System.Drawing.Point(642, 515);
-
             this.bt_cycleReset.Name = "bt_cycleReset";
             this.bt_cycleReset.Size = new System.Drawing.Size(82, 56);
             this.bt_cycleReset.TabIndex = 28;
@@ -824,6 +879,8 @@
             this.panelTestFunc.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).EndInit();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).EndInit();
             this.panelJOG.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.panel_Initialize.ResumeLayout(false);
@@ -898,5 +955,8 @@
         private System.Windows.Forms.CheckBox checkBox_precise;
         private System.Windows.Forms.Button bt_test;
         private System.Windows.Forms.Button bt_start;
+        private System.Windows.Forms.CheckBox cB_initModeOn;
+        private System.Windows.Forms.NumericUpDown num_JOGSpeed;
+        private System.Windows.Forms.Label label10;
     }
 }

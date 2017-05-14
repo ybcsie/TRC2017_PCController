@@ -283,6 +283,12 @@ namespace PCController
 
         private static string[] initNCLines =
         {
+            "G91 MOVJ C2=@1002 FJ10;",
+            @"
+G91 MOVJ C2=90. C3=10. FJ25;
+G91 MOVJ C2=20. C4=-20. FJ25;
+",
+            "G91 MOVJ C4=@1004 FJ10;",
             "G90 MOVJ C1=90. C2=135. C3=30.;",
             @"
 %%@MACRO

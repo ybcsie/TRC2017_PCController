@@ -116,12 +116,16 @@ namespace PCController
                 panelJOG.Enabled = true;
                 panel_Initialize.Enabled = true;
                 bt_cycleReset.Enabled = true;
+                bt_servoSW.Enabled = true;
 
                 panel_Initializer.Enabled = initRunning;
 
                 SyntecClient.refresh();
 
                 label_syntecBusy.Text = SyntecClient.stateStr();
+
+                cB_initModeOn.Checked = SyntecClient.readReg(25) == 0 ? false : true;
+                num_JOGSpeed.Value = SyntecClient.readReg(17);
 
                 if (SyntecClient.Mach != null)
                     label_pos.Text =
@@ -143,6 +147,7 @@ namespace PCController
                 panel_Initialize.Enabled = false;
                 panel_Initializer.Enabled = false;
                 bt_cycleReset.Enabled = false;
+                bt_servoSW.Enabled = false;
 
             }
 
@@ -709,33 +714,19 @@ namespace PCController
 
                 //origin finder
 
-                double[] org = new double[4];
+                //                double[] org = new double[4];
                 double[] tmpPos = new double[2];
 
                 double[] pos;
 
 
-                SyntecClient.setJOGSpeed(30);
 
                 //init C3
                 mesPrintln("Initializer: Init C3...");
+                JOGUntilSensor(3, SyntecClient.JOGMode.POSITIVE, 10, false);
+                JOGUntilSensor(3, SyntecClient.JOGMode.NEGATIVE, 30, true);
 
-                SyntecClient.writeReg(25, 0);
-                SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
-
-                while (SyntecClient.readIBit(333))
-                    Thread.Sleep(500);
-
-                SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-
-                SyntecClient.writeReg(25, 1);
-                SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
-
-                while (!SyntecClient.readIBit(333))
-                    Thread.Sleep(500);
-
-                SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-
+                mesPrintln("Initializer: Setting origin C3...");
                 SyntecClient.setOrigin(3);
 
 
@@ -743,44 +734,77 @@ namespace PCController
                 mesPrintln("Initializer: Init C2...");
 
                 Thread.Sleep(300);
-                SyntecClient.JOG(2, SyntecClient.JOGMode.NEGATIVE);
 
-                while (!SyntecClient.readIBit(332))
-                    Thread.Sleep(500);
+                //JOG until sensor on and then off
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30,  true);
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30,false);
 
-                SyntecClient.JOG(2, SyntecClient.JOGMode.STOP);
+                //JOG back until sensor on
+                JOGUntilSensor(2, SyntecClient.JOGMode.POSITIVE, 10, true);
 
+                //save cur pos
                 SyntecClient.getPos(out pos);
                 tmpPos[0] = pos[1];
 
+                //keep JOGing until sensor off
+                JOGUntilSensor(2, SyntecClient.JOGMode.POSITIVE, 30, false);
+
+                //JOG back until sensor on
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 10,  true);
+
+                //save cur pos
                 SyntecClient.getPos(out pos);
                 tmpPos[1] = pos[1];
 
-                org[1] = (tmpPos[0] + tmpPos[1]) / 2;
+                SyntecClient.writeGVar(1002, (tmpPos[0] + tmpPos[1]) / 2 - tmpPos[1]);
+                runInitAndWait(1);
+                mesPrintln("Initializer: Setting origin C2...");
+                SyntecClient.setOrigin(2);
 
 
                 //init C1
                 mesPrintln("Initializer: Init C1...");
 
                 Thread.Sleep(300);
-                SyntecClient.writeReg(25, 0);
-                SyntecClient.JOG(1, SyntecClient.JOGMode.POSITIVE);
 
-                while (SyntecClient.readIBit(331))
-                    Thread.Sleep(500);
+                JOGUntilSensor(1, SyntecClient.JOGMode.POSITIVE, 30, false);
+                JOGUntilSensor(1, SyntecClient.JOGMode.NEGATIVE, 30, true);
 
-                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
-
-                SyntecClient.writeReg(25, 1);
-                SyntecClient.JOG(1, SyntecClient.JOGMode.NEGATIVE);
-
-                while (!SyntecClient.readIBit(331))
-                    Thread.Sleep(500);
-
-                SyntecClient.JOG(1, SyntecClient.JOGMode.STOP);
-
+                mesPrintln("Initializer: Setting origin C1...");
                 SyntecClient.setOrigin(1);
 
+                runInitAndWait(2);
+
+                //init C4
+                mesPrintln("Initializer: Init C4...");
+
+                Thread.Sleep(300);
+
+                //JOG until sensor on and then off
+                JOGUntilSensor(4, SyntecClient.JOGMode.NEGATIVE, 30, true);
+                JOGUntilSensor(4, SyntecClient.JOGMode.NEGATIVE, 30, false);
+
+                //JOG back until sensor on
+                JOGUntilSensor(4, SyntecClient.JOGMode.POSITIVE, 10, true);
+
+                //save cur pos
+                SyntecClient.getPos(out pos);
+                tmpPos[0] = pos[3];
+
+                //keep JOGing until sensor off
+                JOGUntilSensor(4, SyntecClient.JOGMode.POSITIVE, 30, false);
+
+                //JOG back until sensor on
+                JOGUntilSensor(4, SyntecClient.JOGMode.NEGATIVE, 10, true);
+
+                //save cur pos
+                SyntecClient.getPos(out pos);
+                tmpPos[1] = pos[3];
+
+                SyntecClient.writeGVar(1004, (tmpPos[0] + tmpPos[1]) / 2 - tmpPos[1]);
+                runInitAndWait(3);
+                mesPrintln("Initializer: Setting origin C4...");
+                SyntecClient.setOrigin(4);
 
                 SyntecClient.writeReg(25, 0);
                 SyntecClient.setJOGSpeed(150);
@@ -793,6 +817,35 @@ namespace PCController
 
             });
         }
+
+        private void JOGUntilSensor(int axis,int direction, int speed,bool sensorState)
+        {
+            SyntecClient.setJOGSpeed(speed);
+            SyntecClient.writeReg(25, sensorState ? 1 : 0);
+
+            SyntecClient.JOG(axis, direction);
+
+            double pos = SyntecClient.Pos[axis - 1];
+            int count = 0;
+            while (SyntecClient.readIBit(330+axis) != sensorState)
+            {
+                Thread.Sleep(100);
+
+                if (count++%3==1)
+                    if(Math.Abs(SyntecClient.Pos[axis-1]-pos)<0.1)
+                    {
+                        mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
+                        SyntecClient.JOG(axis, SyntecClient.JOGMode.STOP);
+                        SyntecClient.JOG(axis, direction);
+                    }
+            }
+
+            SyntecClient.JOG(axis, SyntecClient.JOGMode.STOP);
+
+
+
+        }
+
         private void runInitAndWait(int step)
         {
             SyntecClient.cycleReset();
@@ -805,12 +858,13 @@ namespace PCController
             initRunning = true;
 
             while (!SyntecClient.isBusy())
-                Thread.Sleep(800);
+                Thread.Sleep(300);
 
             while (!SyntecClient.isIdle())
-                Thread.Sleep(800);
+                Thread.Sleep(300);
 
-            Thread.Sleep(800);
+            Thread.Sleep(500);
+            SyntecClient.cycleReset();
         }
 
         private void bt_thetaP_Click(object sender, EventArgs e)
@@ -888,6 +942,15 @@ namespace PCController
             //controlwhile(scheduleing, coordinate, cassettezaxis);
         }
 
+        private void cB_initModeOn_MouseClick(object sender, MouseEventArgs e)
+        {
+            SyntecClient.writeReg(25, SyntecClient.readReg(25) == 0 ? 1 : 0);
+        }
+
+        private void num_JOGSpeed_ValueChanged(object sender, EventArgs e)
+        {
+            SyntecClient.setJOGSpeed((int)num_JOGSpeed.Value);
+        }
     }
 
 
