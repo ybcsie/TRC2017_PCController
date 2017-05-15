@@ -93,6 +93,7 @@
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             this.bt_test = new System.Windows.Forms.Button();
             this.bt_start = new System.Windows.Forms.Button();
+            this.bt_comT1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -427,6 +428,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.bt_comT1);
             this.tabPage2.Controls.Add(this.panelTestFunc);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
             this.tabPage2.Controls.Add(this.bt_genNC);
@@ -531,7 +533,7 @@
             // 
             // bt_TRCCommStart
             // 
-            this.bt_TRCCommStart.Location = new System.Drawing.Point(67, 341);
+            this.bt_TRCCommStart.Location = new System.Drawing.Point(-9, 341);
             this.bt_TRCCommStart.Name = "bt_TRCCommStart";
             this.bt_TRCCommStart.Size = new System.Drawing.Size(157, 23);
             this.bt_TRCCommStart.TabIndex = 21;
@@ -844,6 +846,16 @@
             this.bt_start.UseVisualStyleBackColor = true;
             this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
             // 
+            // bt_comT1
+            // 
+            this.bt_comT1.Location = new System.Drawing.Point(152, 341);
+            this.bt_comT1.Name = "bt_comT1";
+            this.bt_comT1.Size = new System.Drawing.Size(157, 23);
+            this.bt_comT1.TabIndex = 27;
+            this.bt_comT1.Text = "Start TRC Communication 1";
+            this.bt_comT1.UseVisualStyleBackColor = true;
+            this.bt_comT1.Click += new System.EventHandler(this.bt_comT1_Click);
+            // 
             // ControllerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -955,8 +967,12 @@
         private System.Windows.Forms.CheckBox checkBox_precise;
         private System.Windows.Forms.Button bt_test;
         private System.Windows.Forms.Button bt_start;
+
         private System.Windows.Forms.CheckBox cB_initModeOn;
         private System.Windows.Forms.NumericUpDown num_JOGSpeed;
         private System.Windows.Forms.Label label10;
+
+        private System.Windows.Forms.Button bt_comT1;
+
     }
 }

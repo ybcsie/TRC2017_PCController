@@ -532,29 +532,6 @@ M30;
             ncfile.WriteLine("END_IF;");
         }
 
-        private static double movezaxis(double expvalue,double nowvalue)
-        {
-            /*
-            if (expvalue < nowvalue)
-            {
-                while (expvalue <= nowvalue)
-                {
-                    ncfile.WriteLine("MOVJ C3={0:f3};", nowvalue-0.05);
-                    nowvalue = nowvalue - 0.05;
-                }
-            }
-            else
-            {
-                while (expvalue > nowvalue)
-                {
-                    ncfile.WriteLine("MOVJ C3={0:f3};", nowvalue + 0.05);
-                    nowvalue = nowvalue + 0.05;
-                }
-            }
-            return nowvalue;
-            */
-            return 0;
-        }
 
         private static void waitaccess(int access, int communication)
         {

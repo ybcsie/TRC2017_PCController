@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace PCController
 {
-
+    
     public partial class ControllerForm : Form
     {
 
 
-
+        public static int[] wafernum = new int[6];
         /*
          * constructors
          * 
@@ -212,26 +212,141 @@ namespace PCController
             double[,] coordinate = new double[10, 4];
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
+            int[] missiontime0 = new int[3];
+            int[,] missionstate0 = new int[5, 3];
+            int[] missionnum0 = new int[3];
+            
+            int armtime0;
+            int i = 0;
+            int j = 0;
+
             const int pointsnum = 30;
+
             AngleList[] go = new AngleList[10];
 
             //initialize coordinate
             RoutPlanning.Initialize(coordinate, distance, ratio);
             RoutPlanning.checkcassette(cassettezaxis);
+            //TRCClient.handShake();
+            
+            //>>>>>>>>>>>>>>>>>任務內容
+            missiontime0[0] = TRCClient.record_time[0, 0];
+            missiontime0[1] = TRCClient.record_time[0, 1];
+            missiontime0[2] = TRCClient.record_time[0, 2];
+            Program.form.mesPrintln(string.Format("missiontime0 = {0:d},{1:d},{2:d}", missiontime0[0], missiontime0[1], missiontime0[2]));
+            for (i = 0; i < 3; i++)
+            {
+                if (TRCClient.record_stage[0, i] > 100)
+                {
+                    missionnum0[i] = 3;
+                }
+                else if (TRCClient.record_stage[0, i] > 10)
+                {
+                    missionnum0[i] = 2;
+                }
+                else
+                {
+                    missionnum0[i] = 1;
+                }
+            }
+            for (i = 1; i < 4; i++)
+            {
+                if (TRCClient.record_stage[1, i-1]>100)
+                {
+                    missionstate0[i, 2] = TRCClient.record_stage[0, i-1] % 10;
+                    TRCClient.record_stage[1, i-1] = TRCClient.record_stage[0, i-1] / 10;
+                    missionstate0[i, 1] = TRCClient.record_stage[0, i-1] % 10;
+                    TRCClient.record_stage[1, i-1] = TRCClient.record_stage[0, i-1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                }
+                else if(TRCClient.record_stage[1, i-1] > 10)
+                {
+                    missionstate0[i, 1] = TRCClient.record_stage[0, i-1] % 10;
+                    TRCClient.record_stage[0, i-1] = TRCClient.record_stage[0, i-1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                }
+                else
+                {
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                }
+            }
+            /*
+            missionstate0[1, 0] = 1; missionstate0[1, 1] = 4;
+            missionstate0[2, 0] = 2;
+            missionstate0[3, 0] = 5; missionstate0[3, 1] = 3; missionstate0[3, 2] = 6;
+            */
+            armtime0 = 8;
+
+            //<<<<<<<<<<<<<<<<<<
             //scheduleing
-            Scheduler.ScheduleFunction(scheduleing);
+
+            if(missiontime0[0]== missiontime0[1] && missiontime0[1]== missiontime0[2])
+            {
+                scheduleing[0, 0] = 4;
+                scheduleing[0, 1] = 1;
+                scheduleing[1, 0] = 1;
+                scheduleing[1, 1] = 2;
+                scheduleing[2, 0] = 2;
+                scheduleing[2, 1] = 7;
+                scheduleing[3, 0] = 7;
+                scheduleing[3, 1] = 3;
+                scheduleing[4, 0] = 3;
+                scheduleing[4, 1] = 8;
+                scheduleing[5, 0] = 8;
+                scheduleing[5, 1] = 9;
+                scheduleing[6, 0] = 9;
+                scheduleing[6, 1] = 5;
+                wafernum[0] = 0;
+                wafernum[1] = 0;
+                wafernum[2] = 0;
+                wafernum[3] = 0;
+                wafernum[4] = 0;
+                wafernum[5] = TRCClient.record_wafer[0];
+            }
+            else
+            {
+                Scheduler.ScheduleFunction(scheduleing, missiontime0, missionstate0, missionnum0, armtime0);
+                wafernum[0] = TRCClient.record_wafer[0];
+                wafernum[1] = TRCClient.record_wafer[1];
+                wafernum[2] = TRCClient.record_wafer[2];
+                wafernum[3] = TRCClient.record_wafer[3];
+                wafernum[4] = TRCClient.record_wafer[4];
+                wafernum[5] = TRCClient.record_wafer[5];
+            }
+            int tmp;
+            for(i=0; i<6; i++)
+            {
+                tmp = wafernum[0];
+                for (j = 1; j < (6 - i); j++)
+                {
+                    tmp = wafernum[j - 1];
+                    if(tmp < wafernum[j])
+                    {
+                        wafernum[j-1]= wafernum[j];
+                        wafernum[j] = tmp;
+                    }               
+                }
+            }
+            Program.form.mesPrintln(string.Format("Wnum = {0:d},{1:d},{2:d},{3:d},{4:d},{5:d}", wafernum[0], wafernum[1], wafernum[2], wafernum[3], wafernum[4], wafernum[5]));
+
+
+            /*
+            for(i=0; i < 24; i++)
+            {
+                    Program.form.mesPrintln(string.Format("PATH = {0:d},{1:d}", scheduleing[i, 0], scheduleing[i, 1]));
+                
+            }
+            */
 
 
             //roudplaining
-            int i = 0;
+
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
                 go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance+20, pointsnum);
             }
 
-
-            //printf("fuck %LF %LF\n", go[0]->one, go[0]->nextangle->one);
 
             //end plaining 
 
@@ -248,7 +363,7 @@ namespace PCController
             
             ThreadsController.addThreadAndStartByFunc(() =>
             {
-              ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
+              //ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
             });
             
 
@@ -270,19 +385,21 @@ namespace PCController
         {
             int WaferonHand = 0, WaferinCassettA = 6, WaferinCassettB = 0;
             int[] WaferonChamber = new int[10];//1 for A,2 for B,3 for D,7 for C,8 for E,9 for F
-            int step = 0, i = 0;
+            int step = 0, i = 0,tmp=0;
             double oversignal = 0;
-            char[] correspondChambername = new char[10];
+            int[] correspondChambername = new int[10];
             int director = 0,predirector=1;
 
             Program.form.mesPrintln(string.Format("fuck on {0:d}", scheduleing[5, 0]));
 
-            correspondChambername[1] = 'A';
-            correspondChambername[2] = 'B';
-            correspondChambername[3] = 'D';
-            correspondChambername[7] = 'C';
-            correspondChambername[8] = 'E';
-            correspondChambername[9] = 'F';
+            correspondChambername[1] = 1;
+            correspondChambername[2] = 2;
+            correspondChambername[3] = 4;
+            correspondChambername[4] = 0;
+            correspondChambername[5] = 7;
+            correspondChambername[7] = 3;
+            correspondChambername[8] = 5;
+            correspondChambername[9] = 6;
 
             for (i = 0; i < 10; i++)
             {
@@ -290,10 +407,9 @@ namespace PCController
             }
             SyntecClient.writeGVar(5, 0);
             SyntecClient.writeGVar(6, 0);
-            //與server交握
             while (scheduleing[step, 0] != 0)
             {
-                if (scheduleing[step, 0]==1 || scheduleing[step, 0]==2 || scheduleing[step, 0] ==7 || scheduleing[step, 0] == 8 || scheduleing[step, 0] == 3)
+                if (scheduleing[step, 0] == 1 || scheduleing[step, 0] == 2 || scheduleing[step, 0] == 7 || scheduleing[step, 0] == 8 || scheduleing[step, 0] == 3)
                 {
                     director = 1;
                 }
@@ -326,10 +442,24 @@ namespace PCController
                     SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2.4);//設定@4,Z軸收回時高度
                 }
 
-                SyntecClient.writeGVar(1, scheduleing[step,0]);//設定@1為scheduleing[i,0]
+                SyntecClient.writeGVar(1, scheduleing[step, 0]);//設定@1為scheduleing[i,0]
                 //控制器進行第一動作
                 Thread.Sleep(3000);
                 Program.form.mesPrintln("write 5 1");
+                if (scheduleing[step, 0] == 4) {
+                    while (TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], wafernum[WaferinCassettA - 1], wafernum[WaferinCassettA - 1]) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                else
+                {
+                    while (TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], WaferonChamber[scheduleing[step, 0]],0) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+
                 SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
                 //控制器進行接下動作
 
@@ -345,7 +475,7 @@ namespace PCController
                 //Program.form.mesPrintln("hihihi");
                 if (scheduleing[step, 0] == 4)
                 {
-                    WaferonHand = WaferinCassettA;
+                    WaferonHand = wafernum[WaferinCassettA-1];
                     WaferinCassettA--;
                 }
                 else
@@ -379,8 +509,22 @@ namespace PCController
                 director = 0;
                 SyntecClient.writeReg(50, 0);//@11=0
                 //發送執行結束許可
+                if (scheduleing[step, 0] == 4)
+                {
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 0]], WaferonHand, wafernum[WaferinCassettA]) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                else
+                {
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 0]], WaferonHand, 0) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
 
-                //發送動作許可請求
+
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
                 if (scheduleing[step, 1] != 5)
                 {
@@ -397,9 +541,26 @@ namespace PCController
                 Program.form.mesPrintln(String.Format("Wait for put {0:d}", scheduleing[step, 1]));
                 //控制器進行第一動作
                 Thread.Sleep(3000);
+
+                
+
+                if (scheduleing[step, 0] == 5)//發送動作許可請求，接受後寫@5為1
+                {
+                    while (TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[WaferinCassettB]) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                else
+                {
+                    while (TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], WaferonHand, 0) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
                 Program.form.mesPrintln("write 5 1");
-                SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
-                                             //控制器進行接下動作
+                SyntecClient.writeGVar(5, 1);
+                //控制器進行接下動作
                 oversignal = SyntecClient.readReg(50);
                 while (oversignal == 0)
                 {//while接收控制器回傳動作結束@100050=1;
@@ -417,11 +578,25 @@ namespace PCController
                         Program.form.showWarnning(string.Format("there is Wafer on {0:d}", scheduleing[step, 1]));
                     }
                     WaferonChamber[scheduleing[step, 1]] = WaferonHand;
+                    tmp = WaferonHand;
                     WaferonHand = 0;
                 }
-                SyntecClient.writeReg(50, 0);//@11=0
-                                             //發送執行結束許可
-
+                SyntecClient.writeReg(50, 0);//@100050=0                             
+                if (scheduleing[step, 0] == 5)//發送執行結束許可
+                {
+                    while (TRCClient.sentEvent(4, correspondChambername[scheduleing[step, 1]], tmp, wafernum[WaferinCassettB-1]) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                else
+                {
+                    while (TRCClient.sentEvent(4, correspondChambername[scheduleing[step, 1]], tmp, 0) != 1)
+                    {
+                        Thread.Sleep(500);
+                    }
+                }
+                
                 step = step + 1;
                 Thread.Sleep(500);
 
@@ -518,9 +693,8 @@ namespace PCController
 
         private void bt_TRCCommStart_Click(object sender, EventArgs e)
         {
-            mesPrintln("Starting TRC communication...");
-            ThreadsController.addThreadAndStartByFunc(TRCClient.communicate);
-
+            mesPrintln("Starting TRC communication task2...");
+            ThreadsController.addThreadAndStartByFunc(TRCClient.init);
         }
 
         private void bt_setOrigin_Click(object sender, EventArgs e)
@@ -942,6 +1116,7 @@ namespace PCController
             //controlwhile(scheduleing, coordinate, cassettezaxis);
         }
 
+
         private void cB_initModeOn_MouseClick(object sender, MouseEventArgs e)
         {
             SyntecClient.writeReg(25, SyntecClient.readReg(25) == 0 ? 1 : 0);
@@ -950,6 +1125,13 @@ namespace PCController
         private void num_JOGSpeed_ValueChanged(object sender, EventArgs e)
         {
             SyntecClient.setJOGSpeed((int)num_JOGSpeed.Value);
+        }
+        private void bt_comT1_Click(object sender, EventArgs e)
+        {
+            //
+            mesPrintln("Starting TRC communication task1...");
+            ThreadsController.addThreadAndStartByFunc(TRCClient.init1);
+
         }
     }
 
