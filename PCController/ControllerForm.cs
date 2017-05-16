@@ -84,6 +84,7 @@ namespace PCController
         private string initBtText_TRCConnect;
         private string initBtText_SyntecConnect;
 
+        private bool isInitMovBtClicked = false;
 
         /*
          * private functions
@@ -201,9 +202,9 @@ namespace PCController
             int i = 0;
             while (currNode != null)
             {
-                SyntecClient.writeGVar(1011 + 10 * i, (double)currNode.one);
-                SyntecClient.writeGVar(1012 + 10 * i, (double)currNode.three);
-                SyntecClient.writeGVar(1014 + 10 * i++, (double)currNode.four);
+                SyntecClient.writeGVar(1011 + 10 * i, (double)currNode.one-Pos[0]);
+                SyntecClient.writeGVar(1012 + 10 * i, (double)currNode.three- Pos[1]);
+                SyntecClient.writeGVar(1014 + 10 * i++, (double)currNode.four-Pos[3]);
 
                 currNode = currNode.nextangle;
             }
@@ -808,19 +809,6 @@ namespace PCController
             SyntecClient.cycleReset();
         }
 
-        private void bt_movForward_Click(object sender, EventArgs e)
-        {
-            if (!SyntecClient.isBusy())
-                return;
-            ThreadsController.addThreadAndStartByFunc(() =>
-            {
-
-                if (checkBox_precise.Checked)
-                    linearMOV(1, 2);
-                else
-                    linearMOV(20, 2);
-            });
-        }
 
         private void bt_originSetter_Click(object sender, EventArgs e)
         {
@@ -992,13 +980,19 @@ namespace PCController
         {
             ThreadsController.addThreadAndStartByFunc(() =>
             {
-                runInitAndWait(4);
                 initRunning = true;
-
-                runInitAndWait(5);
+                //writeG91AngleToGVar(1, ArmData.coordinate[8, 0]+ArmData.coordinate[8,2]+ ArmData.coordinate[8, 3]);
+                runInitAndWait(6);
 
             });
 
+        }
+        private void writeG91AngleToGVar(int axis, double absAngle)
+        {
+            double[] pos;
+            SyntecClient.getPos(out pos);
+            
+            SyntecClient.writeGVar(1000 + axis, absAngle - pos[axis - 1]);
         }
 
         private void JOGUntilSensor(int axis,int direction, int speed,bool sensorState)
@@ -1058,10 +1052,31 @@ namespace PCController
             SyntecClient.cycleReset();
         }
 
+        private void bt_movForward_Click(object sender, EventArgs e)
+        {
+            if (!SyntecClient.isBusy() || isInitMovBtClicked)
+                return;
+
+            isInitMovBtClicked = true;
+
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+
+                if (checkBox_precise.Checked)
+                    linearMOV(1, 2);
+                else
+                    linearMOV(20, 2);
+
+                isInitMovBtClicked = false;
+            });
+        }
+
         private void bt_thetaP_Click(object sender, EventArgs e)
         {
-            if (!SyntecClient.isBusy())
+            if (!SyntecClient.isBusy() || isInitMovBtClicked)
                 return;
+
+            isInitMovBtClicked = true;
 
             ThreadsController.addThreadAndStartByFunc(() =>
             {
@@ -1073,13 +1088,18 @@ namespace PCController
                     SyntecClient.writeGVar(11, 5);
                 else
                     SyntecClient.writeGVar(11, 2);
+
+                isInitMovBtClicked = false;
+
             });
         }
 
         private void bt_thetaN_Click(object sender, EventArgs e)
         {
-            if (!SyntecClient.isBusy())
+            if (!SyntecClient.isBusy() || isInitMovBtClicked)
                 return;
+
+            isInitMovBtClicked = true;
 
             ThreadsController.addThreadAndStartByFunc(() =>
             {
@@ -1093,6 +1113,9 @@ namespace PCController
                     SyntecClient.writeGVar(11, 6);
                 else
                     SyntecClient.writeGVar(11, 3);
+
+                isInitMovBtClicked = false;
+
             });
         }
 

@@ -338,8 +338,10 @@ G90 MOVJ C1=120. FJ10;
 @11 := 0;
 @12 := 2;
 @13 := 100;
+"
 
-
+//N1
++@"
 N1;
 SLEEP();
 
@@ -368,16 +370,17 @@ GOTO 7;
 END_IF;
 
 GOTO 1;
+"
 
-
-
+//N2 linear mov
++@"
 N2;
 #11:=1011;
 #12:=1012;
 #13:=1013;
 #14:=1014;
 
-G90;
+G91;
 FOR #1:=1 TO @12 BY 1 DO
 MOVJ C1=@[#11] C2=@[#12] C4=@[#14] FJ10;
 
@@ -390,20 +393,31 @@ WAIT();
 @11 := 0;
 GOTO 1;
 
+"
 
+//N3 theta +
++@"
 N3;
-G91 MOVJ C1=10.;
+G91 MOVJ C1=5. FJ10;
 WAIT();
 @11 := 0;
 GOTO 1;
 
+"
+
+//N4 theta +
++@"
 N4;
-G91 MOVJ C1=-10.;
+G91 MOVJ C1=-5. FJ10;
 WAIT();
 @11 := 0;
 GOTO 1;
 
 
+"
+
+//N5
++@"
 N5;
 #11:=1011;
 #12:=1012;
@@ -437,22 +451,28 @@ END_FOR;
 
 @11 := 0;
 GOTO 1;
+"
 
-
+//N6 theta + precise
++@"
 N6;
-G91 MOVJ C4=0.2;
+G91 MOVJ C4=0.1 FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
+"
 
+//N7 theta - precise
++@"
 N7;
-G91 MOVJ C4=-0.2;
+G91 MOVJ C4=-0.1 FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
+"
 
-
-
+//N8
++@"
 N8;
 
 M30;
