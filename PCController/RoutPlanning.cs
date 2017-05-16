@@ -564,7 +564,7 @@ namespace PCController
 
             for (i = 0; i < 10; i++)
             {
-                if (reference[i, 0] < 0.001)
+                if (reference[i, 0] == 0.00)
                 {
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);
@@ -634,16 +634,26 @@ namespace PCController
                     ArmData.coordinate[i, 3] = (Math.Acos(ArmData.coordinate[i, 3])) * 180 / pi;
                     tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
                     tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
-                    tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
-                    
-                    judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
-                    if (judgevector >0)
+                    if (tmpangle2>=1 )
                     {
-                        ArmData.coordinate[i, 3] = (1) * (tmpangle2 + ArmData.coordinate[i, 3]);
+                        tmpangle2 = 0;
                     }
                     else
                     {
+                        tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
+                    }
+                    judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
+                    if (judgevector >0)
+                    {
+                        //Program.form.mesPrintln(string.Format(".....點  3:{0:f},{1:f}", tmpangle2, ArmData.coordinate[i, 3]));
+                        ArmData.coordinate[i, 3] = (1) * (tmpangle2 + ArmData.coordinate[i, 3]);
+                        
+                    }
+                    else
+                    {
+                        //Program.form.mesPrintln(string.Format(".....點  3:{0:f},{1:f}", tmpangle2, ArmData.coordinate[i, 3]));
                         ArmData.coordinate[i, 3] = (1) * (ArmData.coordinate[i, 3] - tmpangle2);
+
                     }
                     /*
                     coordinate[i + 5, 0] = coordinate[i, 0];
