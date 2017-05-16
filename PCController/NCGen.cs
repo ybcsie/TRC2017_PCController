@@ -23,13 +23,18 @@ namespace PCController
             int outnum = 0;//已從cassetteA取出之wafer數
             int putnum = 0;//已放入cassetteB之wafer數
             double casetspacing = 6.4;//mm
+            double lowerdefaltz = 20;
 
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
             ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("MOVJ C1=90.0 FJ20 PL10;");
-            ncfile.WriteLine("MOVJ C1=54.843 C2=137.789 C4=-102.633 FJ20 PL10;");
-            ncfile.WriteLine("MOVJ C4=90.0 FJ20 PL10;");
-            ncfile.WriteLine("MOVJ C3=35.0 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C1=90.0 C2=0.0 C4=0.00 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C1=82.735 C2=174.890 C4=-150.000 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C2=170.0 C4=150.0 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C2=-170.0 C4=150.0 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C1=61.265 C2=-174.890 C4=150.000 FJ20 PL10;");
+            ncfile.WriteLine("WAIT();");
+            ncfile.WriteLine("MOVJ C3=50.0 FJ20 PL10;");
             ncfile.WriteLine("WAIT();");
             ncfile.WriteLine("@5:=0;");
             ncfile.WriteLine("@4:=0;");
@@ -48,6 +53,16 @@ namespace PCController
                 //ncfile.WriteLine("@{0:d}:=0;", complete);
                 while (tmp != null)
                 {
+                    
+                    if(tmp.four>0 && tmp.four > 150)
+                    {
+                        tmp.four = 150;
+                    }
+                    else if (tmp.four<0 && tmp.four<-150)
+                    {
+                        tmp.four = -150;
+                    }
+                    
                     if (count == 0)
                     {
                         ncfile.WriteLine("IF (@{0:d} = 1) THEN", changedirector);
@@ -55,37 +70,59 @@ namespace PCController
                         if (tmp.four > 0)
                         {
                             //ncfile.WriteLine("MOVJ C4=45.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=90.0 C4=90.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=40.0 C4=120.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=0.0 C4=145.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=-150.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C4=-40.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C1={0:f3} C3=@{1:d} FJ20 PL10;", tmp.one, beginzaxis);
-                            ncfile.WriteLine("MOVJ C2={0:f3} FJ20 PL10;", tmp.three);
-                            ncfile.WriteLine("MOVJ C4={0:f3} FJ20 PL10;", tmp.four);
+                            ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
+                            ncfile.WriteLine("MOVJ C2=170.0 C4=150.0 FJ20 PL10;");
+                            ncfile.WriteLine("MOVJ C2=-170.0 C4=150.0 FJ20 PL10;");
+                            ncfile.WriteLine("WAIT();");
+                            if (i < 6)
+                            {
+                                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                            }
+                            else
+                            {
+                                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, lowerdefaltz, tmp.four);
+                            }
                             //ncfile.WriteLine("MOVJ C4={0:f3} FJ20 PL10;", tmp.four);
                             ncfile.WriteLine("WAIT();");
                         }
                         else
                         {
-                            ncfile.WriteLine("MOVJ C2=-90.0 C4=-90.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=-40.0 C4=-120.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=0.0 C4=-145.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C2=150.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C4=40.0 FJ20 PL10;");
-                            ncfile.WriteLine("MOVJ C1={0:f3} C3=@{1:d} FJ20 PL10;", tmp.one, beginzaxis);
-                            ncfile.WriteLine("MOVJ C2={0:f3} FJ20 PL10;", tmp.three);
-                            ncfile.WriteLine("MOVJ C4={0:f3} FJ20 PL10;", tmp.four);
+                            ncfile.WriteLine("MOVJ C2=-170.0 C4=150.0 FJ20 PL10;");
+                            ncfile.WriteLine("MOVJ C2=-170.0 C4=-150.0 FJ20 PL10;");
+                            ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
+                            ncfile.WriteLine("WAIT();");
+                            if (i < 6)
+                            {
+                                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                            }
+                            else
+                            {
+                                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, lowerdefaltz, tmp.four);
+                            }
                             //ncfile.WriteLine("MOVJ C4={0:f3} FJ20 PL10;", tmp.four);
                             ncfile.WriteLine("WAIT();");
                         }
                         ncfile.WriteLine("ELSEIF (@{0:d} = 0) THEN", changedirector);
-                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                        if (i < 6)
+                        {
+                            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                        }
+                        else
+                        {
+                            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, lowerdefaltz, tmp.four);
+                        }
                         ncfile.WriteLine("END_IF;");
                     }
                     else
                     {
-                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                        if (i > 5 && count <15)
+                        {
+                            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, lowerdefaltz, tmp.four);
+                        }
+                        else
+                        {
+                            ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", tmp.one, tmp.three, beginzaxis, tmp.four);
+                        }
                     }
                     //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", tmp.one, tmp.three, tmp.two, tmp.four);
                     savedata[count, 0] = tmp.one;
@@ -117,19 +154,15 @@ namespace PCController
 
                 while (count != -1)
                 {
-                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
-                    //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
-                    if (count == 0)
+                    if (i > 5 && count < 15)
                     {
-                        if (savedata[count, 3] > 0)
-                        {
-                            ncfile.WriteLine("MOVJ C4=-40.0 FJ20 PL10;");
-                        }
-                        else
-                        {
-                            ncfile.WriteLine("MOVJ C4=40.0 FJ20 PL10;");
-                        }
+                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3={2:f3} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], lowerdefaltz, savedata[count, 3]);
                     }
+                    else
+                    {
+                        ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
+                    }
+                    //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                     count--;
                 }
                 ncfile.WriteLine("WAIT();");

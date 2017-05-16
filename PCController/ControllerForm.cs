@@ -218,6 +218,9 @@ namespace PCController
 
             //need modify
 
+
+            ArmData.distance = 270;
+
             //need modify
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
@@ -229,7 +232,7 @@ namespace PCController
             int i = 0;
             int j = 0;
 
-            const int pointsnum = 30;
+            const int pointsnum = 40;
 
             AngleList[] go = new AngleList[10];
 
@@ -319,21 +322,22 @@ namespace PCController
                 wafernum[3] = TRCClient.record_wafer[3];
                 wafernum[4] = TRCClient.record_wafer[4];
                 wafernum[5] = TRCClient.record_wafer[5];
-            }
-            int tmp;
-            for(i=0; i<6; i++)
-            {
-                tmp = wafernum[0];
-                for (j = 1; j < (6 - i); j++)
+                int tmp;
+                for (i = 0; i < 6; i++)
                 {
-                    tmp = wafernum[j - 1];
-                    if(tmp < wafernum[j])
+                    tmp = wafernum[0];
+                    for (j = 1; j < (6 - i); j++)
                     {
-                        wafernum[j-1]= wafernum[j];
-                        wafernum[j] = tmp;
-                    }               
+                        tmp = wafernum[j - 1];
+                        if (tmp < wafernum[j])
+                        {
+                            wafernum[j - 1] = wafernum[j];
+                            wafernum[j] = tmp;
+                        }
+                    }
                 }
             }
+
             Program.form.mesPrintln(string.Format("Wnum = {0:d},{1:d},{2:d},{3:d},{4:d},{5:d}", wafernum[0], wafernum[1], wafernum[2], wafernum[3], wafernum[4], wafernum[5]));
 
 
@@ -371,6 +375,7 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(() =>
             {
                 controlwhile(scheduleing, cassettezaxis);
+
             });
             
 
@@ -442,6 +447,7 @@ namespace PCController
                 {
                     SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
                     SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 0] - 1, 1] + 8);//設定@4,Z軸收回時高度(coordinate[scheduleing[step,0],1])
+
                 }
                 else
                 {
@@ -454,16 +460,16 @@ namespace PCController
                 Thread.Sleep(3000);
                 Program.form.mesPrintln("write 5 1");
                 if (scheduleing[step, 0] == 4) {
-                    while (TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], wafernum[WaferinCassettA - 1], wafernum[WaferinCassettA - 1]) != 1)
+                    while (TRCClient.sentEvent(0, correspondChambername[scheduleing[step, 0]], wafernum[WaferinCassettA - 1], wafernum[WaferinCassettA - 1]) != 1)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(3500);
                     }
                 }
                 else
                 {
-                    while (TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], WaferonChamber[scheduleing[step, 0]],0) != 1)
+                    while (TRCClient.sentEvent(0, correspondChambername[scheduleing[step, 0]], WaferonChamber[scheduleing[step, 0]],0) != 1)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(3500);
                     }
                 }
 
@@ -518,18 +524,13 @@ namespace PCController
                 //發送執行結束許可
                 if (scheduleing[step, 0] == 4)
                 {
-                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 0]], WaferonHand, wafernum[WaferinCassettA]) != 1)
-                    {
-                        Thread.Sleep(500);
-                    }
+                    TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], WaferonHand, wafernum[WaferinCassettA]);
                 }
                 else
                 {
-                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 0]], WaferonHand, 0) != 1)
-                    {
-                        Thread.Sleep(500);
-                    }
+                    TRCClient.sentEvent(1, correspondChambername[scheduleing[step, 0]], WaferonHand, 0);
                 }
+                Thread.Sleep(3500);
 
 
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
@@ -537,6 +538,7 @@ namespace PCController
                 {
                     SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
                     SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 1] - 1, 1] - 8);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
+
                 }
                 else
                 {
@@ -553,16 +555,16 @@ namespace PCController
 
                 if (scheduleing[step, 0] == 5)//發送動作許可請求，接受後寫@5為1
                 {
-                    while (TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[WaferinCassettB]) != 1)
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[WaferinCassettB]) != 1)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(3500);
                     }
                 }
                 else
                 {
-                    while (TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], WaferonHand, 0) != 1)
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, 0) != 1)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(3500);
                     }
                 }
                 Program.form.mesPrintln("write 5 1");
@@ -591,21 +593,14 @@ namespace PCController
                 SyntecClient.writeReg(50, 0);//@100050=0                             
                 if (scheduleing[step, 0] == 5)//發送執行結束許可
                 {
-                    while (TRCClient.sentEvent(4, correspondChambername[scheduleing[step, 1]], tmp, wafernum[WaferinCassettB-1]) != 1)
-                    {
-                        Thread.Sleep(500);
-                    }
+                    TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], tmp, wafernum[WaferinCassettB - 1]);
                 }
                 else
                 {
-                    while (TRCClient.sentEvent(4, correspondChambername[scheduleing[step, 1]], tmp, 0) != 1)
-                    {
-                        Thread.Sleep(500);
-                    }
+                    TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], tmp, 0);
                 }
-                
                 step = step + 1;
-                Thread.Sleep(500);
+                Thread.Sleep(3500);
 
             }
             Program.form.showWarnning("mission end");

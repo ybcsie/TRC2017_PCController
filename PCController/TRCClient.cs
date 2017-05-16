@@ -253,6 +253,7 @@ namespace PCController
             else if (location == 7) target += "-" + cassNum / 10 + cassNum % 10;
             evt = evt + op[opCode] + "," + wafer + "," + target + "@";
             sentCmd(evt);
+            mesPrintln(evt);
             accept = getResponse();
             return accept;
         }

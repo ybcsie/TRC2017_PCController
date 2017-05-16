@@ -155,7 +155,7 @@ namespace PCController
 
             if (distance > longestmove)
             {
-                Program.form.showWarnning(string.Format("移動距離超出極限，自動重設距離為極限點 longest = {0:f3}", longestmove));
+                Program.form.mesPrintln(string.Format("移動距離超出極限，自動重設距離為極限點 longest = {0:f3}", longestmove));
                 distance = longestmove;
             }
             movelong = distance / pointsnum;
@@ -453,11 +453,11 @@ namespace PCController
             {
                 if (i < 5)
                 {
-                    measureangle[i, 1] = 130;//for test,because no measureangle
+                    measureangle[i, 1] = 121.5;//for test,because no measureangle
                 }
                 else
                 {
-                    measureangle[i, 1] = 20;
+                    measureangle[i, 1] = 16.5;
                 }
                 measureangle[i, 0] = 0;
             }
