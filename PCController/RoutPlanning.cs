@@ -449,7 +449,7 @@ namespace PCController
             double armlong2 = armlong1 * ArmData.longrate2;
             double armlong3 = armlong1 * ArmData.longrate3;
             const double pi = 3.1415926;
-            
+            Program.form.mesPrintln(String.Format("長度 1:{0:f} 2: {1:f} 3:{2:f}", ArmData.distance, ArmData.ratio, armlong3));
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
 
