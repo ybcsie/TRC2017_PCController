@@ -68,9 +68,6 @@
             this.bt_setOrigin = new System.Windows.Forms.Button();
             this.bt_TRCCommStart = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label10 = new System.Windows.Forms.Label();
-            this.num_JOGSpeed = new System.Windows.Forms.NumericUpDown();
-            this.cB_initModeOn = new System.Windows.Forms.CheckBox();
             this.panelJOG = new System.Windows.Forms.FlowLayoutPanel();
             this.bt_JOG1P = new System.Windows.Forms.Button();
             this.bt_JOG1N = new System.Windows.Forms.Button();
@@ -80,8 +77,12 @@
             this.bt_JOG3N = new System.Windows.Forms.Button();
             this.bt_JOG4P = new System.Windows.Forms.Button();
             this.bt_JOG4N = new System.Windows.Forms.Button();
+            this.cB_initModeOn = new System.Windows.Forms.CheckBox();
+            this.num_JOGSpeed = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel_Initialize = new System.Windows.Forms.Panel();
+            this.bt_originSetter = new System.Windows.Forms.Button();
             this.bt_startInit = new System.Windows.Forms.Button();
             this.panel_Initializer = new System.Windows.Forms.Panel();
             this.checkBox_precise = new System.Windows.Forms.CheckBox();
@@ -106,8 +107,8 @@
             this.panelTestFunc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).BeginInit();
             this.panelJOG.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.panel_Initialize.SuspendLayout();
             this.panel_Initializer.SuspendLayout();
@@ -543,10 +544,8 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.label10);
-            this.tabPage3.Controls.Add(this.num_JOGSpeed);
-            this.tabPage3.Controls.Add(this.cB_initModeOn);
             this.tabPage3.Controls.Add(this.panelJOG);
+            this.tabPage3.Controls.Add(this.label10);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -554,56 +553,6 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "JOG";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("微軟正黑體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label10.Location = new System.Drawing.Point(265, 337);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(30, 27);
-            this.label10.TabIndex = 30;
-            this.label10.Text = "%";
-            // 
-            // num_JOGSpeed
-            // 
-            this.num_JOGSpeed.Font = new System.Drawing.Font("微軟正黑體", 14F);
-            this.num_JOGSpeed.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.num_JOGSpeed.Location = new System.Drawing.Point(167, 334);
-            this.num_JOGSpeed.Maximum = new decimal(new int[] {
-            150,
-            0,
-            0,
-            0});
-            this.num_JOGSpeed.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.num_JOGSpeed.Name = "num_JOGSpeed";
-            this.num_JOGSpeed.Size = new System.Drawing.Size(91, 32);
-            this.num_JOGSpeed.TabIndex = 27;
-            this.num_JOGSpeed.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.num_JOGSpeed.ValueChanged += new System.EventHandler(this.num_JOGSpeed_ValueChanged);
-            // 
-            // cB_initModeOn
-            // 
-            this.cB_initModeOn.AutoSize = true;
-            this.cB_initModeOn.Location = new System.Drawing.Point(24, 344);
-            this.cB_initModeOn.Name = "cB_initModeOn";
-            this.cB_initModeOn.Size = new System.Drawing.Size(111, 16);
-            this.cB_initModeOn.TabIndex = 26;
-            this.cB_initModeOn.Text = "Initialize Mode On";
-            this.cB_initModeOn.UseVisualStyleBackColor = true;
-            this.cB_initModeOn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cB_initModeOn_MouseClick);
             // 
             // panelJOG
             // 
@@ -615,11 +564,13 @@
             this.panelJOG.Controls.Add(this.bt_JOG3N);
             this.panelJOG.Controls.Add(this.bt_JOG4P);
             this.panelJOG.Controls.Add(this.bt_JOG4N);
+            this.panelJOG.Controls.Add(this.cB_initModeOn);
+            this.panelJOG.Controls.Add(this.num_JOGSpeed);
             this.panelJOG.Enabled = false;
             this.panelJOG.Location = new System.Drawing.Point(38, 6);
             this.panelJOG.Name = "panelJOG";
             this.panelJOG.Padding = new System.Windows.Forms.Padding(3);
-            this.panelJOG.Size = new System.Drawing.Size(220, 313);
+            this.panelJOG.Size = new System.Drawing.Size(220, 372);
             this.panelJOG.TabIndex = 25;
             // 
             // bt_JOG1P
@@ -710,6 +661,51 @@
             this.bt_JOG4N.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseDown);
             this.bt_JOG4N.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_JOG4N_MouseUp);
             // 
+            // cB_initModeOn
+            // 
+            this.cB_initModeOn.AutoSize = true;
+            this.cB_initModeOn.Location = new System.Drawing.Point(6, 310);
+            this.cB_initModeOn.Name = "cB_initModeOn";
+            this.cB_initModeOn.Size = new System.Drawing.Size(111, 16);
+            this.cB_initModeOn.TabIndex = 26;
+            this.cB_initModeOn.Text = "Initialize Mode On";
+            this.cB_initModeOn.UseVisualStyleBackColor = true;
+            this.cB_initModeOn.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cB_initModeOn_MouseClick);
+            // 
+            // num_JOGSpeed
+            // 
+            this.num_JOGSpeed.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.num_JOGSpeed.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.Location = new System.Drawing.Point(123, 310);
+            this.num_JOGSpeed.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.Name = "num_JOGSpeed";
+            this.num_JOGSpeed.Size = new System.Drawing.Size(91, 32);
+            this.num_JOGSpeed.TabIndex = 27;
+            this.num_JOGSpeed.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.num_JOGSpeed.ValueChanged += new System.EventHandler(this.num_JOGSpeed_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("微軟正黑體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label10.Location = new System.Drawing.Point(264, 321);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(30, 27);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "%";
+            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.panel_Initialize);
@@ -723,6 +719,7 @@
             // 
             // panel_Initialize
             // 
+            this.panel_Initialize.Controls.Add(this.bt_originSetter);
             this.panel_Initialize.Controls.Add(this.bt_startInit);
             this.panel_Initialize.Controls.Add(this.panel_Initializer);
             this.panel_Initialize.Enabled = false;
@@ -731,9 +728,19 @@
             this.panel_Initialize.Size = new System.Drawing.Size(200, 309);
             this.panel_Initialize.TabIndex = 13;
             // 
+            // bt_originSetter
+            // 
+            this.bt_originSetter.Location = new System.Drawing.Point(40, 14);
+            this.bt_originSetter.Name = "bt_originSetter";
+            this.bt_originSetter.Size = new System.Drawing.Size(97, 35);
+            this.bt_originSetter.TabIndex = 13;
+            this.bt_originSetter.Text = "Origin Setter";
+            this.bt_originSetter.UseVisualStyleBackColor = true;
+            this.bt_originSetter.Click += new System.EventHandler(this.bt_originSetter_Click);
+            // 
             // bt_startInit
             // 
-            this.bt_startInit.Location = new System.Drawing.Point(40, 24);
+            this.bt_startInit.Location = new System.Drawing.Point(40, 64);
             this.bt_startInit.Name = "bt_startInit";
             this.bt_startInit.Size = new System.Drawing.Size(97, 35);
             this.bt_startInit.TabIndex = 11;
@@ -876,6 +883,7 @@
             this.Name = "ControllerForm";
             this.Text = "PCController";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControllerForm_FormClosed);
+            this.Load += new System.EventHandler(this.ControllerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).EndInit();
             this.tabControl1.ResumeLayout(false);
@@ -892,8 +900,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_obitNo)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).EndInit();
             this.panelJOG.ResumeLayout(false);
+            this.panelJOG.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.panel_Initialize.ResumeLayout(false);
             this.panel_Initializer.ResumeLayout(false);
@@ -974,5 +983,6 @@
 
         private System.Windows.Forms.Button bt_comT1;
 
+        private System.Windows.Forms.Button bt_originSetter;
     }
 }

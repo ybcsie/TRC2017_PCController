@@ -38,12 +38,6 @@ namespace PCController
             timer300ms.Tick += new EventHandler(timer300ms_Tick);
             timer300ms.Enabled = true;
 
-            ArmData.longbase = 305;
-            ArmData.longrate2 = 0.5901;
-            ArmData.longrate3 = 1.25655;
-
-            mesPrintln("Ready...");
-
         }
 
 
@@ -51,6 +45,7 @@ namespace PCController
          * public functions
          * 
          */
+
 
         public void mesPrint(string str)
         {
@@ -94,6 +89,22 @@ namespace PCController
          * private functions
          * 
          */
+        private void ControllerForm_Load(object sender, EventArgs e)
+        {
+            //initial Arm Data
+            ArmData.longbase = 305;
+            ArmData.longrate2 = 0.5901;
+            ArmData.longrate3 = 1.25655;
+
+            ArmData.distance = 200;
+            ArmData.ratio = 780;
+
+            //initialize coordinate
+            RoutPlanning.Initialize();
+
+            mesPrintln("Ready...");
+
+        }
 
         private void ControllerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -125,7 +136,7 @@ namespace PCController
                 label_syntecBusy.Text = SyntecClient.stateStr();
 
                 cB_initModeOn.Checked = SyntecClient.readReg(25) == 0 ? false : true;
-                num_JOGSpeed.Value = SyntecClient.readReg(17);
+                //num_JOGSpeed.Value = SyntecClient.readReg(17);
 
                 if (SyntecClient.Mach != null)
                     label_pos.Text =
@@ -201,15 +212,13 @@ namespace PCController
         }
 
 
+
         private void auto()
         {
-            const double ratio = 780;
 
             //need modify
 
-            const double distance = 200;
             //need modify
-            double[,] coordinate = new double[10, 4];
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
             int[] missiontime0 = new int[3];
@@ -224,8 +233,6 @@ namespace PCController
 
             AngleList[] go = new AngleList[10];
 
-            //initialize coordinate
-            RoutPlanning.Initialize(coordinate, distance, ratio);
             RoutPlanning.checkcassette(cassettezaxis);
             //TRCClient.handShake();
             
@@ -344,7 +351,7 @@ namespace PCController
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
-                go[i] = RoutPlanning.routplanning(coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3], distance+20, pointsnum);
+                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance+20, pointsnum);
             }
 
 
@@ -363,7 +370,7 @@ namespace PCController
             
             ThreadsController.addThreadAndStartByFunc(() =>
             {
-              //ControllerForm.controlwhile(scheduleing, coordinate, cassettezaxis);
+                controlwhile(scheduleing, cassettezaxis);
             });
             
 
@@ -381,7 +388,7 @@ namespace PCController
         }
 
 
-        private static void controlwhile(int[,] scheduleing, double[,] coordinate, double[,] cassettezaxis)
+        private void controlwhile(int[,] scheduleing, double[,] cassettezaxis)
         {
             int WaferonHand = 0, WaferinCassettA = 6, WaferinCassettB = 0;
             int[] WaferonChamber = new int[10];//1 for A,2 for B,3 for D,7 for C,8 for E,9 for F
@@ -433,8 +440,8 @@ namespace PCController
 
                 if (scheduleing[step, 0] != 4)
                 {
-                    SyntecClient.writeGVar(3, coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
-                    SyntecClient.writeGVar(4, coordinate[scheduleing[step, 0] - 1, 1] + 8);//設定@4,Z軸收回時高度(coordinate[scheduleing[step,0],1])
+                    SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
+                    SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 0] - 1, 1] + 8);//設定@4,Z軸收回時高度(coordinate[scheduleing[step,0],1])
                 }
                 else
                 {
@@ -528,8 +535,8 @@ namespace PCController
                 SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
                 if (scheduleing[step, 1] != 5)
                 {
-                    SyntecClient.writeGVar(3, coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
-                    SyntecClient.writeGVar(4, coordinate[scheduleing[step, 1] - 1, 1] - 8);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
+                    SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
+                    SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 1] - 1, 1] - 8);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
                 }
                 else
                 {
@@ -820,13 +827,10 @@ namespace PCController
             });
         }
 
-        private void bt_startInit_Click(object sender, EventArgs e)
+        private void bt_originSetter_Click(object sender, EventArgs e)
         {
             ThreadsController.addThreadAndStartByFunc(() =>
             {
-                SyntecClient.writeReg(25, 0);//cancle init mode
-                SyntecClient.cycleReset();
-
                 /*
                 SyntecClient.setJOGSpeed(70);
 
@@ -893,8 +897,7 @@ namespace PCController
 
                 double[] pos;
 
-
-
+                
                 //init C3
                 mesPrintln("Initializer: Init C3...");
                 JOGUntilSensor(3, SyntecClient.JOGMode.POSITIVE, 10, false);
@@ -902,16 +905,16 @@ namespace PCController
 
                 mesPrintln("Initializer: Setting origin C3...");
                 SyntecClient.setOrigin(3);
+                Thread.Sleep(300);
 
 
                 //init C2
                 mesPrintln("Initializer: Init C2...");
 
-                Thread.Sleep(300);
-
                 //JOG until sensor on and then off
-                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30,  true);
-                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30,false);
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30, true);
+                mesPrintln("Initializer: JOG Until C2 sensor off...");
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 30, false);
 
                 //JOG back until sensor on
                 JOGUntilSensor(2, SyntecClient.JOGMode.POSITIVE, 10, true);
@@ -924,7 +927,7 @@ namespace PCController
                 JOGUntilSensor(2, SyntecClient.JOGMode.POSITIVE, 30, false);
 
                 //JOG back until sensor on
-                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 10,  true);
+                JOGUntilSensor(2, SyntecClient.JOGMode.NEGATIVE, 10, true);
 
                 //save cur pos
                 SyntecClient.getPos(out pos);
@@ -934,25 +937,24 @@ namespace PCController
                 runInitAndWait(1);
                 mesPrintln("Initializer: Setting origin C2...");
                 SyntecClient.setOrigin(2);
+                Thread.Sleep(300);
+                
 
 
                 //init C1
                 mesPrintln("Initializer: Init C1...");
-
-                Thread.Sleep(300);
 
                 JOGUntilSensor(1, SyntecClient.JOGMode.POSITIVE, 30, false);
                 JOGUntilSensor(1, SyntecClient.JOGMode.NEGATIVE, 30, true);
 
                 mesPrintln("Initializer: Setting origin C1...");
                 SyntecClient.setOrigin(1);
+                Thread.Sleep(300);
 
                 runInitAndWait(2);
-
+                
                 //init C4
                 mesPrintln("Initializer: Init C4...");
-
-                Thread.Sleep(300);
 
                 //JOG until sensor on and then off
                 JOGUntilSensor(4, SyntecClient.JOGMode.NEGATIVE, 30, true);
@@ -979,42 +981,63 @@ namespace PCController
                 runInitAndWait(3);
                 mesPrintln("Initializer: Setting origin C4...");
                 SyntecClient.setOrigin(4);
+                Thread.Sleep(300);
 
-                SyntecClient.writeReg(25, 0);
-                SyntecClient.setJOGSpeed(150);
-                //runInitAndWait(1);
+                runInitAndWait(4);
+                runInitAndWait(5);
 
-                //runInitAndWait(2);
 
-                initRunning = false;
                 mesPrintln("Initializer: Done!");
 
             });
         }
 
+
+        private void bt_startInit_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                runInitAndWait(4);
+                initRunning = true;
+
+                runInitAndWait(5);
+
+            });
+
+        }
+
         private void JOGUntilSensor(int axis,int direction, int speed,bool sensorState)
         {
+            SyntecClient.cycleReset();
             SyntecClient.setJOGSpeed(speed);
+
             SyntecClient.writeReg(25, sensorState ? 1 : 0);
 
             SyntecClient.JOG(axis, direction);
 
             double pos = SyntecClient.Pos[axis - 1];
             int count = 0;
+
             while (SyntecClient.readIBit(330+axis) != sensorState)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(50);
 
-                if (count++%3==1)
-                    if(Math.Abs(SyntecClient.Pos[axis-1]-pos)<0.1)
+                if (count++%5==1)
+                    if(Math.Abs(SyntecClient.Pos[axis-1]-pos)<0.5)
                     {
                         mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
                         SyntecClient.JOG(axis, SyntecClient.JOGMode.STOP);
+                        Thread.Sleep(300);
+                        pos = SyntecClient.Pos[axis - 1];
                         SyntecClient.JOG(axis, direction);
                     }
             }
 
             SyntecClient.JOG(axis, SyntecClient.JOGMode.STOP);
+
+            SyntecClient.writeReg(25, 0);
+
+            SyntecClient.cycleReset();
 
 
 
@@ -1029,13 +1052,12 @@ namespace PCController
             SyntecClient.uploadNCFile(SyntecClient.NCFileName.INITIALIZER);
 
             SyntecClient.cycleStart();
-            initRunning = true;
 
             while (!SyntecClient.isBusy())
-                Thread.Sleep(300);
+                Thread.Sleep(50);
 
             while (!SyntecClient.isIdle())
-                Thread.Sleep(300);
+                Thread.Sleep(50);
 
             Thread.Sleep(500);
             SyntecClient.cycleReset();
@@ -1082,6 +1104,8 @@ namespace PCController
         private void bt_test_Click(object sender, EventArgs e)
         {
             //SyntecClient.writeReg(17, 150);//JOG Speed
+            SyntecClient.setOrigin(4);
+            return;
 
             SyntecClient.setJOGSpeed(30);
 
@@ -1126,6 +1150,7 @@ namespace PCController
         {
             SyntecClient.setJOGSpeed((int)num_JOGSpeed.Value);
         }
+
         private void bt_comT1_Click(object sender, EventArgs e)
         {
             //
@@ -1133,6 +1158,7 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(TRCClient.init1);
 
         }
+
     }
 
 

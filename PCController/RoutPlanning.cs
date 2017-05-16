@@ -12,6 +12,13 @@ namespace PCController
         public static double longbase;
         public static double longrate2;
         public static double longrate3;
+
+        public static double ratio;
+        public static double distance;
+
+        public static double[,] coordinate;
+
+
     }
 
     class MotorAngle
@@ -419,8 +426,9 @@ namespace PCController
         }
 
 
-        public static void Initialize(double[,] coordinate, double distance, double ratio)
+        public static void Initialize()
         {
+            ArmData.coordinate = new double[10, 4];
 
             /*
             the first layer(highter one) are 0~3(left to right);second layer(lower one) are 4~7(left to right)
@@ -533,7 +541,7 @@ namespace PCController
                         dy = realcd[i + 1, 1] - realcd[i, 1];
                     }
                     l = Math.Sqrt(dx * dx + dy * dy);
-                    h = Math.Sqrt(ratio * ratio - (l / 2) * (l / 2));
+                    h = Math.Sqrt(ArmData.ratio * ArmData.ratio - (l / 2) * (l / 2));
                     tdx = (-1) * h * dy / l;
                     tdy = h * dx / l;
                     centerx[i] = cx - tdx;
@@ -573,8 +581,8 @@ namespace PCController
 
             for (i = 0; i < 10; i++)
             {
-                reference[i, 0] = avcx + (realcd[i, 0] - avcx) * ((ratio - distance - armlong3) / ratio);
-                reference[i, 1] = avcy + (realcd[i, 1] - avcy) * ((ratio - distance - armlong3) / ratio);
+                reference[i, 0] = avcx + (realcd[i, 0] - avcx) * ((ArmData.ratio - ArmData.distance - armlong3) / ArmData.ratio);
+                reference[i, 1] = avcy + (realcd[i, 1] - avcy) * ((ArmData.ratio - ArmData.distance - armlong3) / ArmData.ratio);
                 //printf("\n%f %f %f\n",reference[i][0],reference[i][1],(reference[i][0]-avcx)*(reference[i][0]-avcx)+(reference[i][1]-avcy)*(reference[i][1]-avcy));
                 Program.form.mesPrintln(string.Format("各平台直線進入點  x:{0:f} y:{1:f}", reference[i, 0], reference[i, 1]));
             }
@@ -586,14 +594,14 @@ namespace PCController
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);
                     tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
-                    coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
-                    coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
-                    coordinate[i, 0] = 180 - (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1];
-                    coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
-                    coordinate[i, 2] = 180 - ((Math.Acos(coordinate[i, 2])) * 180 / pi);
-                    coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
-                    coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
+                    ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
+                    ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
+                    ArmData.coordinate[i, 0] = 180 - (tmpangle1 + ArmData.coordinate[i, 0]);
+                    ArmData.coordinate[i, 1] = measureangle[i, 1];
+                    ArmData.coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
+                    ArmData.coordinate[i, 2] = 180 - ((Math.Acos(ArmData.coordinate[i, 2])) * 180 / pi);
+                    ArmData.coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
+                    ArmData.coordinate[i, 3] = (Math.Acos(ArmData.coordinate[i, 3])) * 180 / pi;
                     tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
                     tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
                     tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
@@ -601,11 +609,11 @@ namespace PCController
                     judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
                     if (judgevector<=0)
                     {
-                        coordinate[i, 3] = (-1) * (tmpangle2 + coordinate[i, 3]);
+                        ArmData.coordinate[i, 3] = (-1) * (tmpangle2 + ArmData.coordinate[i, 3]);
                     }
                     else
                     {
-                        coordinate[i, 3] = (-1) * (coordinate[i, 3] - tmpangle2);
+                        ArmData.coordinate[i, 3] = (-1) * (ArmData.coordinate[i, 3] - tmpangle2);
                     }
                     /*
                     coordinate[i + 5, 0] = coordinate[i, 0];
@@ -619,14 +627,14 @@ namespace PCController
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ( reference[i, 0] * 1) / (tmplong1);
                     tmpangle1 = (Math.Acos(tmpangle1)) * 180 / pi;
-                    coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
-                    coordinate[i, 0] = (Math.Acos(coordinate[i, 0])) * 180 / pi;
-                    coordinate[i, 0] = (tmpangle1 + coordinate[i, 0]);
-                    coordinate[i, 1] = measureangle[i, 1];
-                    coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
-                    coordinate[i, 2] = ((Math.Acos(coordinate[i, 2])) * 180 / pi)-180;
-                    coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
-                    coordinate[i, 3] = (Math.Acos(coordinate[i, 3])) * 180 / pi;
+                    ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
+                    ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
+                    ArmData.coordinate[i, 0] = (tmpangle1 + ArmData.coordinate[i, 0]);
+                    ArmData.coordinate[i, 1] = measureangle[i, 1];
+                    ArmData.coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
+                    ArmData.coordinate[i, 2] = ((Math.Acos(ArmData.coordinate[i, 2])) * 180 / pi)-180;
+                    ArmData.coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
+                    ArmData.coordinate[i, 3] = (Math.Acos(ArmData.coordinate[i, 3])) * 180 / pi;
                     tmplong2 = Math.Sqrt((reference[i, 0] - avcx) * (reference[i, 0] - avcx) + (reference[i, 1] - avcy) * (reference[i, 1] - avcy));
                     tmpangle2 = (reference[i, 0] * (reference[i, 0] - avcx) + reference[i, 1] * (reference[i, 1] - avcy)) / (tmplong2 * tmplong1);
                     tmpangle2 = (Math.Acos(tmpangle2)) * 180 / pi;
@@ -634,11 +642,11 @@ namespace PCController
                     judgevector = avcx * reference[i, 1] - avcy * reference[i, 0];
                     if (judgevector >0)
                     {
-                        coordinate[i, 3] = (1) * (tmpangle2 + coordinate[i, 3]);
+                        ArmData.coordinate[i, 3] = (1) * (tmpangle2 + ArmData.coordinate[i, 3]);
                     }
                     else
                     {
-                        coordinate[i, 3] = (1) * (coordinate[i, 3] - tmpangle2);
+                        ArmData.coordinate[i, 3] = (1) * (ArmData.coordinate[i, 3] - tmpangle2);
                     }
                     /*
                     coordinate[i + 5, 0] = coordinate[i, 0];
@@ -647,7 +655,7 @@ namespace PCController
                     coordinate[i + 5, 3] = coordinate[i, 3];
                     */
                 }
-                Program.form.mesPrintln(string.Format("各平台直線進入初始四軸角度 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
+                Program.form.mesPrintln(string.Format("各平台直線進入初始四軸角度 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3]));
             }
 
 

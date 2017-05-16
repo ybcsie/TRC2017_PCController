@@ -136,6 +136,8 @@ namespace PCController
 
         public static void cycleStart()
         {
+            setJOGSpeed(150);
+
             setControlMode(ControlMode.AUTO);
 
             writeReg(19, 1);
@@ -210,6 +212,7 @@ namespace PCController
         {
             cnc.WRITE_macro_single(no, val);
             Program.form.mesPrintln(string.Format("SyntectClient: Write global var @{0:d} = {1:f3}", no, val));
+            Thread.Sleep(20);
 
         }
 
@@ -217,11 +220,13 @@ namespace PCController
         public static void writeReg(int addr, int val)
         {
             cnc.WRITE_plc_register(addr, addr, new int[] { val });
+            Thread.Sleep(20);
         }
 
         public static void writeReg(int addrStart, int addrEnd, int[] vals)
         {
             cnc.WRITE_plc_register(addrStart, addrEnd, vals);
+            Thread.Sleep(20);
         }
 
         public static void writeCBit(int addr, bool val)
@@ -273,6 +278,8 @@ namespace PCController
         {
             setControlMode(ControlMode.SET_ORIGIN);
             writeReg(15208, axis);
+            Thread.Sleep(50);
+            writeReg(15208, 0);
         }
 
         public static void setJOGSpeed(int percent)
