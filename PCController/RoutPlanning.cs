@@ -18,7 +18,7 @@ namespace PCController
 
         public static double[,] coordinate;
 
-        public static double[,] measureangle=null;
+        public static double[,] measureangle = null;
 
     }
 
@@ -118,7 +118,6 @@ namespace PCController
             double afterline1 = 0, afterangle1 = 0, afterangle3 = 0, afterangle4 = 0;
 
 
-            
             //判斷是否超過極限，若超過極限，則伸長至極限
             tmpline1 = Math.Pow(arm1long, 2) + Math.Pow(arm2long, 2) - 2 * arm1long * arm2long * Math.Cos(angle3);
             tmpline1 = Math.Sqrt(tmpline1);
@@ -160,7 +159,8 @@ namespace PCController
                 Program.form.mesPrintln(string.Format("移動距離超出極限，自動重設距離為極限點 arm1={0:f3},arm2={1:f3},arm3={2:f3} longest = {3:f3}", arm1long, arm2long, arm3long, longestmove));
                 distance = longestmove;
             }
-            
+
+
             movelong = distance / pointsnum;
 
             tmpangle6 = 0;
@@ -657,6 +657,8 @@ namespace PCController
 
 
         }
+
+
         public static void checkcassette(double[,] checkcassette)
         {
             int i = 0;

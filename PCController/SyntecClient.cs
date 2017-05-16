@@ -211,7 +211,7 @@ namespace PCController
         public static void writeGVar(int no,double val)
         {
             cnc.WRITE_macro_single(no, val);
-            Program.form.mesPrintln(string.Format("SyntectClient: Write global var @{0:d} = {1:f3}", no, val));
+            //Program.form.mesPrintln(string.Format("SyntectClient: Write global var @{0:d} = {1:f3}", no, val));
             Thread.Sleep(20);
 
         }

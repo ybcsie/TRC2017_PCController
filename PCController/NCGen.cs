@@ -314,6 +314,8 @@ namespace PCController
             ncfile.Close();
         }
 
+
+
         private static string[] initNCLines =
         {
             //1
@@ -331,17 +333,31 @@ G90 MOVJ C1=120. FJ10;
             //5
             "G90 MOVJ C2=30. C3=10. C4=90. FJ10;",
             //6
+            "G91 MOVJ C4=@1004 FJ20;",
+            //7
             @"
-%%@MACRO
-#1510 := @115221;
+G91 MOVJ C1=@1001 C2=@1002 C3=@1003 C4=@1004 FJ10;
+#11:=700;
+#12:=800;
+#14:=900;
 
-@11 := 0;
-@12 := 2;
-@13 := 100;
+G91;
+FOR #1:=1 TO @699 BY 1 DO
+MOVJ C1=@[#11] C2=@[#12] C4=@[#14] PL10 FJ10;
+
+#11:=#11+1;
+#12:=#12+1;
+#14:=#14+1;
+
+END_FOR;
+",
+            //8
+@"
+@11=0;
 "
 
 //N1
-+@"
++ @"
 N1;
 SLEEP();
 
@@ -369,6 +385,10 @@ IF (@11 = 6) THEN
 GOTO 7;
 END_IF;
 
+IF (@11 = 7) THEN
+GOTO 8;
+END_IF;
+
 GOTO 1;
 "
 
@@ -382,7 +402,7 @@ N2;
 
 G91;
 FOR #1:=1 TO @12 BY 1 DO
-MOVJ C1=@[#11] C2=@[#12] C4=@[#14] FJ10;
+MOVJ C1=@[#11] C2=@[#12] C4=@[#14] PL10 FJ10;
 
 #11:=#11+10;
 #12:=#12+10;
@@ -394,21 +414,22 @@ WAIT();
 GOTO 1;
 
 "
+
 
 //N3 theta +
-+@"
++ @"
 N3;
-G91 MOVJ C1=5. FJ10;
+G91 MOVJ C1=2. FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
 
 "
 
-//N4 theta +
-+@"
+//N4 theta -
++ @"
 N4;
-G91 MOVJ C1=-5. FJ10;
+G91 MOVJ C1=-2. FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
@@ -416,68 +437,50 @@ GOTO 1;
 
 "
 
-//N5
-+@"
+//N5 move out
++ @"
 N5;
-#11:=1011;
-#12:=1012;
-#13:=1013;
-#14:=1014;
+#11:=700+@699-1;
+#12:=800+@699-1;
+#14:=900+@699-1;
 
-G90;
-FOR #2:=0 TO @13 BY 1 DO
-MOVJ C1=@[#11] C2=@[#12] C4=@[#14] FJ10;
-WAIT();
+G91;
+FOR #1:=1 TO @699 BY 1 DO
+MOVJ C1=-@[#11] C2=-@[#12] C4=-@[#14] PL10 FJ10;
 
-#11:=#11+10;
-#12:=#12+10;
-#13:=#13+10;
-#14:=#14+10;
-
-G90;
-FOR #3:=0 TO 50 BY 1 DO
-MOVJ C1=0.02;
-WAIT();
-
-IF (READDI(320) = 1) THEN
-GOTO 8;
-END_IF;
-
-G91 MOVJ C1=-1.0;
-WAIT();
+#11:=#11-1;
+#12:=#12-1;
+#14:=#14-1;
 
 END_FOR;
-END_FOR;
-
+WAIT();
 @11 := 0;
-GOTO 1;
+GOTO 8;
 "
 
 //N6 theta + precise
-+@"
++ @"
 N6;
-G91 MOVJ C4=0.1 FJ5;
+G91 MOVJ C1=0.2 FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
 "
 
 //N7 theta - precise
-+@"
++ @"
 N7;
-G91 MOVJ C4=-0.1 FJ5;
+G91 MOVJ C1=-0.2 FJ5;
 WAIT();
 @11 := 0;
 GOTO 1;
 "
 
 //N8
-+@"
++ @"
 N8;
 
-M30;
-",
-            ""
+"
         };
 
         public static void genInitNC(int step)
@@ -485,48 +488,6 @@ M30;
             startGenNC("initializer.txt");
 
             ncfile.WriteLine(initNCLines[step - 1]);
-
-            /*
-
-            ncfile.WriteLine("WAIT();");
-
-            ncfile.WriteLine("@10 := 1;");
-            ncfile.WriteLine("@11 := 0;");
-            ncfile.WriteLine("WAIT();");
-
-            ncfile.WriteLine("N1;");
-            ncfile.WriteLine("SLEEP();");
-
-            ncfile.WriteLine("IF (@11 = 1) THEN"); //move forward
-            ncfile.WriteLine("GOTO 2;");
-            ncfile.WriteLine("END_IF;");
-
-            ncfile.WriteLine("IF (@11 = 2) THEN"); //search linearly
-            ncfile.WriteLine("GOTO 3;");
-            ncfile.WriteLine("END_IF;");
-
-
-            ncfile.WriteLine("GOTO 1;");
-
-
-            ncfile.WriteLine("N2;");
-            ncfile.WriteLine(getMovCode(2));
-            ncfile.WriteLine("WAIT();");
-
-
-            ncfile.WriteLine("@100050 := 0;");
-            ncfile.WriteLine("END_IF");
-
-
-            ncfile.WriteLine("N3;");
-            ncfile.WriteLine(getMovCode(100));
-            ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("@11 := 0;");
-            ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("GOTO 1;");
-
-            */
-
 
             endGenNC();
         }
@@ -538,18 +499,6 @@ M30;
             endGenNC();
         }
 
-        private static string getMovCode(int pointCount)
-        {
-            string output = "";
-            int gvarNO = 100;
-
-            for (int i = 0; i < pointCount; i++)
-            {
-                output += string.Format("MOVJ C1=@{0:d} C2=@{1:d} C3=@{2:d} C4=@{3:d} FJ3 PL5;\r\n", gvarNO++, gvarNO++, gvarNO++, gvarNO++);
-            }
-
-            return output;
-        }
 
         /*
         private static string getSearchCode(int pointCount)
