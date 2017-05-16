@@ -694,7 +694,8 @@ namespace PCController
 
         private void bt_genNC_Click(object sender, EventArgs e)
         {
-            ThreadsController.addThreadAndStartByFunc(auto);
+            RoutPlanning.Initialize();
+            //ThreadsController.addThreadAndStartByFunc(auto);
 
         }
 
@@ -1011,6 +1012,7 @@ namespace PCController
                     SyntecClient.writeGVar(800 + i, (double)currNode.three - coor[2]);
                     SyntecClient.writeGVar(900 + i++, (double)currNode.four - coor[3]);
 
+
                     coor[0] = (double)currNode.one;
                     coor[2] = (double)currNode.three;
                     coor[3] = (double)currNode.four;
@@ -1019,6 +1021,16 @@ namespace PCController
                 }
 
                 isMovStageAllowed = true;
+
+                ArmData.measureangle = new double[10, 4];
+                for(i=0;i<10;i++)
+                {
+                    ArmData.measureangle[i, 0] = 0;
+                    ArmData.measureangle[i, 1] = 0;
+                    ArmData.measureangle[i, 2] = 0;
+                    ArmData.measureangle[i, 3] = 0;
+                }
+
                 mesPrintln("Initializer: Initialized successfully!");
 
             });
@@ -1152,6 +1164,10 @@ namespace PCController
                 double[] pos;
                 SyntecClient.getPos(out pos);
 
+                ArmData.measureangle[initStage, 0] = pos[0];
+                ArmData.measureangle[initStage, 2] = pos[1];
+                ArmData.measureangle[initStage, 3] = pos[3];
+
                 mesPrintln(
                     string.Format("Stage {0:d} has been initialized by: ", initStage) +
                     string.Format("C1 = {0:f3}", pos[0]) +
@@ -1160,12 +1176,11 @@ namespace PCController
                     );
 
                 while (SyntecClient.readSingleVar(11) != 0)
-                    Thread.Sleep(20);
+                    Thread.Sleep(50);
 
                 mesPrintln("Leaving...");
                 SyntecClient.writeGVar(11, 4);
 
-                mesPrintln("Done!");
             });
 
         }
