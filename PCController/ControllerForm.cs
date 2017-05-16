@@ -97,7 +97,7 @@ namespace PCController
             ArmData.longrate2 = 0.5901;
             ArmData.longrate3 = 1.25655;
 
-            ArmData.distance = 200;
+            ArmData.distance = 270;
             ArmData.ratio = 780;
 
             //initialize coordinate
@@ -356,7 +356,7 @@ namespace PCController
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
-                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance+20, pointsnum);
+                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance, pointsnum);
             }
 
 

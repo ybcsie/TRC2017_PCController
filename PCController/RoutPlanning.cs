@@ -18,6 +18,7 @@ namespace PCController
 
         public static double[,] coordinate;
 
+        public static double[,] measureangle=null;
 
     }
 
@@ -67,6 +68,7 @@ namespace PCController
     {
         public static int pointCount;
 
+        private static bool location=false;
 
         private static MotorAngle calcu(MotorAngle origangle, double distance, int pointsnum)
         {
@@ -116,7 +118,7 @@ namespace PCController
             double afterline1 = 0, afterangle1 = 0, afterangle3 = 0, afterangle4 = 0;
 
 
-
+            
             //判斷是否超過極限，若超過極限，則伸長至極限
             tmpline1 = Math.Pow(arm1long, 2) + Math.Pow(arm2long, 2) - 2 * arm1long * arm2long * Math.Cos(angle3);
             tmpline1 = Math.Sqrt(tmpline1);
@@ -127,13 +129,13 @@ namespace PCController
                 tmpangle6 = (tmpline1 * Math.Sin(tmpangle7 + angle4)) / (arm1long + arm2long);
                 tmpangle6 = Math.Asin(tmpangle6);
                 tmpangle6 = pi - tmpangle7 - tmpangle6 - angle4;
-                if (tmpangle6 <0.0001)
+                if (tmpangle6 <0.000001)
                 {
                     longestmove = arm1long + arm2long - tmpline1;
                 }
                 else
                 {
-                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / (2 * pi - tmpangle7 - angle4);
+                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / Math.Sin(tmpangle7 + angle4);
                 }
                 Program.form.mesPrintln(String.Format("tmpline:{0:f},tmpangle7:{1:f},tmpangle6:{2:f},longestmove:{3:f}",tmpline1 ,tmpangle7,tmpangle6,longestmove));
             }
@@ -142,22 +144,23 @@ namespace PCController
                 tmpangle6 = (tmpline1 * Math.Sin(2*pi - tmpangle7 - angle4)) / (arm1long + arm2long);
                 tmpangle6 = Math.Asin(tmpangle6);
                 tmpangle6 = pi - tmpangle6 - (2 * pi - tmpangle7 - angle4);
-                if (tmpangle6 < 0.0001)
+                if (tmpangle6 < 0.000001)
                 {
                     longestmove = arm1long + arm2long - tmpline1;
                 }
                 else
                 {
-                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / (2 * pi - tmpangle7 - angle4);
+                    longestmove = (arm1long + arm2long) * Math.Sin(tmpangle6) / Math.Sin(2 * pi - tmpangle7 - angle4);
                 }
                 Program.form.mesPrintln(String.Format("tmpline:{0:f},tmpangle7:{1:f},tmpangle6:{2:f},longestmove:{3:f}", tmpline1, tmpangle7, tmpangle6, longestmove));
             }
 
             if (distance > longestmove)
             {
-                Program.form.mesPrintln(string.Format("移動距離超出極限，自動重設距離為極限點 longest = {0:f3}", longestmove));
+                Program.form.mesPrintln(string.Format("移動距離超出極限，自動重設距離為極限點 arm1={0:f3},arm2={1:f3},arm3={2:f3} longest = {3:f3}", arm1long, arm2long, arm3long, longestmove));
                 distance = longestmove;
             }
+            
             movelong = distance / pointsnum;
 
             tmpangle6 = 0;
@@ -436,8 +439,8 @@ namespace PCController
             //int[,] coordinate = new int[10, 4];
             int i;
             int count = 0;
-            double[,] measureangle = new double[10, 4];
-            double[,] realcd = new double[10, 2];
+            //double[,] measureangle = new double[10, 4];
+            double[,] realcd = new double[10, 3];
             double[] centerx = new double[4];
             double[] centery = new double[4];
             double avcx, avcy;
@@ -446,80 +449,52 @@ namespace PCController
             double armlong2 = armlong1 * ArmData.longrate2;
             double armlong3 = armlong1 * ArmData.longrate3;
             const double pi = 3.1415926;
+            
             //Program.form.mesPrintln(String.Format(".... {0:f}  {1:f}  {2:f}", armlong1, armlong2, armlong3));
 
 
-            for (i = 0; i < 10; i++)
-            {
-                if (i < 5)
-                {
-                    measureangle[i, 1] = 121.5;//for test,because no measureangle
-                }
-                else
-                {
-                    measureangle[i, 1] = 16.5;
-                }
-                measureangle[i, 0] = 0;
-            }
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>定初始點(第二軸是C3!!)
-/*
-            measureangle[0, 0] =;
-            measureangle[0, 1] =;
-            measureangle[0, 2] =;
-            measureangle[0, 3] =;
-            measureangle[1, 0] =;
-            measureangle[1, 1] =;
-            measureangle[1, 2] =;
-            measureangle[1, 3] =;
-            measureangle[2, 0] =;
-            measureangle[2, 1] =;
-            measureangle[2, 2] =;
-            measureangle[2, 3] =;
-            measureangle[6, 0] =;
-            measureangle[6, 1] =;
-            measureangle[6, 2] =;
-            measureangle[6, 3] =;
-            measureangle[7, 0] =;
-            measureangle[7, 1] =;
-            measureangle[7, 2] =;
-            measureangle[7, 3] =;
-            measureangle[8, 0] =;
-            measureangle[8, 1] =;
-            measureangle[8, 2] =;
-            measureangle[8, 3] =;
-*/
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             //calculate the real(x,y)coordinate(realcd) of each platform
-            for (i = 0; i < 10; i++)
+            if (ArmData.measureangle != null)
             {
-                if (measureangle[i, 0] !=0)
+                for (i = 0; i < 10; i++)
                 {
-                    realcd[i, 0] = (armlong1 * Math.Cos(measureangle[i, 0])) + (armlong2 * Math.Cos(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Cos(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3]));
-                    realcd[i, 1] = (armlong1 * Math.Sin(measureangle[i, 0])) + (armlong2 * Math.Sin(measureangle[i, 0] + measureangle[i, 2])) + (armlong3 * Math.Sin(measureangle[i, 0] + measureangle[i, 2] - measureangle[i, 3])); ;
+                    if (ArmData.measureangle[i, 0] != 0)
+                    {
+                        realcd[i, 0] = (armlong1 * Math.Cos(ArmData.measureangle[i, 0])) + (armlong2 * Math.Cos(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])) + (armlong3 * Math.Cos(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] - ArmData.measureangle[i, 3]));
+                        realcd[i, 1] = (armlong1 * Math.Sin(ArmData.measureangle[i, 0])) + (armlong2 * Math.Sin(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])) + (armlong3 * Math.Sin(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] - ArmData.measureangle[i, 3])); 
+
+                    }
+                    else
+                    {
+                        realcd[i, 0] = -1;
+                        realcd[i, 1] = -1;
+                    }
+
                 }
-                else
+            }
+            else
+            {
+                Program.form.mesPrintln("use defalt angle");
+                for (i = 0; i < 10; i++)
                 {
                     realcd[i, 0] = -1;
                     realcd[i, 1] = -1;
                 }
+                
+                realcd[1, 0] = -458.4725;
+                realcd[1, 1] = 631.033255;
 
+                realcd[2, 0] = 0;
+                realcd[2, 1] = 780;
+                realcd[3, 0] = 458.4725;
+                realcd[3, 1] = 631.033255;
+
+                //need to deleted
             }
-            //
-            double topanglez = 0, loweranglez = 0;
-//>>>>>>>>>>>>>>>>test
-            realcd[0, 0] = -741.824;
-            realcd[0, 1] = 241.033255;
-            realcd[1, 0] = -458.4725;
-            realcd[1, 1] = 631.033255;
-            /*
-            realcd[2, 0] = 0;
-            realcd[2, 1] = 780;
-            realcd[3, 0] = 458.4725;
-            realcd[3, 1] = 631.033255;
-            realcd[4, 0] = 741.824;
-            realcd[4, 1] = 241.033255;
-            */
-            //need to deleted
+            for (i=0;i<4;i++)
+            {
+                centerx[i] = 0;
+            }
 
             //calculate the center of cycle
             double cx, cy, dx, dy, l, h, tdx, tdy;
@@ -560,8 +535,8 @@ namespace PCController
                 {
                     if (i < 5 )
                     {
-                        realcd[i, 0] =avcx+ ((realcd[0, 0] - avcx) * Math.Cos(-1 *36 * i * pi / 180)) - ((realcd[0, 1] - avcy) * Math.Sin(-1 *36 * i * pi / 180));
-                        realcd[i, 1] =avcy+ ((realcd[0, 0] - avcx) * Math.Sin(-1 * 36 * i * pi / 180)) + ((realcd[0, 1] - avcy) * Math.Cos(-1 * 36 * i * pi / 180));
+                        realcd[i, 0] =avcx+ ((realcd[2, 0] - avcx) * Math.Cos(-1 *36 * (i-2) * pi / 180)) - ((realcd[2, 1] - avcy) * Math.Sin(-1 *36 * (i-2) * pi / 180));
+                        realcd[i, 1] =avcy+ ((realcd[2, 0] - avcx) * Math.Sin(-1 * 36 * (i-2) * pi / 180)) + ((realcd[2, 1] - avcy) * Math.Cos(-1 * 36 * (i-2) * pi / 180));
                         //Program.form.mesPrintln(String.Format("..... i:{0:d} x:{1:f} y: {2:f}", i,realcd[i,0], realcd[i,1]));
                     }
                     else
@@ -597,7 +572,18 @@ namespace PCController
                     ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
                     ArmData.coordinate[i, 0] = 180 - (tmpangle1 + ArmData.coordinate[i, 0]);
-                    ArmData.coordinate[i, 1] = measureangle[i, 1];
+                    if (ArmData.measureangle != null)
+                    {
+                        ArmData.coordinate[i, 1] = ArmData.measureangle[i, 1];
+                    }
+                    else if(i<5)
+                    {
+                        ArmData.coordinate[i, 1] = 121.5;
+                    }
+                    else
+                    {
+                        ArmData.coordinate[i, 1] = 16.5;
+                    }
                     ArmData.coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     ArmData.coordinate[i, 2] = 180 - ((Math.Acos(ArmData.coordinate[i, 2])) * 180 / pi);
                     ArmData.coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
@@ -630,7 +616,18 @@ namespace PCController
                     ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
                     ArmData.coordinate[i, 0] = (tmpangle1 + ArmData.coordinate[i, 0]);
-                    ArmData.coordinate[i, 1] = measureangle[i, 1];
+                    if (ArmData.measureangle != null)
+                    {
+                        ArmData.coordinate[i, 1] = ArmData.measureangle[i, 1];
+                    }
+                    else if (i < 5)
+                    {
+                        ArmData.coordinate[i, 1] = 121.5;
+                    }
+                    else
+                    {
+                        ArmData.coordinate[i, 1] = 16.5;
+                    }
                     ArmData.coordinate[i, 2] = (armlong1 * armlong1 + armlong2 * armlong2 - tmplong1 * tmplong1) / (2 * armlong1 * armlong2);
                     ArmData.coordinate[i, 2] = ((Math.Acos(ArmData.coordinate[i, 2])) * 180 / pi)-180;
                     ArmData.coordinate[i, 3] = (armlong2 * armlong2 + tmplong1 * tmplong1 - armlong1 * armlong1) / (2 * tmplong1 * armlong2);
