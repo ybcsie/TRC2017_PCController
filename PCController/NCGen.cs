@@ -27,7 +27,7 @@ namespace PCController
 
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
             ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("MOVJ C1=90.0 C2=0.0 C4=0.00 FJ20 PL10;");
+            //ncfile.WriteLine("MOVJ C1=90.0 C2=0.0 C4=0.00 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C1=82.735 C2=174.890 C4=-150.000 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=170.0 C4=150.0 FJ20 PL10;");
@@ -330,10 +330,21 @@ G90 MOVJ C1=120. FJ10;
             "G91 MOVJ C4=@1004 FJ5;",
             //4
             "G91 MOVJ C4=30. FJ10;",
-            //5
-            "G90 MOVJ C2=30. C3=10. C4=90. FJ10;",
-            //6
-            "G91 MOVJ C4=@1004 FJ20;",
+            //5 home C1 at left
+            @"
+G91 MOVJ C2=@1002 C3=@1003 C4=@1004 FJ20;
+G91 MOVJ C2=-180. C4=-10. FJ20;
+G91 MOVJ C2=-120. C4=150. FJ20;
+G91 MOVJ C4=90. FJ20;
+G90 MOVJ C1=70. FJ10;
+",
+            //6 home all positive
+            @"
+G91 MOVJ C2=@1002 C3=@1003 C4=@1004 FJ20;
+G91 MOVJ C4=90. FJ20;
+G91 MOVJ C2=-60. C4=90. FJ20;
+G90 MOVJ C1=70. FJ10;
+",
             //7
             @"
 G91 MOVJ C1=@1001 C2=@1002 C3=@1003 C4=@1004 FJ10;
@@ -352,6 +363,23 @@ MOVJ C1=@[#11] C2=@[#12] C4=@[#14] PL10 FJ10;
 END_FOR;
 ",
             //8
+            @"
+G91 MOVJ C1=@1001 C2=@1002 C3=@1003 C4=@1004 FJ10;
+#11:=1600;
+#12:=1700;
+#14:=1800;
+
+G91;
+FOR #1:=1 TO @1500 BY 1 DO
+MOVJ C1=@[#11] C2=@[#12] C4=@[#14] PL10 FJ10;
+
+#11:=#11+1;
+#12:=#12+1;
+#14:=#14+1;
+
+END_FOR;
+",
+            //9
             @"
 @11=0;
 "

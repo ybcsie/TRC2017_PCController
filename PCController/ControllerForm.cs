@@ -332,13 +332,13 @@ namespace PCController
             mesPrintln("NCGen: NC Code generation is done.");
 
 
-            //Thread startcontrol = new Thread();
-            
-            ThreadsController.addThreadAndStartByFunc(() =>
-            {
-                controlwhile(scheduleing, cassettezaxis);
+            SyntecClient.cycleReset();
 
-            });
+            SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
+
+            SyntecClient.cycleStart();
+
+            controlwhile(scheduleing, cassettezaxis);
             
 
         }
@@ -651,8 +651,7 @@ namespace PCController
 
         private void bt_genNC_Click(object sender, EventArgs e)
         {
-            RoutPlanning.Initialize();
-            //ThreadsController.addThreadAndStartByFunc(auto);
+            ThreadsController.addThreadAndStartByFunc(auto);
 
         }
 
@@ -895,7 +894,8 @@ namespace PCController
 
         private void bt_start_Click(object sender, EventArgs e)
         {
-            //controlwhile(scheduleing, coordinate, cassettezaxis);
+            //ThreadsController.addThreadAndStartByFunc(Initializer.home);
+            ThreadsController.addThreadAndStartByFunc(auto);
         }
 
 
@@ -917,6 +917,10 @@ namespace PCController
 
         }
 
+        private void bt_initCoo_Click(object sender, EventArgs e)
+        {
+            RoutPlanning.Initialize();
+        }
     }
 
 

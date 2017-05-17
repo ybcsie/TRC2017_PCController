@@ -60,6 +60,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.bt_comT1 = new System.Windows.Forms.Button();
+            this.bt_test = new System.Windows.Forms.Button();
             this.panelTestFunc = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.num_obitNo = new System.Windows.Forms.NumericUpDown();
@@ -100,12 +101,12 @@
             this.bt_thetaN = new System.Windows.Forms.Button();
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.bt_start = new System.Windows.Forms.Button();
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.bt_test = new System.Windows.Forms.Button();
-            this.bt_start = new System.Windows.Forms.Button();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.bt_initCoo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -466,6 +467,16 @@
             this.bt_comT1.UseVisualStyleBackColor = true;
             this.bt_comT1.Click += new System.EventHandler(this.bt_comT1_Click);
             // 
+            // bt_test
+            // 
+            this.bt_test.Location = new System.Drawing.Point(222, 305);
+            this.bt_test.Name = "bt_test";
+            this.bt_test.Size = new System.Drawing.Size(75, 23);
+            this.bt_test.TabIndex = 28;
+            this.bt_test.Text = "Test";
+            this.bt_test.UseVisualStyleBackColor = true;
+            this.bt_test.Click += new System.EventHandler(this.bt_test_Click);
+            // 
             // panelTestFunc
             // 
             this.panelTestFunc.Controls.Add(this.label9);
@@ -744,6 +755,7 @@
             // 
             // panel_Initialize
             // 
+            this.panel_Initialize.Controls.Add(this.bt_initCoo);
             this.panel_Initialize.Controls.Add(this.panel_movStage);
             this.panel_Initialize.Controls.Add(this.bt_originSetter);
             this.panel_Initialize.Controls.Add(this.bt_startInit);
@@ -763,14 +775,14 @@
             this.panel_movStage.Controls.Add(this.rBt_initStage1);
             this.panel_movStage.Controls.Add(this.rBt_initStage2);
             this.panel_movStage.Controls.Add(this.rBt_initStage6);
-            this.panel_movStage.Location = new System.Drawing.Point(3, 60);
+            this.panel_movStage.Location = new System.Drawing.Point(3, 51);
             this.panel_movStage.Name = "panel_movStage";
             this.panel_movStage.Size = new System.Drawing.Size(289, 102);
             this.panel_movStage.TabIndex = 20;
             // 
             // bt_movToStage
             // 
-            this.bt_movToStage.Location = new System.Drawing.Point(94, 57);
+            this.bt_movToStage.Location = new System.Drawing.Point(94, 59);
             this.bt_movToStage.Name = "bt_movToStage";
             this.bt_movToStage.Size = new System.Drawing.Size(97, 35);
             this.bt_movToStage.TabIndex = 19;
@@ -873,9 +885,9 @@
             this.panel_Initializer.Controls.Add(this.bt_thetaP);
             this.panel_Initializer.Controls.Add(this.bt_movForward);
             this.panel_Initializer.Enabled = false;
-            this.panel_Initializer.Location = new System.Drawing.Point(40, 171);
+            this.panel_Initializer.Location = new System.Drawing.Point(40, 158);
             this.panel_Initializer.Name = "panel_Initializer";
-            this.panel_Initializer.Size = new System.Drawing.Size(215, 180);
+            this.panel_Initializer.Size = new System.Drawing.Size(215, 155);
             this.panel_Initializer.TabIndex = 12;
             // 
             // bt_movBackward
@@ -890,7 +902,7 @@
             // 
             // bt_getPoint
             // 
-            this.bt_getPoint.Location = new System.Drawing.Point(55, 129);
+            this.bt_getPoint.Location = new System.Drawing.Point(55, 110);
             this.bt_getPoint.Name = "bt_getPoint";
             this.bt_getPoint.Size = new System.Drawing.Size(97, 35);
             this.bt_getPoint.TabIndex = 20;
@@ -901,7 +913,7 @@
             // checkBox_precise
             // 
             this.checkBox_precise.AutoSize = true;
-            this.checkBox_precise.Location = new System.Drawing.Point(82, 107);
+            this.checkBox_precise.Location = new System.Drawing.Point(82, 90);
             this.checkBox_precise.Name = "checkBox_precise";
             this.checkBox_precise.Size = new System.Drawing.Size(56, 16);
             this.checkBox_precise.TabIndex = 13;
@@ -910,7 +922,7 @@
             // 
             // bt_thetaN
             // 
-            this.bt_thetaN.Location = new System.Drawing.Point(108, 57);
+            this.bt_thetaN.Location = new System.Drawing.Point(108, 50);
             this.bt_thetaN.Name = "bt_thetaN";
             this.bt_thetaN.Size = new System.Drawing.Size(70, 35);
             this.bt_thetaN.TabIndex = 12;
@@ -920,7 +932,7 @@
             // 
             // bt_thetaP
             // 
-            this.bt_thetaP.Location = new System.Drawing.Point(30, 57);
+            this.bt_thetaP.Location = new System.Drawing.Point(30, 50);
             this.bt_thetaP.Name = "bt_thetaP";
             this.bt_thetaP.Size = new System.Drawing.Size(72, 35);
             this.bt_thetaP.TabIndex = 11;
@@ -937,6 +949,27 @@
             this.bt_movForward.Text = "Move Forward";
             this.bt_movForward.UseVisualStyleBackColor = true;
             this.bt_movForward.Click += new System.EventHandler(this.bt_movForward_Click);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.bt_start);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(312, 384);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Auto";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // bt_start
+            // 
+            this.bt_start.Location = new System.Drawing.Point(106, 193);
+            this.bt_start.Name = "bt_start";
+            this.bt_start.Size = new System.Drawing.Size(75, 23);
+            this.bt_start.TabIndex = 29;
+            this.bt_start.Text = "Start";
+            this.bt_start.UseVisualStyleBackColor = true;
+            this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
             // 
             // bt_servoSW
             // 
@@ -971,36 +1004,15 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
-            // bt_test
+            // bt_initCoo
             // 
-            this.bt_test.Location = new System.Drawing.Point(222, 305);
-            this.bt_test.Name = "bt_test";
-            this.bt_test.Size = new System.Drawing.Size(75, 23);
-            this.bt_test.TabIndex = 28;
-            this.bt_test.Text = "Test";
-            this.bt_test.UseVisualStyleBackColor = true;
-            this.bt_test.Click += new System.EventHandler(this.bt_test_Click);
-            // 
-            // bt_start
-            // 
-            this.bt_start.Location = new System.Drawing.Point(106, 193);
-            this.bt_start.Name = "bt_start";
-            this.bt_start.Size = new System.Drawing.Size(75, 23);
-            this.bt_start.TabIndex = 29;
-            this.bt_start.Text = "Start";
-            this.bt_start.UseVisualStyleBackColor = true;
-            this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.bt_start);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(312, 384);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Auto";
-            this.tabPage5.UseVisualStyleBackColor = true;
+            this.bt_initCoo.Location = new System.Drawing.Point(86, 325);
+            this.bt_initCoo.Name = "bt_initCoo";
+            this.bt_initCoo.Size = new System.Drawing.Size(123, 35);
+            this.bt_initCoo.TabIndex = 21;
+            this.bt_initCoo.Text = "Initialize Coordinate";
+            this.bt_initCoo.UseVisualStyleBackColor = true;
+            this.bt_initCoo.Click += new System.EventHandler(this.bt_initCoo_Click);
             // 
             // ControllerForm
             // 
@@ -1135,5 +1147,6 @@
         private System.Windows.Forms.Button bt_getPoint;
         private System.Windows.Forms.Panel panel_movStage;
         private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Button bt_initCoo;
     }
 }

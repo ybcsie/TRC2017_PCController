@@ -51,7 +51,7 @@ namespace PCController
                 currNode = currNode.nextangle;
             }
 
-            isMovStageAllowed = true;
+            setupZ();
 
             ArmData.measureangle = new double[10, 4];
             for (i = 0; i < 10; i++)
@@ -63,7 +63,49 @@ namespace PCController
             }
 
             Program.form.mesPrintln("Initializer: Initialized successfully!");
+            isMovStageAllowed = true;
+
         }
+
+        public static void setupZ()
+        {
+            int pointCount = 35;
+
+            double[] coor = new double[] { ArmData.coordinate[8, 0], ArmData.coordinate[8, 1], ArmData.coordinate[8, 2], ArmData.coordinate[8, 3] };
+
+            AngleList linearAngleList = RoutPlanning.routplanning(coor[0], coor[1], coor[2], coor[3], ArmData.distance - 30, pointCount);
+
+            Angle currNode = linearAngleList.headAngle;
+
+            if (currNode != null)
+                currNode = currNode.nextangle;
+            else
+            {
+                Program.form.showWarnning("motivation error!");
+                return;
+            }
+
+            Program.form.mesPrintln("Initializer: Initializing...");
+
+            SyntecClient.writeGVar(1500, pointCount);
+
+            int i = 0;
+            while (currNode != null)
+            {
+                SyntecClient.writeGVar(1600 + i, (double)currNode.one - coor[0]);
+                SyntecClient.writeGVar(1700 + i, (double)currNode.three - coor[2]);
+                SyntecClient.writeGVar(1800 + i++, (double)currNode.four - coor[3]);
+
+
+                coor[0] = (double)currNode.one;
+                coor[2] = (double)currNode.three;
+                coor[3] = (double)currNode.four;
+
+                currNode = currNode.nextangle;
+            }
+
+        }
+
         public static void originSetter()
         {
             /*
@@ -219,10 +261,21 @@ mesPrintln("Initializer: C4 OK!");
             Thread.Sleep(300);
 
             runInitAndWait(4);
-            runInitAndWait(5);
 
+            home(true);
 
             Program.form.mesPrintln("Initializer: Done!");
+
+        }
+        public static void home(bool isC1LeftSide)
+        {
+            writeG91AngleByAbs(2, 150);
+            writeG91AngleByAbs(3, 60);
+            writeG91AngleByAbs(4, -120);
+            if (isC1LeftSide)
+                runInitAndWait(5);
+            else
+                runInitAndWait(6);
 
         }
 
@@ -374,7 +427,6 @@ mesPrintln("Initializer: C4 OK!");
                 writeG91AngleByAbs(2, ArmData.coordinate[6, 2]);
                 writeG91AngleByAbs(3, 25);
                 writeG91AngleByAbs(4, ArmData.coordinate[6, 3]);
-                runInitAndWait(7);
 
             }
             else if (stageIndex == 7)
@@ -384,7 +436,6 @@ mesPrintln("Initializer: C4 OK!");
                 writeG91AngleByAbs(2, ArmData.coordinate[7, 2]);
                 writeG91AngleByAbs(3, 25);
                 writeG91AngleByAbs(4, ArmData.coordinate[7, 3]);
-                runInitAndWait(7);
 
             }
             else if (stageIndex == 8)
@@ -394,8 +445,6 @@ mesPrintln("Initializer: C4 OK!");
                 writeG91AngleByAbs(2, -ArmData.coordinate[8, 2]);
                 writeG91AngleByAbs(3, 25);
                 writeG91AngleByAbs(4, -ArmData.coordinate[8, 3]);
-                runInitAndWait(7);
-
 
             }
             else
@@ -403,6 +452,8 @@ mesPrintln("Initializer: C4 OK!");
                 Program.form.mesPrintln("stage denied.");
                 return;
             }
+
+            runInitAndWait(7);
 
             Program.form.mesPrintln("Move to stage successful!");
 
@@ -415,7 +466,7 @@ mesPrintln("Initializer: C4 OK!");
             ThreadsController.addThreadAndStartByFunc(() =>
             {
                 moverRunning = true;
-                runInitAndWait(8);
+                runInitAndWait(9);
                 moverRunning = false;
                 Program.form.mesPrintln("Initializer: Move Control Loop has been left successfully!");
 
@@ -439,30 +490,33 @@ mesPrintln("Initializer: C4 OK!");
                 string.Format("C4 = {0:f3}", pos[3])
                 );
 
+            Program.form.mesPrintln("Waiting...");
+
+            while (!SyntecClient.isBusy())
+                Thread.Sleep(50);
+
+
             while (SyntecClient.readSingleVar(11) != 0)
                 Thread.Sleep(50);
 
 
             Program.form.mesPrintln("Leaving...");
 
-            for (int i = 0; i < 3 && SyntecClient.readSingleVar(11) != 4; i++)
-            {
-                SyntecClient.writeGVar(11, 4);
-                Thread.Sleep(100);
-            }
+            SyntecClient.writeGVar(11, 4);
 
         }
 
         public static void catchZ()
         {
-            initStage = 7;
-            writeG91AngleByAbs(1, ArmData.coordinate[7, 0]);
-            writeG91AngleByAbs(2, ArmData.coordinate[7, 2]);
-            writeG91AngleByAbs(3, 60);
-            writeG91AngleByAbs(4, ArmData.coordinate[7, 3]);
-            runInitAndWait(7);
+            home(true);
 
-            linearMOV(200, 30);
+            setupZ();
+
+            writeG91AngleByAbs(1, ArmData.coordinate[3, 0]);
+            writeG91AngleByAbs(2, ArmData.coordinate[3, 2]);
+            writeG91AngleByAbs(3, 150);
+            writeG91AngleByAbs(4, ArmData.coordinate[3, 3]);
+            runInitAndWait(8);
 
             SyntecClient.setJOGSpeed(30);
 
