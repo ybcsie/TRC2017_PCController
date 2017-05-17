@@ -928,7 +928,7 @@ namespace PCController
 
         private void bt_test_Click(object sender, EventArgs e)
         {
-            ThreadsController.addThreadAndStartByFunc(Initializer.catchZ);
+            ThreadsController.addThreadAndStartByFunc(Initializer.catchZInit);
 
         }
 
@@ -964,6 +964,15 @@ namespace PCController
         private void bt_initCoo_Click(object sender, EventArgs e)
         {
             RoutPlanning.Initialize();
+        }
+
+        private void bt_zCatch_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                Initializer.catchZ((int)num_initSlotID.Value);
+            });
+
         }
     }
 

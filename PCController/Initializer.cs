@@ -73,7 +73,7 @@ namespace PCController
 
             double[] coor = new double[] { ArmData.coordinate[8, 0], ArmData.coordinate[8, 1], ArmData.coordinate[8, 2], ArmData.coordinate[8, 3] };
 
-            AngleList linearAngleList = RoutPlanning.routplanning(coor[0], coor[1], coor[2], coor[3], ArmData.distance - 30, pointCount);
+            AngleList linearAngleList = RoutPlanning.routplanning(coor[0], coor[1], coor[2], coor[3], ArmData.distance - 120, pointCount);
 
             Angle currNode = linearAngleList.headAngle;
 
@@ -262,7 +262,7 @@ mesPrintln("Initializer: C4 OK!");
 
             runInitAndWait(4);
 
-            home(true);
+            home(false);
 
             Program.form.mesPrintln("Initializer: Done!");
 
@@ -376,7 +376,7 @@ mesPrintln("Initializer: C4 OK!");
 
             while (SyntecClient.readIBit(330 + axis) != sensorState)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(20);
 
                 if (count++ % 5 == 1)
                     if (Math.Abs(SyntecClient.Pos[axis - 1] - pos) < 0.5)
@@ -395,6 +395,94 @@ mesPrintln("Initializer: C4 OK!");
 
             SyntecClient.cycleReset();
 
+
+
+        }
+
+        private static void JOGZUntilSensorChange(int direction, int speed)
+        {
+            SyntecClient.cycleReset();
+            SyntecClient.setJOGSpeed(speed);
+
+            SyntecClient.writeReg(25, 0);
+            SyntecClient.writeReg(57, 0);
+            SyntecClient.writeReg(57, 1);
+
+            SyntecClient.JOG(3, direction);
+
+            double pos = SyntecClient.Pos[2];
+            int count = 0;
+
+            while (SyntecClient.readReg(56) != 1)
+            {
+                Thread.Sleep(5);
+
+                if (count++ % 5 == 1)
+                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
+                    {
+                        Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
+                        SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+                        Thread.Sleep(300);
+                        pos = SyntecClient.Pos[2];
+                        SyntecClient.JOG(3, direction);
+                    }
+            }
+
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+            while (!SyntecClient.readIBit(335))
+            {
+                Thread.Sleep(5);
+
+                if (count++ % 5 == 1)
+                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
+                    {
+                        Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
+                        SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+                        Thread.Sleep(300);
+                        pos = SyntecClient.Pos[2];
+                        SyntecClient.JOG(3, direction);
+                    }
+            }
+
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+            SyntecClient.cycleReset();
+
+        }
+
+        private static void JOGZUntilSensor(int direction, int speed, bool sensorState, bool initModeOn)
+        {
+            SyntecClient.cycleReset();
+            SyntecClient.setJOGSpeed(speed);
+
+            SyntecClient.writeReg(25, initModeOn ? 1 : 0);
+
+            SyntecClient.JOG(3, direction);
+
+            double pos = SyntecClient.Pos[2];
+            int count = 0;
+
+            while (SyntecClient.readIBit(335) != sensorState)
+            {
+                Thread.Sleep(5);
+
+                if (count++ % 5 == 1)
+                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
+                    {
+                        Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
+                        SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+                        Thread.Sleep(300);
+                        pos = SyntecClient.Pos[2];
+                        SyntecClient.JOG(3, direction);
+                    }
+            }
+
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+            SyntecClient.writeReg(25, 0);
+
+            SyntecClient.cycleReset();
 
 
         }
@@ -508,8 +596,7 @@ mesPrintln("Initializer: C4 OK!");
             SyntecClient.writeGVar(11, 4);
 
         }
-
-        public static void catchZ()
+        public static void catchZInit()
         {
             home(true);
 
@@ -521,11 +608,58 @@ mesPrintln("Initializer: C4 OK!");
             writeG91AngleByAbs(4, ArmData.coordinate[3, 3]);
             runInitAndWait(8);
 
-            SyntecClient.setJOGSpeed(30);
+            SyntecClient.writeCBit(36, true);
+            Program.form.showWarnning("move arm to chamber and then press OK");
+            SyntecClient.writeCBit(36, false);
+
+        }
+
+        public static void catchZ(int id)
+        {
 
             //catch Z
+            if (!SyntecClient.readIBit(335))
+            {
+                Program.form.mesPrintln("z sensor is not connected");
+                return;
+            }
+
+            //move Z
+            writeG91AngleByAbs(3, 105 + id * 4);
+            runInitAndWait(10);
+
+
             Program.form.mesPrintln("Catch Z...");
 
+            double[] pos;
+            double z1, z2;
+
+            JOGZUntilSensorChange(SyntecClient.JOGMode.POSITIVE, 10);
+
+            /*
+            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 30, false, false);
+            Program.form.mesPrintln("test1");
+            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, true, false);
+            Program.form.mesPrintln("test2");
+            */
+            JOGZUntilSensor(SyntecClient.JOGMode.NEGATIVE, 10, false, true);
+            SyntecClient.getPos(out pos);
+            z1 = pos[2];
+            Program.form.mesPrintln("Z1 got.");
+
+            JOGZUntilSensor(SyntecClient.JOGMode.NEGATIVE, 10, true, false);
+            Program.form.mesPrintln("up");
+
+
+            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, false, true);
+            SyntecClient.getPos(out pos);
+            z2 = pos[2];
+
+            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, true, false);
+
+            Program.form.mesPrint(string.Format("Z = {0:f3}", (z1 + z2) / 2));
+
+            /*
             SyntecClient.writeReg(25, 0);
             SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
 
@@ -543,6 +677,7 @@ mesPrintln("Initializer: C4 OK!");
             SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
 
             SyntecClient.writeReg(25, 0);
+            */
 
             Program.form.mesPrintln("Done");
 

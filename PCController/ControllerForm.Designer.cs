@@ -84,6 +84,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel_Initialize = new System.Windows.Forms.Panel();
+            this.bt_initCoo = new System.Windows.Forms.Button();
             this.panel_movStage = new System.Windows.Forms.Panel();
             this.bt_movToStage = new System.Windows.Forms.Button();
             this.rBt_initStage8 = new System.Windows.Forms.RadioButton();
@@ -102,11 +103,12 @@
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.bt_zCatch = new System.Windows.Forms.Button();
             this.bt_start = new System.Windows.Forms.Button();
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.bt_initCoo = new System.Windows.Forms.Button();
+            this.num_initSlotID = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -126,6 +128,7 @@
             this.panel_movStage.SuspendLayout();
             this.panel_Initializer.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_initSlotID)).BeginInit();
             this.SuspendLayout();
             // 
             // tB_SyntecIP
@@ -766,6 +769,16 @@
             this.panel_Initialize.Size = new System.Drawing.Size(295, 372);
             this.panel_Initialize.TabIndex = 13;
             // 
+            // bt_initCoo
+            // 
+            this.bt_initCoo.Location = new System.Drawing.Point(86, 325);
+            this.bt_initCoo.Name = "bt_initCoo";
+            this.bt_initCoo.Size = new System.Drawing.Size(123, 35);
+            this.bt_initCoo.TabIndex = 21;
+            this.bt_initCoo.Text = "Initialize Coordinate";
+            this.bt_initCoo.UseVisualStyleBackColor = true;
+            this.bt_initCoo.Click += new System.EventHandler(this.bt_initCoo_Click);
+            // 
             // panel_movStage
             // 
             this.panel_movStage.Controls.Add(this.bt_movToStage);
@@ -952,6 +965,8 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.num_initSlotID);
+            this.tabPage5.Controls.Add(this.bt_zCatch);
             this.tabPage5.Controls.Add(this.bt_start);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
@@ -961,9 +976,19 @@
             this.tabPage5.Text = "Auto";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // bt_zCatch
+            // 
+            this.bt_zCatch.Location = new System.Drawing.Point(196, 93);
+            this.bt_zCatch.Name = "bt_zCatch";
+            this.bt_zCatch.Size = new System.Drawing.Size(75, 23);
+            this.bt_zCatch.TabIndex = 30;
+            this.bt_zCatch.Text = "Z Catch";
+            this.bt_zCatch.UseVisualStyleBackColor = true;
+            this.bt_zCatch.Click += new System.EventHandler(this.bt_zCatch_Click);
+            // 
             // bt_start
             // 
-            this.bt_start.Location = new System.Drawing.Point(106, 193);
+            this.bt_start.Location = new System.Drawing.Point(119, 249);
             this.bt_start.Name = "bt_start";
             this.bt_start.Size = new System.Drawing.Size(75, 23);
             this.bt_start.TabIndex = 29;
@@ -1004,15 +1029,12 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
-            // bt_initCoo
+            // num_initSlotID
             // 
-            this.bt_initCoo.Location = new System.Drawing.Point(86, 325);
-            this.bt_initCoo.Name = "bt_initCoo";
-            this.bt_initCoo.Size = new System.Drawing.Size(123, 35);
-            this.bt_initCoo.TabIndex = 21;
-            this.bt_initCoo.Text = "Initialize Coordinate";
-            this.bt_initCoo.UseVisualStyleBackColor = true;
-            this.bt_initCoo.Click += new System.EventHandler(this.bt_initCoo_Click);
+            this.num_initSlotID.Location = new System.Drawing.Point(51, 93);
+            this.num_initSlotID.Name = "num_initSlotID";
+            this.num_initSlotID.Size = new System.Drawing.Size(120, 22);
+            this.num_initSlotID.TabIndex = 31;
             // 
             // ControllerForm
             // 
@@ -1059,6 +1081,7 @@
             this.panel_Initializer.ResumeLayout(false);
             this.panel_Initializer.PerformLayout();
             this.tabPage5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.num_initSlotID)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1148,5 +1171,7 @@
         private System.Windows.Forms.Panel panel_movStage;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.Button bt_initCoo;
+        private System.Windows.Forms.Button bt_zCatch;
+        private System.Windows.Forms.NumericUpDown num_initSlotID;
     }
 }
