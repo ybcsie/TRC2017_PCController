@@ -449,8 +449,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[0, WaferinCassettA - 1] - 8);//設定@3,Z軸伸長至cassetteA時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2.4);//設定@4,Z軸收回時高度
+                    SyntecClient.writeGVar(3, cassettezaxis[0, WaferinCassettA - 1] - 4);//設定@3,Z軸伸長至cassetteA時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2);//設定@4,Z軸收回時高度
                 }
 
                 SyntecClient.writeGVar(1, scheduleing[step, 0]);//設定@1為scheduleing[i,0]
@@ -536,13 +536,13 @@ namespace PCController
                 if (scheduleing[step, 1] != 5)
                 {
                     SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
-                    SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 1] - 1, 1] - 8);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
+                    SyntecClient.writeGVar(4, ArmData.coordinate[scheduleing[step, 1] - 1, 1] - 4);//設定@4,Z軸縮回時高度(coordinate[scheduleing[step,1],2])
 
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2.4);//設定@3,Z軸伸長至cassetteB放時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 8);//設定@4,Z軸縮回時高度
+                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
                 }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作

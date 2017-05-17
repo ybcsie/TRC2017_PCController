@@ -22,7 +22,7 @@ namespace PCController
 
         public static double[] Z_chamberA =
             {
-            107.2,//0
+            108.111,//0
             111.8,//1
             115.8,//2
             119.8,//3
@@ -774,6 +774,7 @@ namespace PCController
             checkcassette[0, 4] = ;
             checkcassette[0, 5] = ;
             */
+            checkcassette[0, 5] = ArmData.Z_chamberA[0];
             checkcassette[1, 0] = checkcassette[0, 0];
             checkcassette[1, 1] = checkcassette[0, 1];
             checkcassette[1, 2] = checkcassette[0, 2];

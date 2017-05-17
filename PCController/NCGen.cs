@@ -148,8 +148,15 @@ namespace PCController
                 ncfile.WriteLine("WAIT();");
                 Obitcontrol(suck, GraborPut);
                 ncfile.WriteLine("WAIT();");
-
-                ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ20 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
+                if (i == 3 || i==4)
+                {
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ1 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
+                }
+                else
+                {
+                    ncfile.WriteLine("MOVJ C1={0:f3} C2={1:f3} C3=@{2:d} C4={3:f3} FJ10 PL10;", savedata[count, 0], savedata[count, 2], afterzaxis, savedata[count, 3]);
+                }
+                
                 //ncfile.WriteLine("MOVJ C2={1:f3} FJ30 PL5;", savedata[count, 0], savedata[count, 2], zaxis, savedata[count, 3]);
                 ncfile.WriteLine("WAIT();");
 
@@ -365,7 +372,7 @@ MOVJ C1=@[#11] C2=@[#12] C4=@[#14] PL10 FJ10;
 
 END_FOR;
 
-MOVJ C3=-10. FJ10;
+MOVJ C3=-20. FJ10;
 
 ",
             //8
@@ -480,7 +487,7 @@ N5;
 #14:=900+@699-1;
 
 G91;
-MOVJ C3=10. FJ10;
+MOVJ C3=20. FJ10;
 
 FOR #1:=1 TO @699 BY 1 DO
 MOVJ C1=-@[#11] C2=-@[#12] C4=-@[#14] PL10 FJ10;
