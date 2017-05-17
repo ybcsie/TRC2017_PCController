@@ -658,11 +658,7 @@ namespace PCController
                     ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
                     ArmData.coordinate[i, 0] = 180 - (tmpangle1 + ArmData.coordinate[i, 0]);
-                    if (ArmData.measureangle != null)
-                    {
-                        ArmData.coordinate[i, 1] = ArmData.measureangle[i, 1];
-                    }
-                    else if(i<5)
+                    if(i<5)
                     {
                         ArmData.coordinate[i, 1] = 121.5;
                     }
@@ -709,11 +705,8 @@ namespace PCController
                     ArmData.coordinate[i, 0] = (tmplong1 * tmplong1 + armlong1 * armlong1 - armlong2 * armlong2) / (2 * tmplong1 * armlong1);
                     ArmData.coordinate[i, 0] = (Math.Acos(ArmData.coordinate[i, 0])) * 180 / pi;
                     ArmData.coordinate[i, 0] = (tmpangle1 + ArmData.coordinate[i, 0]);
-                    if (ArmData.measureangle != null)
-                    {
-                        ArmData.coordinate[i, 1] = ArmData.measureangle[i, 1];
-                    }
-                    else if (i < 5)
+
+                    if (i < 5)
                     {
                         ArmData.coordinate[i, 1] = 121.5;
                     }

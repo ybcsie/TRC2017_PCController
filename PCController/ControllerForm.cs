@@ -206,7 +206,7 @@ namespace PCController
 
             RoutPlanning.checkcassette(cassettezaxis);
             //TRCClient.handShake();
-            TRCClient.init();
+            TRCClient.init1();
             //>>>>>>>>>>>>>>>>>任務內容
             missiontime0[0] = TRCClient.record_time[0, 0];
             missiontime0[1] = TRCClient.record_time[0, 1];
@@ -439,7 +439,7 @@ namespace PCController
                 director = 0;
 
                 SyntecClient.writeReg(50, 0);//@100050=0
-                SyntecClient.writeGVar(2, 0); //設定@2，抓為0，亦即吸盤吸
+                SyntecClient.writeGVar(2, 1); //設定@2，抓為0，亦即吸盤吸
                 
                 if (scheduleing[step, 0] != 4)
                 {
@@ -532,7 +532,7 @@ namespace PCController
                 Thread.Sleep(3500);
 
 
-                SyntecClient.writeGVar(2, 1);//設定@2，放為1，意即吸盤不吸
+                SyntecClient.writeGVar(2, 0);//設定@2，放為1，意即吸盤不吸
                 if (scheduleing[step, 1] != 5)
                 {
                     SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 1] - 1, 1] + 12);//設定@3,Z軸伸長放時高度(coordinate[scheduleing[step,1],2])
