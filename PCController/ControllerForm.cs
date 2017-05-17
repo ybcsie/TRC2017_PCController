@@ -11,6 +11,7 @@ namespace PCController
 
 
         public static int[] wafernum = new int[6];
+        public static int[] wafernumB = new int[6];
         /*
          * constructors
          * 
@@ -182,7 +183,7 @@ namespace PCController
 
         private void auto()
         {
-
+            ArmData.distance = 270;
             //need modify
             double[,] cassettezaxis = new double[2, 6];//0是cassetteA,1是cassetteB
             int[,] scheduleing = new int[100, 2];
@@ -193,6 +194,11 @@ namespace PCController
             int armtime0;
             int i = 0;
             int j = 0;
+
+            for (i = 0; i < 3; i++)
+            {
+                missiontime0[i] = 0;
+            }
 
             const int pointsnum = 40;
 
@@ -221,25 +227,30 @@ namespace PCController
                     missionnum0[i] = 1;
                 }
             }
+            Program.form.mesPrintln(string.Format("m num = {0:d},{1:d},{2:d}", missionnum0[0], missionnum0[1], missionnum0[2]));
             for (i = 1; i < 4; i++)
             {
-                if (TRCClient.record_stage[1, i-1]>100)
+                //Program.form.mesPrintln(string.Format("r stage = {0:d}", TRCClient.record_stage[0, i - 1]));
+                if (TRCClient.record_stage[1, i - 1] > 100)
                 {
-                    missionstate0[i, 2] = TRCClient.record_stage[0, i-1] % 10;
-                    TRCClient.record_stage[1, i-1] = TRCClient.record_stage[0, i-1] / 10;
-                    missionstate0[i, 1] = TRCClient.record_stage[0, i-1] % 10;
-                    TRCClient.record_stage[1, i-1] = TRCClient.record_stage[0, i-1] / 10;
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                    missionstate0[i, 2] = TRCClient.record_stage[0, i - 1] % 10;
+                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
+                    missionstate0[i, 1] = TRCClient.record_stage[0, i - 1] % 10;
+                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    Program.form.mesPrintln(string.Format("m stage = {0:d},{1:d},{2:d}", missionstate0[i, 0], missionstate0[i, 1], missionstate0[i, 2]));
                 }
-                else if(TRCClient.record_stage[1, i-1] > 10)
+                else if (TRCClient.record_stage[1, i - 1] > 10)
                 {
-                    missionstate0[i, 1] = TRCClient.record_stage[0, i-1] % 10;
-                    TRCClient.record_stage[0, i-1] = TRCClient.record_stage[0, i-1] / 10;
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                    missionstate0[i, 1] = TRCClient.record_stage[0, i - 1] % 10;
+                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    Program.form.mesPrintln(string.Format("m stage = {0:d},{1:d}", missionstate0[i, 0], missionstate0[i, 1]));
                 }
                 else
                 {
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i-1] % 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    Program.form.mesPrintln(string.Format("m stage = {0:d}", missionstate0[i, 0]));
                 }
             }
             /*
@@ -274,6 +285,12 @@ namespace PCController
                 wafernum[3] = 0;
                 wafernum[4] = 0;
                 wafernum[5] = TRCClient.record_wafer[0];
+                wafernumB[0] = 0;
+                wafernumB[1] = 0;
+                wafernumB[2] = 0;
+                wafernumB[3] = 0;
+                wafernumB[4] = 0;
+                wafernumB[5] = TRCClient.record_dst[0];
             }
             else
             {
@@ -284,17 +301,26 @@ namespace PCController
                 wafernum[3] = TRCClient.record_wafer[3];
                 wafernum[4] = TRCClient.record_wafer[4];
                 wafernum[5] = TRCClient.record_wafer[5];
-                int tmp;
+                wafernumB[0] = TRCClient.record_dst[0];
+                wafernumB[1] = TRCClient.record_dst[1];
+                wafernumB[2] = TRCClient.record_dst[2];
+                wafernumB[3] = TRCClient.record_dst[3];
+                wafernumB[4] = TRCClient.record_dst[4];
+                wafernumB[5] = TRCClient.record_dst[5];
+                int tmp, tmpB;
                 for (i = 0; i < 6; i++)
                 {
                     tmp = wafernum[0];
                     for (j = 1; j < (6 - i); j++)
                     {
                         tmp = wafernum[j - 1];
+                        tmpB = wafernumB[j - 1];
                         if (tmp < wafernum[j])
                         {
                             wafernum[j - 1] = wafernum[j];
+                            wafernumB[j - 1] = wafernumB[j];
                             wafernum[j] = tmp;
+                            wafernumB[j] = tmpB;
                         }
                     }
                 }
@@ -423,14 +449,14 @@ namespace PCController
                 if (scheduleing[step, 0] == 4) {
                     while (TRCClient.sentEvent(0, correspondChambername[scheduleing[step, 0]], wafernum[WaferinCassettA - 1], wafernum[WaferinCassettA - 1]) != 1)
                     {
-                        Thread.Sleep(3500);
+                        Thread.Sleep(1000);
                     }
                 }
                 else
                 {
                     while (TRCClient.sentEvent(0, correspondChambername[scheduleing[step, 0]], WaferonChamber[scheduleing[step, 0]],0) != 1)
                     {
-                        Thread.Sleep(3500);
+                        Thread.Sleep(1000);
                     }
                 }
 
@@ -514,18 +540,18 @@ namespace PCController
 
                 
 
-                if (scheduleing[step, 0] == 5)//發送動作許可請求，接受後寫@5為1
+                if (scheduleing[step, 1] == 5)//發送動作許可請求，接受後寫@5為1
                 {
-                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[WaferinCassettB]) != 1)
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[5-WaferinCassettB]) != 1)
                     {
-                        Thread.Sleep(3500);
+                        Thread.Sleep(1000);
                     }
                 }
                 else
                 {
                     while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, 0) != 1)
                     {
-                        Thread.Sleep(3500);
+                        Thread.Sleep(1000);
                     }
                 }
                 Program.form.mesPrintln("write 5 1");
@@ -540,6 +566,8 @@ namespace PCController
                 if (scheduleing[step, 1] == 5)
                 {
                     WaferinCassettB++;
+                    tmp = WaferonHand;
+                    WaferonHand = 0;
                 }
                 else
                 {
@@ -552,19 +580,20 @@ namespace PCController
                     WaferonHand = 0;
                 }
                 SyntecClient.writeReg(50, 0);//@100050=0                             
-                if (scheduleing[step, 0] == 5)//發送執行結束許可
+                if (scheduleing[step, 1] == 5)//發送執行結束許可
                 {
-                    TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], tmp, wafernum[WaferinCassettB - 1]);
+                    TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], tmp, wafernumB[5 - WaferinCassettB + 1]);
                 }
                 else
                 {
                     TRCClient.sentEvent(3, correspondChambername[scheduleing[step, 1]], tmp, 0);
                 }
                 step = step + 1;
-                Thread.Sleep(3500);
+                Thread.Sleep(1500);
 
             }
             Program.form.showWarnning("mission end");
+            TRCClient.end();
         }
 
         private void setState(string state)
