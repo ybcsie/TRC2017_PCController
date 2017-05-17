@@ -189,10 +189,15 @@ namespace PCController
             string command, answer = "~Ack";
             string[] para, para2, para3;
 
-
+            if (!isConnected())
+            {
+                connectionErrorHandler();
+                return;
+            }
             // first handShake
             command = getCmd();
             mesPrintln(command);
+
             para = command.Split(',');
             para2 = para[3].Split(';');
             para3 = para[3].Split(':');

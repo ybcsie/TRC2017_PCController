@@ -206,7 +206,7 @@ namespace PCController
 
             RoutPlanning.checkcassette(cassettezaxis);
             //TRCClient.handShake();
-            
+            TRCClient.init();
             //>>>>>>>>>>>>>>>>>任務內容
             missiontime0[0] = TRCClient.record_time[0, 0];
             missiontime0[1] = TRCClient.record_time[0, 1];
@@ -262,6 +262,7 @@ namespace PCController
 
             //<<<<<<<<<<<<<<<<<<
             //scheduleing
+            
 
             if(missiontime0[0]== missiontime0[1] && missiontime0[1]== missiontime0[2])
             {
@@ -387,7 +388,7 @@ namespace PCController
             int step = 0, i = 0,tmp=0;
             double oversignal = 0;
             int[] correspondChambername = new int[10];
-            int director = 0,predirector=1;
+            int director = 0,predirector=0;
 
             Program.form.mesPrintln(string.Format("fuck on {0:d}", scheduleing[5, 0]));
 
@@ -406,6 +407,16 @@ namespace PCController
             }
             SyntecClient.writeGVar(5, 0);
             SyntecClient.writeGVar(6, 0);
+            SyntecClient.writeReg(50, 0);//@11=0
+            oversignal = SyntecClient.readReg(50);
+            while (oversignal == 0)
+            {//while接收控制器回傳動作結束@11=1;
+                Thread.Sleep(500);
+                Program.form.mesPrintln("等待開始");
+                oversignal = SyntecClient.readReg(50);
+            }
+            SyntecClient.writeReg(50, 0);//@11=0
+
             while (scheduleing[step, 0] != 0)
             {
                 if (scheduleing[step, 0] == 1 || scheduleing[step, 0] == 2 || scheduleing[step, 0] == 7 || scheduleing[step, 0] == 8 || scheduleing[step, 0] == 3)
@@ -429,7 +440,7 @@ namespace PCController
 
                 SyntecClient.writeReg(50, 0);//@100050=0
                 SyntecClient.writeGVar(2, 0); //設定@2，抓為0，亦即吸盤吸
-
+                
                 if (scheduleing[step, 0] != 4)
                 {
                     SyntecClient.writeGVar(3, ArmData.coordinate[scheduleing[step, 0] - 1, 1] - 8);//設定@3,Z軸伸長時高度(coordinate[scheduleing[step,0],1])
@@ -445,7 +456,7 @@ namespace PCController
                 SyntecClient.writeGVar(1, scheduleing[step, 0]);//設定@1為scheduleing[i,0]
                 //控制器進行第一動作
                 Thread.Sleep(3000);
-                Program.form.mesPrintln("write 5 1");
+                //Program.form.mesPrintln("write 5 1");
                 if (scheduleing[step, 0] == 4) {
                     while (TRCClient.sentEvent(0, correspondChambername[scheduleing[step, 0]], wafernum[WaferinCassettA - 1], wafernum[WaferinCassettA - 1]) != 1)
                     {
@@ -460,12 +471,13 @@ namespace PCController
                     }
                 }
 
-                SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
+                
                 //控制器進行接下動作
 
 
                 Program.form.mesPrintln(String.Format("Wait for grab {0:d}", scheduleing[step, 0]));
-
+                SyntecClient.writeGVar(5, 1);//發送動作許可請求，接受後寫@5為1
+                Program.form.mesPrintln("write 5 1");
                 oversignal = SyntecClient.readReg(50);
                 while (oversignal == 0)
                 {//while接收控制器回傳動作結束@11=1;

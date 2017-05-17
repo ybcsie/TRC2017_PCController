@@ -26,13 +26,14 @@ namespace PCController
             double lowerdefaltz = 20;
 
             startGenNC(SyntecClient.NCFileName.MAIN_JOB);
+            ncfile.WriteLine("@{0:d}:=0;", complete);
             ncfile.WriteLine("WAIT();");
             //ncfile.WriteLine("MOVJ C1=90.0 C2=0.0 C4=0.00 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C1=82.735 C2=174.890 C4=-150.000 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=170.0 C4=150.0 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=-170.0 C4=150.0 FJ20 PL10;");
-            ncfile.WriteLine("MOVJ C1=61.265 C2=-174.890 C4=150.000 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C1=61.265 C2=-174.890 C4=150.000 FJ10 PL10;");
             ncfile.WriteLine("WAIT();");
             ncfile.WriteLine("MOVJ C3=50.0 FJ20 PL10;");
             ncfile.WriteLine("WAIT();");
@@ -41,7 +42,7 @@ namespace PCController
             ncfile.WriteLine("@2:=0;");
             ncfile.WriteLine("@3:=0;");
             ncfile.WriteLine("@1:=0;");
-            ncfile.WriteLine("@{0:d}:=0;",complete);
+            ncfile.WriteLine("@{0:d}:=1;",complete);
             NCmain(communication);
 
             for (i = 0; i<10; i++)
