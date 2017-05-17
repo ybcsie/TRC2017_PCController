@@ -657,8 +657,10 @@ mesPrintln("Initializer: C4 OK!");
 
             JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, true, false);
 
-            Program.form.mesPrint(string.Format("Z = {0:f3}", (z1 + z2) / 2));
 
+            ArmData.Z_chamberA[id] = (z1 + z2) / 2;
+
+            Program.form.mesPrintln(string.Format("Z = {0:f3}", ArmData.Z_chamberA[id]));
             /*
             SyntecClient.writeReg(25, 0);
             SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
