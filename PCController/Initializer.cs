@@ -269,9 +269,12 @@ mesPrintln("Initializer: C4 OK!");
         }
         public static void home(bool isC1LeftSide)
         {
+            SyntecClient.cycleReset();
+
             writeG91AngleByAbs(2, 150);
             writeG91AngleByAbs(3, 60);
             writeG91AngleByAbs(4, -120);
+
             if (isC1LeftSide)
                 runInitAndWait(5);
             else

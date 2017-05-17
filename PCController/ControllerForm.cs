@@ -331,7 +331,6 @@ namespace PCController
 
             mesPrintln("NCGen: NC Code generation is done.");
 
-
             SyntecClient.cycleReset();
 
             SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
@@ -894,8 +893,12 @@ namespace PCController
 
         private void bt_start_Click(object sender, EventArgs e)
         {
-            //ThreadsController.addThreadAndStartByFunc(Initializer.home);
-            ThreadsController.addThreadAndStartByFunc(auto);
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                Initializer.home(false);
+                auto();
+            });
+
         }
 
 
