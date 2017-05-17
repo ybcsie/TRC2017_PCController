@@ -463,9 +463,9 @@ namespace PCController
                     if (ArmData.measureangle[i, 0] != 0)
                     {
                         Program.form.mesPrintln(String.Format("measureangle{0:f}  0:{1:f} 2:{2:f} 3:{3:f} ", i, ArmData.measureangle[i, 0], ArmData.measureangle[i, 2], ArmData.measureangle[i, 3]));
-                        realcd[i, 0] = (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi/180)) + (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + (armlong3 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
-                        Program.form.mesPrintln(String.Format("0: {0:f} 2: {1:f}  3: {2:f} ", (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi / 180)), (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])*pi/180)), (armlong3 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3])*pi / 180))));
-                        realcd[i, 1] = (armlong1 * Math.Sin(ArmData.measureangle[i, 0] * pi / 180)) + (armlong2 * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + (armlong3 * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
+                        realcd[i, 0] = (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi/180)) + (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + ((armlong3-20) * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
+                        Program.form.mesPrintln(String.Format("0: {0:f} 2: {1:f}  3: {2:f} ", (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi / 180)), (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])*pi/180)), ((armlong3-20) * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3])*pi / 180))));
+                        realcd[i, 1] = (armlong1 * Math.Sin(ArmData.measureangle[i, 0] * pi / 180)) + (armlong2 * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + ((armlong3-20) * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
                         Program.form.mesPrintln(String.Format("realcd{0:f}  x:{1:f} y:{2:f} ", i, realcd[i, 0], realcd[i, 1]));
                     }
                     else
