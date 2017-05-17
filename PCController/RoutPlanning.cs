@@ -458,11 +458,15 @@ namespace PCController
             {
                 for (i = 0; i < 10; i++)
                 {
+
+                    //Program.form.mesPrintln(String.Format("measureangle{0:f}  0:{1:f} 1:{2:f} 2:{3:f}", i, ArmData.measureangle[i, 0], ArmData.measureangle[i, 1], ArmData.measureangle[i, 2]));
                     if (ArmData.measureangle[i, 0] != 0)
                     {
-                        realcd[i, 0] = (armlong1 * Math.Cos(ArmData.measureangle[i, 0])) + (armlong2 * Math.Cos(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])) + (armlong3 * Math.Cos(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] - ArmData.measureangle[i, 3]));
-                        realcd[i, 1] = (armlong1 * Math.Sin(ArmData.measureangle[i, 0])) + (armlong2 * Math.Sin(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])) + (armlong3 * Math.Sin(ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] - ArmData.measureangle[i, 3])); 
-
+                        Program.form.mesPrintln(String.Format("measureangle{0:f}  0:{1:f} 2:{2:f} 3:{3:f} ", i, ArmData.measureangle[i, 0], ArmData.measureangle[i, 2], ArmData.measureangle[i, 3]));
+                        realcd[i, 0] = (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi/180)) + (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + (armlong3 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
+                        Program.form.mesPrintln(String.Format("0: {0:f} 2: {1:f}  3: {2:f} ", (armlong1 * Math.Cos(ArmData.measureangle[i, 0]*pi / 180)), (armlong2 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2])*pi/180)), (armlong3 * Math.Cos((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3])*pi / 180))));
+                        realcd[i, 1] = (armlong1 * Math.Sin(ArmData.measureangle[i, 0] * pi / 180)) + (armlong2 * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2]) * pi / 180)) + (armlong3 * Math.Sin((ArmData.measureangle[i, 0] + ArmData.measureangle[i, 2] + ArmData.measureangle[i, 3]) * pi / 180));
+                        Program.form.mesPrintln(String.Format("realcd{0:f}  x:{1:f} y:{2:f} ", i, realcd[i, 0], realcd[i, 1]));
                     }
                     else
                     {
@@ -499,54 +503,107 @@ namespace PCController
             //calculate the center of cycle
             double cx, cy, dx, dy, l, h, tdx, tdy;
 
-            for (i = 0; i < 4; i++)
+            if (ArmData.measureangle == null)
             {
-                if (realcd[i, 0] != -1 && realcd[i + 1, 0] != -1)
-                {
-                    cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
-                    cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
-                    if (realcd[i + 1, 0] - realcd[i, 0] < 0)
-                    {
-                        dx = realcd[i, 0] - realcd[i + 1, 0];
-                        dy = realcd[i, 1] - realcd[i + 1, 1];
-                    }
-                    else
-                    {
-                        dx = realcd[i + 1, 0] - realcd[i, 0];
-                        dy = realcd[i + 1, 1] - realcd[i, 1];
-                    }
-                    l = Math.Sqrt(dx * dx + dy * dy);
-                    h = Math.Sqrt(ArmData.ratio * ArmData.ratio - (l / 2) * (l / 2));
-                    tdx = (-1) * h * dy / l;
-                    tdy = h * dx / l;
-                    centerx[i] = cx - tdx;
-                    centery[i] = cy - tdy;
-                    count++;
-                }
-            }
-            avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / count;
-            avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / count;
-            Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f} count:{2:d}", avcx, avcy,count));
-            //calculate center
 
-            for (i = 0; i < 10; i++)
-            {
-                if (realcd[i, 0] == -1)
+                for (i = 0; i < 4; i++)
                 {
-                    if (i < 5 )
+                    if (realcd[i, 0] != -1 && realcd[i + 1, 0] != -1)
                     {
-                        realcd[i, 0] =avcx+ ((realcd[2, 0] - avcx) * Math.Cos(-1 *36 * (i-2) * pi / 180)) - ((realcd[2, 1] - avcy) * Math.Sin(-1 *36 * (i-2) * pi / 180));
-                        realcd[i, 1] =avcy+ ((realcd[2, 0] - avcx) * Math.Sin(-1 * 36 * (i-2) * pi / 180)) + ((realcd[2, 1] - avcy) * Math.Cos(-1 * 36 * (i-2) * pi / 180));
-                        //Program.form.mesPrintln(String.Format("..... i:{0:d} x:{1:f} y: {2:f}", i,realcd[i,0], realcd[i,1]));
-                    }
-                    else
-                    {
-                        realcd[i, 0] = realcd[i - 5, 0];
-                        realcd[i, 1] = realcd[i - 5, 1];
+                        cx = (realcd[i, 0] + realcd[i + 1, 0]) / 2;
+                        cy = (realcd[i, 1] + realcd[i + 1, 1]) / 2;
+                        if (realcd[i + 1, 0] - realcd[i, 0] < 0)
+                        {
+                            dx = realcd[i, 0] - realcd[i + 1, 0];
+                            dy = realcd[i, 1] - realcd[i + 1, 1];
+                        }
+                        else
+                        {
+                            dx = realcd[i + 1, 0] - realcd[i, 0];
+                            dy = realcd[i + 1, 1] - realcd[i, 1];
+                        }
+                        l = Math.Sqrt(dx * dx + dy * dy);
+                        h = Math.Sqrt(ArmData.ratio * ArmData.ratio - (l / 2) * (l / 2));
+                        tdx = (-1) * h * dy / l;
+                        tdy = h * dx / l;
+                        centerx[i] = cx - tdx;
+                        centery[i] = cy - tdy;
+                        count++;
                     }
                 }
-            }
+                avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / count;
+                avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / count;
+                Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f} count:{2:d}", avcx, avcy, count));
+                //calculate center
 
+                for (i = 0; i < 10; i++)
+                {
+                    if (realcd[i, 0] == -1)
+                    {
+                        if (i < 5)
+                        {
+                            realcd[i, 0] = avcx + ((realcd[2, 0] - avcx) * Math.Cos(-1 * 36 * (i - 2) * pi / 180)) - ((realcd[2, 1] - avcy) * Math.Sin(-1 * 36 * (i - 2) * pi / 180));
+                            realcd[i, 1] = avcy + ((realcd[2, 0] - avcx) * Math.Sin(-1 * 36 * (i - 2) * pi / 180)) + ((realcd[2, 1] - avcy) * Math.Cos(-1 * 36 * (i - 2) * pi / 180));
+                            //Program.form.mesPrintln(String.Format("..... i:{0:d} x:{1:f} y: {2:f}", i,realcd[i,0], realcd[i,1]));
+                        }
+                        else
+                        {
+                            realcd[i, 0] = realcd[i - 5, 0];
+                            realcd[i, 1] = realcd[i - 5, 1];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (i = 0; i < 4; i++)
+                {
+                    if (realcd[i+5, 0] != -1 && realcd[i+5 + 1, 0] != -1)
+                    {
+                        cx = (realcd[i+5, 0] + realcd[i+5 + 1, 0]) / 2;
+                        cy = (realcd[i+5, 1] + realcd[i+5 + 1, 1]) / 2;
+                        if (realcd[i+5 + 1, 0] - realcd[i+5, 0] < 0)
+                        {
+                            dx = realcd[i+5, 0] - realcd[i+5 + 1, 0];
+                            dy = realcd[i+5, 1] - realcd[i+5 + 1, 1];
+                        }
+                        else
+                        {
+                            dx = realcd[i+5 + 1, 0] - realcd[i+5, 0];
+                            dy = realcd[i+5 + 1, 1] - realcd[i+5, 1];
+                        }
+                        l = Math.Sqrt(dx * dx + dy * dy);
+                        h = Math.Sqrt(ArmData.ratio * ArmData.ratio - (l / 2) * (l / 2));
+                        tdx = (-1) * h * dy / l;
+                        tdy = h * dx / l;
+                        centerx[i] = cx - tdx;
+                        centery[i] = cy - tdy;
+                        count++;
+                    }
+                }
+                avcx = (centerx[0] + centerx[1] + centerx[2] + centerx[3]) / count;
+                avcy = (centery[0] + centery[1] + centery[2] + centery[3]) / count;
+                Program.form.mesPrintln(String.Format("中心位置 x:{0:f} y: {1:f} count:{2:d}", avcx, avcy, count));
+                //calculate center
+
+                for (i = 9; i >=0 ; i--)
+                {
+                    if (realcd[i, 0] == -1)
+                    {
+                        if (i > 4)
+                        {
+                            realcd[i, 0] = avcx + ((realcd[7, 0] - avcx) * Math.Cos(-1 * 36 * (i - 7) * pi / 180)) - ((realcd[7, 1] - avcy) * Math.Sin(-1 * 36 * (i - 7) * pi / 180));
+                            realcd[i, 1] = avcy + ((realcd[7, 0] - avcx) * Math.Sin(-1 * 36 * (i - 7) * pi / 180)) + ((realcd[7, 1] - avcy) * Math.Cos(-1 * 36 * (i - 7) * pi / 180));
+                            //Program.form.mesPrintln(String.Format("..... i:{0:d} x:{1:f} y: {2:f}", i,realcd[i,0], realcd[i,1]));
+                        }
+                        else
+                        {
+                            realcd[i, 0] = realcd[i + 5, 0];
+                            realcd[i, 1] = realcd[i + 5, 1];
+                        }
+                    }
+                }
+            }
 
             double tmplong1 = 0;//original pointer to forth modor
             double tmplong2 = 0;//avcenter to reference
@@ -564,7 +621,7 @@ namespace PCController
 
             for (i = 0; i < 10; i++)
             {
-                if (reference[i, 0] <= 0.00)
+                if (reference[i, 0] <= 0.001)
                 {
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);

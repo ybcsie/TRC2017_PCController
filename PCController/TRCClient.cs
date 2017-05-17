@@ -29,6 +29,7 @@ namespace PCController
         public static int[,] record_stage = new int[6, 3];
         public static int[,] record_time = new int[6, 3];
         public static int[] record_wafer = new int[6];
+        public static int[] record_dst = new int[6];
         public static int now = 0;
 
         public static bool isConnected()
@@ -124,7 +125,7 @@ namespace PCController
         public static void handShake()
         {
             string command, answer = "~Ack";
-            string[] para, para2,para3;
+            string[] para, para2, para3;
 
 
             // first handShake
@@ -140,6 +141,7 @@ namespace PCController
             record_wafer[now] = src;
             dst = (para2[4].ElementAt(6) - '0') * 10
                     + (para2[4].ElementAt(7) - '0');
+            record_dst[now] = dst;
             cassNo += (src / 10);
             cassNo += (src % 10);
 
@@ -150,19 +152,19 @@ namespace PCController
                 {
                     record_stage[now, i] = record_stage[now, i] * 10;
                     record_stage[now, i] = record_stage[now, i] + para2[i + 1].ElementAt(2) - 'A' + 1;
-                    if (para2[i + 1].ElementAt(4) - 'A' + 1>0)
+                    if (para2[i + 1].ElementAt(4) - 'A' + 1 > 0)
                     {
                         record_stage[now, i] = record_stage[now, i] * 10;
                         record_stage[now, i] = record_stage[now, i] + para2[i + 1].ElementAt(4) - 'A' + 1;
                     }
                 }
             }
-            
-           
+
+
             for (int i = 0; i < 3; i++)
             {
                 record_time[now, i] = para3[i + 1].ElementAt(0) - '0';
-                if (para3[i + 1].ElementAt(1)<='9')
+                if (para3[i + 1].ElementAt(1) <= '9')
                 {
                     record_time[now, i] *= 10;
                     record_time[now, i] += para3[i + 1].ElementAt(1) - '0';
@@ -233,6 +235,11 @@ namespace PCController
             mesPrintln(answer);
             Thread.Sleep(1000);
             sentCmd(answer);
+
+        }
+        public static void end()
+        {
+            sentCmd("~Evt,ProcessCompleted@");
 
         }
 
@@ -309,7 +316,7 @@ namespace PCController
                 connectionErrorHandler();
                 return;
             }
-            
+
             handShake1();
             prostart();
 
