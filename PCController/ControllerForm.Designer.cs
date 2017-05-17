@@ -83,13 +83,16 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel_Initialize = new System.Windows.Forms.Panel();
+            this.panel_movStage = new System.Windows.Forms.Panel();
             this.bt_movToStage = new System.Windows.Forms.Button();
             this.rBt_initStage8 = new System.Windows.Forms.RadioButton();
+            this.rBt_initStage0 = new System.Windows.Forms.RadioButton();
             this.rBt_initStage7 = new System.Windows.Forms.RadioButton();
-            this.bt_originSetter = new System.Windows.Forms.Button();
-            this.rBt_initStage6 = new System.Windows.Forms.RadioButton();
-            this.bt_startInit = new System.Windows.Forms.Button();
+            this.rBt_initStage1 = new System.Windows.Forms.RadioButton();
             this.rBt_initStage2 = new System.Windows.Forms.RadioButton();
+            this.rBt_initStage6 = new System.Windows.Forms.RadioButton();
+            this.bt_originSetter = new System.Windows.Forms.Button();
+            this.bt_startInit = new System.Windows.Forms.Button();
             this.panel_Initializer = new System.Windows.Forms.Panel();
             this.bt_movBackward = new System.Windows.Forms.Button();
             this.bt_getPoint = new System.Windows.Forms.Button();
@@ -97,14 +100,12 @@
             this.bt_thetaN = new System.Windows.Forms.Button();
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
-            this.rBt_initStage1 = new System.Windows.Forms.RadioButton();
-            this.rBt_initStage0 = new System.Windows.Forms.RadioButton();
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
             this.bt_test = new System.Windows.Forms.Button();
             this.bt_start = new System.Windows.Forms.Button();
-            this.panel_movStage = new System.Windows.Forms.Panel();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -121,8 +122,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.panel_Initialize.SuspendLayout();
-            this.panel_Initializer.SuspendLayout();
             this.panel_movStage.SuspendLayout();
+            this.panel_Initializer.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tB_SyntecIP
@@ -308,6 +310,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -441,6 +444,7 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.bt_comT1);
+            this.tabPage2.Controls.Add(this.bt_test);
             this.tabPage2.Controls.Add(this.panelTestFunc);
             this.tabPage2.Controls.Add(this.bt_TRCCommStart);
             this.tabPage2.Controls.Add(this.bt_genNC);
@@ -750,6 +754,20 @@
             this.panel_Initialize.Size = new System.Drawing.Size(295, 372);
             this.panel_Initialize.TabIndex = 13;
             // 
+            // panel_movStage
+            // 
+            this.panel_movStage.Controls.Add(this.bt_movToStage);
+            this.panel_movStage.Controls.Add(this.rBt_initStage8);
+            this.panel_movStage.Controls.Add(this.rBt_initStage0);
+            this.panel_movStage.Controls.Add(this.rBt_initStage7);
+            this.panel_movStage.Controls.Add(this.rBt_initStage1);
+            this.panel_movStage.Controls.Add(this.rBt_initStage2);
+            this.panel_movStage.Controls.Add(this.rBt_initStage6);
+            this.panel_movStage.Location = new System.Drawing.Point(3, 60);
+            this.panel_movStage.Name = "panel_movStage";
+            this.panel_movStage.Size = new System.Drawing.Size(289, 102);
+            this.panel_movStage.TabIndex = 20;
+            // 
             // bt_movToStage
             // 
             this.bt_movToStage.Location = new System.Drawing.Point(94, 57);
@@ -771,6 +789,17 @@
             this.rBt_initStage8.Text = "Stage 8";
             this.rBt_initStage8.UseVisualStyleBackColor = true;
             // 
+            // rBt_initStage0
+            // 
+            this.rBt_initStage0.AutoSize = true;
+            this.rBt_initStage0.Location = new System.Drawing.Point(52, 13);
+            this.rBt_initStage0.Name = "rBt_initStage0";
+            this.rBt_initStage0.Size = new System.Drawing.Size(57, 16);
+            this.rBt_initStage0.TabIndex = 14;
+            this.rBt_initStage0.TabStop = true;
+            this.rBt_initStage0.Text = "Stage 0";
+            this.rBt_initStage0.UseVisualStyleBackColor = true;
+            // 
             // rBt_initStage7
             // 
             this.rBt_initStage7.AutoSize = true;
@@ -782,15 +811,27 @@
             this.rBt_initStage7.Text = "Stage 7";
             this.rBt_initStage7.UseVisualStyleBackColor = true;
             // 
-            // bt_originSetter
+            // rBt_initStage1
             // 
-            this.bt_originSetter.Location = new System.Drawing.Point(27, 9);
-            this.bt_originSetter.Name = "bt_originSetter";
-            this.bt_originSetter.Size = new System.Drawing.Size(97, 35);
-            this.bt_originSetter.TabIndex = 13;
-            this.bt_originSetter.Text = "Origin Setter";
-            this.bt_originSetter.UseVisualStyleBackColor = true;
-            this.bt_originSetter.Click += new System.EventHandler(this.bt_originSetter_Click);
+            this.rBt_initStage1.AutoSize = true;
+            this.rBt_initStage1.Location = new System.Drawing.Point(119, 13);
+            this.rBt_initStage1.Name = "rBt_initStage1";
+            this.rBt_initStage1.Size = new System.Drawing.Size(57, 16);
+            this.rBt_initStage1.TabIndex = 15;
+            this.rBt_initStage1.TabStop = true;
+            this.rBt_initStage1.Text = "Stage 1";
+            this.rBt_initStage1.UseVisualStyleBackColor = true;
+            // 
+            // rBt_initStage2
+            // 
+            this.rBt_initStage2.AutoSize = true;
+            this.rBt_initStage2.Location = new System.Drawing.Point(186, 13);
+            this.rBt_initStage2.Name = "rBt_initStage2";
+            this.rBt_initStage2.Size = new System.Drawing.Size(57, 16);
+            this.rBt_initStage2.TabIndex = 15;
+            this.rBt_initStage2.TabStop = true;
+            this.rBt_initStage2.Text = "Stage 2";
+            this.rBt_initStage2.UseVisualStyleBackColor = true;
             // 
             // rBt_initStage6
             // 
@@ -803,6 +844,16 @@
             this.rBt_initStage6.Text = "Stage 6";
             this.rBt_initStage6.UseVisualStyleBackColor = true;
             // 
+            // bt_originSetter
+            // 
+            this.bt_originSetter.Location = new System.Drawing.Point(27, 9);
+            this.bt_originSetter.Name = "bt_originSetter";
+            this.bt_originSetter.Size = new System.Drawing.Size(97, 35);
+            this.bt_originSetter.TabIndex = 13;
+            this.bt_originSetter.Text = "Origin Setter";
+            this.bt_originSetter.UseVisualStyleBackColor = true;
+            this.bt_originSetter.Click += new System.EventHandler(this.bt_originSetter_Click);
+            // 
             // bt_startInit
             // 
             this.bt_startInit.Location = new System.Drawing.Point(158, 9);
@@ -812,17 +863,6 @@
             this.bt_startInit.Text = "Start Initializer";
             this.bt_startInit.UseVisualStyleBackColor = true;
             this.bt_startInit.Click += new System.EventHandler(this.bt_startInit_Click);
-            // 
-            // rBt_initStage2
-            // 
-            this.rBt_initStage2.AutoSize = true;
-            this.rBt_initStage2.Location = new System.Drawing.Point(186, 13);
-            this.rBt_initStage2.Name = "rBt_initStage2";
-            this.rBt_initStage2.Size = new System.Drawing.Size(57, 16);
-            this.rBt_initStage2.TabIndex = 15;
-            this.rBt_initStage2.TabStop = true;
-            this.rBt_initStage2.Text = "Stage 2";
-            this.rBt_initStage2.UseVisualStyleBackColor = true;
             // 
             // panel_Initializer
             // 
@@ -898,32 +938,10 @@
             this.bt_movForward.UseVisualStyleBackColor = true;
             this.bt_movForward.Click += new System.EventHandler(this.bt_movForward_Click);
             // 
-            // rBt_initStage1
-            // 
-            this.rBt_initStage1.AutoSize = true;
-            this.rBt_initStage1.Location = new System.Drawing.Point(119, 13);
-            this.rBt_initStage1.Name = "rBt_initStage1";
-            this.rBt_initStage1.Size = new System.Drawing.Size(57, 16);
-            this.rBt_initStage1.TabIndex = 15;
-            this.rBt_initStage1.TabStop = true;
-            this.rBt_initStage1.Text = "Stage 1";
-            this.rBt_initStage1.UseVisualStyleBackColor = true;
-            // 
-            // rBt_initStage0
-            // 
-            this.rBt_initStage0.AutoSize = true;
-            this.rBt_initStage0.Location = new System.Drawing.Point(52, 13);
-            this.rBt_initStage0.Name = "rBt_initStage0";
-            this.rBt_initStage0.Size = new System.Drawing.Size(57, 16);
-            this.rBt_initStage0.TabIndex = 14;
-            this.rBt_initStage0.TabStop = true;
-            this.rBt_initStage0.Text = "Stage 0";
-            this.rBt_initStage0.UseVisualStyleBackColor = true;
-            // 
             // bt_servoSW
             // 
             this.bt_servoSW.BackColor = System.Drawing.Color.Crimson;
-            this.bt_servoSW.Location = new System.Drawing.Point(27, 441);
+            this.bt_servoSW.Location = new System.Drawing.Point(45, 428);
             this.bt_servoSW.Name = "bt_servoSW";
             this.bt_servoSW.Size = new System.Drawing.Size(86, 56);
             this.bt_servoSW.TabIndex = 27;
@@ -934,7 +952,7 @@
             // bt_cycleReset
             // 
             this.bt_cycleReset.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.bt_cycleReset.Location = new System.Drawing.Point(642, 515);
+            this.bt_cycleReset.Location = new System.Drawing.Point(212, 428);
             this.bt_cycleReset.Name = "bt_cycleReset";
             this.bt_cycleReset.Size = new System.Drawing.Size(82, 56);
             this.bt_cycleReset.TabIndex = 28;
@@ -955,7 +973,7 @@
             // 
             // bt_test
             // 
-            this.bt_test.Location = new System.Drawing.Point(791, 526);
+            this.bt_test.Location = new System.Drawing.Point(222, 305);
             this.bt_test.Name = "bt_test";
             this.bt_test.Size = new System.Drawing.Size(75, 23);
             this.bt_test.TabIndex = 28;
@@ -965,7 +983,7 @@
             // 
             // bt_start
             // 
-            this.bt_start.Location = new System.Drawing.Point(236, 458);
+            this.bt_start.Location = new System.Drawing.Point(106, 193);
             this.bt_start.Name = "bt_start";
             this.bt_start.Size = new System.Drawing.Size(75, 23);
             this.bt_start.TabIndex = 29;
@@ -973,19 +991,16 @@
             this.bt_start.UseVisualStyleBackColor = true;
             this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
             // 
-            // panel_movStage
+            // tabPage5
             // 
-            this.panel_movStage.Controls.Add(this.bt_movToStage);
-            this.panel_movStage.Controls.Add(this.rBt_initStage8);
-            this.panel_movStage.Controls.Add(this.rBt_initStage0);
-            this.panel_movStage.Controls.Add(this.rBt_initStage7);
-            this.panel_movStage.Controls.Add(this.rBt_initStage1);
-            this.panel_movStage.Controls.Add(this.rBt_initStage2);
-            this.panel_movStage.Controls.Add(this.rBt_initStage6);
-            this.panel_movStage.Location = new System.Drawing.Point(3, 60);
-            this.panel_movStage.Name = "panel_movStage";
-            this.panel_movStage.Size = new System.Drawing.Size(289, 102);
-            this.panel_movStage.TabIndex = 20;
+            this.tabPage5.Controls.Add(this.bt_start);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(312, 384);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Auto";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // ControllerForm
             // 
@@ -993,8 +1008,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 608);
             this.Controls.Add(this.bt_servoSW);
-            this.Controls.Add(this.bt_start);
-            this.Controls.Add(this.bt_test);
             this.Controls.Add(this.bt_cycleReset);
             this.Controls.Add(this.tB_mesPrint);
             this.Controls.Add(this.tabControl1);
@@ -1029,10 +1042,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_JOGSpeed)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.panel_Initialize.ResumeLayout(false);
-            this.panel_Initializer.ResumeLayout(false);
-            this.panel_Initializer.PerformLayout();
             this.panel_movStage.ResumeLayout(false);
             this.panel_movStage.PerformLayout();
+            this.panel_Initializer.ResumeLayout(false);
+            this.panel_Initializer.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1120,5 +1134,6 @@
         private System.Windows.Forms.Button bt_movBackward;
         private System.Windows.Forms.Button bt_getPoint;
         private System.Windows.Forms.Panel panel_movStage;
+        private System.Windows.Forms.TabPage tabPage5;
     }
 }
