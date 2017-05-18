@@ -585,8 +585,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[0, WaferinCassettA - 1] - 4);//設定@3,Z軸伸長至cassetteA時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[0, WaferinCassettA - 1] + 2);//設定@4,Z軸收回時高度
+                    SyntecClient.writeGVar(3, ArmData.WaferZs_IO[WaferinCassettA - 1,0]);//設定@3,Z軸伸長至cassetteA時高度
+                    SyntecClient.writeGVar(4, ArmData.WaferZs_IO[WaferinCassettA - 1, 1]);//設定@4,Z軸收回時高度
                 }
 
                 SyntecClient.writeGVar(1, scheduleing[step, 0]);//設定@1為scheduleing[i,0]
@@ -677,8 +677,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[1, 5 - WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[1, 5-WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
+                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
                 }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作
@@ -1107,6 +1107,108 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(() =>
             {
                 Initializer.catchZ((int)num_initSlotID.Value);
+            });
+
+        }
+
+        private void bt_ZP_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.setJOGSpeed(cB_zPrecise.Checked ? 10 : 100);
+            SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
+
+        }
+
+        private void bt_ZN_MouseDown(object sender, MouseEventArgs e)
+        {
+            SyntecClient.setJOGSpeed(cB_zPrecise.Checked ? 10 : 100);
+            SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
+
+        }
+
+        private void bt_ZP_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+        }
+
+        private void bt_ZN_MouseUp(object sender, MouseEventArgs e)
+        {
+            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
+
+        }
+
+        private void bt_prepareGetWafer_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(Initializer.catchZInit);
+
+        }
+
+        private void bt_goIn_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(()=>
+            {
+                Initializer.getWaferTester((int)num_initSlotID.Value);
+            });
+            
+        }
+
+        private void bt_setZin_Click(object sender, EventArgs e)
+        {
+            double[] pos;
+            SyntecClient.getPos(out pos);
+
+            ArmData.WaferZs_IO[(int)num_initSlotID.Value, 0] = pos[2];
+            ArmData.writeAngle();
+        }
+
+        private void bt_setZout_Click(object sender, EventArgs e)
+        {
+            double[] pos;
+            SyntecClient.getPos(out pos);
+
+            ArmData.WaferZs_IO[(int)num_initSlotID.Value, 1] = pos[2];
+            ArmData.writeAngle();
+
+        }
+
+        private void bt_SuckSW_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                SyntecClient.writeOBit(320, !SyntecClient.readOBit(320));
+
+                while (SyntecClient.isBusy())
+                {
+                    Thread.Sleep(50);
+                }
+
+                mesPrintln("Suck SW Successfully.");
+            });
+
+
+        }
+
+        private void bt_manualCatch_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(Initializer.manualCatch);
+        }
+
+        private void bt_readInit_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(()=>
+            {
+                Initializer.readInitPoint();
+                mesPrintln("Done!");
+            });
+        }
+
+        private void bt_readZangle_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                ArmData.readAngle();
+                mesPrintln("Done!");
+
             });
 
         }

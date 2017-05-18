@@ -84,6 +84,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel_Initialize = new System.Windows.Forms.Panel();
+            this.bt_readInit = new System.Windows.Forms.Button();
             this.bt_initCoo = new System.Windows.Forms.Button();
             this.panel_movStage = new System.Windows.Forms.Panel();
             this.bt_movToStage = new System.Windows.Forms.Button();
@@ -103,12 +104,23 @@
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.cB_zPrecise = new System.Windows.Forms.CheckBox();
+            this.bt_manualCatch = new System.Windows.Forms.Button();
+            this.bt_setZout = new System.Windows.Forms.Button();
+            this.bt_setZin = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.bt_goIn = new System.Windows.Forms.Button();
+            this.bt_ZP = new System.Windows.Forms.Button();
+            this.bt_SuckSW = new System.Windows.Forms.Button();
+            this.bt_ZN = new System.Windows.Forms.Button();
+            this.num_initSlotID = new System.Windows.Forms.NumericUpDown();
+            this.bt_prepareGetWafer = new System.Windows.Forms.Button();
             this.bt_zCatch = new System.Windows.Forms.Button();
             this.bt_start = new System.Windows.Forms.Button();
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.num_initSlotID = new System.Windows.Forms.NumericUpDown();
+            this.bt_readZangle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -729,7 +741,7 @@
             this.num_JOGSpeed.Size = new System.Drawing.Size(91, 32);
             this.num_JOGSpeed.TabIndex = 27;
             this.num_JOGSpeed.Value = new decimal(new int[] {
-            10,
+            100,
             0,
             0,
             0});
@@ -758,6 +770,7 @@
             // 
             // panel_Initialize
             // 
+            this.panel_Initialize.Controls.Add(this.bt_readInit);
             this.panel_Initialize.Controls.Add(this.bt_initCoo);
             this.panel_Initialize.Controls.Add(this.panel_movStage);
             this.panel_Initialize.Controls.Add(this.bt_originSetter);
@@ -768,6 +781,16 @@
             this.panel_Initialize.Name = "panel_Initialize";
             this.panel_Initialize.Size = new System.Drawing.Size(295, 372);
             this.panel_Initialize.TabIndex = 13;
+            // 
+            // bt_readInit
+            // 
+            this.bt_readInit.Location = new System.Drawing.Point(203, 9);
+            this.bt_readInit.Name = "bt_readInit";
+            this.bt_readInit.Size = new System.Drawing.Size(80, 35);
+            this.bt_readInit.TabIndex = 22;
+            this.bt_readInit.Text = "Read Init File";
+            this.bt_readInit.UseVisualStyleBackColor = true;
+            this.bt_readInit.Click += new System.EventHandler(this.bt_readInit_Click);
             // 
             // bt_initCoo
             // 
@@ -871,9 +894,9 @@
             // 
             // bt_originSetter
             // 
-            this.bt_originSetter.Location = new System.Drawing.Point(27, 9);
+            this.bt_originSetter.Location = new System.Drawing.Point(10, 9);
             this.bt_originSetter.Name = "bt_originSetter";
-            this.bt_originSetter.Size = new System.Drawing.Size(97, 35);
+            this.bt_originSetter.Size = new System.Drawing.Size(76, 35);
             this.bt_originSetter.TabIndex = 13;
             this.bt_originSetter.Text = "Origin Setter";
             this.bt_originSetter.UseVisualStyleBackColor = true;
@@ -881,9 +904,9 @@
             // 
             // bt_startInit
             // 
-            this.bt_startInit.Location = new System.Drawing.Point(158, 9);
+            this.bt_startInit.Location = new System.Drawing.Point(101, 9);
             this.bt_startInit.Name = "bt_startInit";
-            this.bt_startInit.Size = new System.Drawing.Size(97, 35);
+            this.bt_startInit.Size = new System.Drawing.Size(93, 35);
             this.bt_startInit.TabIndex = 11;
             this.bt_startInit.Text = "Start Initializer";
             this.bt_startInit.UseVisualStyleBackColor = true;
@@ -965,7 +988,18 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.bt_readZangle);
+            this.tabPage5.Controls.Add(this.cB_zPrecise);
+            this.tabPage5.Controls.Add(this.bt_manualCatch);
+            this.tabPage5.Controls.Add(this.bt_setZout);
+            this.tabPage5.Controls.Add(this.bt_setZin);
+            this.tabPage5.Controls.Add(this.label11);
+            this.tabPage5.Controls.Add(this.bt_goIn);
+            this.tabPage5.Controls.Add(this.bt_ZP);
+            this.tabPage5.Controls.Add(this.bt_SuckSW);
+            this.tabPage5.Controls.Add(this.bt_ZN);
             this.tabPage5.Controls.Add(this.num_initSlotID);
+            this.tabPage5.Controls.Add(this.bt_prepareGetWafer);
             this.tabPage5.Controls.Add(this.bt_zCatch);
             this.tabPage5.Controls.Add(this.bt_start);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
@@ -976,11 +1010,131 @@
             this.tabPage5.Text = "Auto";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // cB_zPrecise
+            // 
+            this.cB_zPrecise.AutoSize = true;
+            this.cB_zPrecise.Location = new System.Drawing.Point(242, 80);
+            this.cB_zPrecise.Name = "cB_zPrecise";
+            this.cB_zPrecise.Size = new System.Drawing.Size(56, 16);
+            this.cB_zPrecise.TabIndex = 40;
+            this.cB_zPrecise.Text = "Precise";
+            this.cB_zPrecise.UseVisualStyleBackColor = true;
+            // 
+            // bt_manualCatch
+            // 
+            this.bt_manualCatch.Location = new System.Drawing.Point(104, 229);
+            this.bt_manualCatch.Name = "bt_manualCatch";
+            this.bt_manualCatch.Size = new System.Drawing.Size(97, 23);
+            this.bt_manualCatch.TabIndex = 39;
+            this.bt_manualCatch.Text = "Manual Catch";
+            this.bt_manualCatch.UseVisualStyleBackColor = true;
+            this.bt_manualCatch.Click += new System.EventHandler(this.bt_manualCatch_Click);
+            // 
+            // bt_setZout
+            // 
+            this.bt_setZout.Location = new System.Drawing.Point(149, 270);
+            this.bt_setZout.Name = "bt_setZout";
+            this.bt_setZout.Size = new System.Drawing.Size(75, 23);
+            this.bt_setZout.TabIndex = 38;
+            this.bt_setZout.Text = "Set Z Out";
+            this.bt_setZout.UseVisualStyleBackColor = true;
+            this.bt_setZout.Click += new System.EventHandler(this.bt_setZout_Click);
+            // 
+            // bt_setZin
+            // 
+            this.bt_setZin.Location = new System.Drawing.Point(68, 270);
+            this.bt_setZin.Name = "bt_setZin";
+            this.bt_setZin.Size = new System.Drawing.Size(75, 23);
+            this.bt_setZin.TabIndex = 37;
+            this.bt_setZin.Text = "Set Z In";
+            this.bt_setZin.UseVisualStyleBackColor = true;
+            this.bt_setZin.Click += new System.EventHandler(this.bt_setZin_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(88, 148);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(55, 12);
+            this.label11.TabIndex = 36;
+            this.label11.Text = "Wafer ID :";
+            // 
+            // bt_goIn
+            // 
+            this.bt_goIn.Location = new System.Drawing.Point(104, 189);
+            this.bt_goIn.Name = "bt_goIn";
+            this.bt_goIn.Size = new System.Drawing.Size(97, 23);
+            this.bt_goIn.TabIndex = 35;
+            this.bt_goIn.Text = "Get Wafer Tester";
+            this.bt_goIn.UseVisualStyleBackColor = true;
+            this.bt_goIn.Click += new System.EventHandler(this.bt_goIn_Click);
+            // 
+            // bt_ZP
+            // 
+            this.bt_ZP.Location = new System.Drawing.Point(102, 61);
+            this.bt_ZP.Name = "bt_ZP";
+            this.bt_ZP.Size = new System.Drawing.Size(59, 52);
+            this.bt_ZP.TabIndex = 33;
+            this.bt_ZP.Text = "Z +";
+            this.bt_ZP.UseVisualStyleBackColor = true;
+            this.bt_ZP.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_ZP_MouseDown);
+            this.bt_ZP.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_ZP_MouseUp);
+            // 
+            // bt_SuckSW
+            // 
+            this.bt_SuckSW.Location = new System.Drawing.Point(37, 61);
+            this.bt_SuckSW.Name = "bt_SuckSW";
+            this.bt_SuckSW.Size = new System.Drawing.Size(59, 52);
+            this.bt_SuckSW.TabIndex = 34;
+            this.bt_SuckSW.Text = "Suck SW";
+            this.bt_SuckSW.UseVisualStyleBackColor = true;
+            this.bt_SuckSW.Click += new System.EventHandler(this.bt_SuckSW_Click);
+            this.bt_SuckSW.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_ZN_MouseDown);
+            this.bt_SuckSW.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_ZN_MouseUp);
+            // 
+            // bt_ZN
+            // 
+            this.bt_ZN.Location = new System.Drawing.Point(167, 61);
+            this.bt_ZN.Name = "bt_ZN";
+            this.bt_ZN.Size = new System.Drawing.Size(59, 52);
+            this.bt_ZN.TabIndex = 34;
+            this.bt_ZN.Text = "Z -";
+            this.bt_ZN.UseVisualStyleBackColor = true;
+            this.bt_ZN.MouseDown += new System.Windows.Forms.MouseEventHandler(this.bt_ZN_MouseDown);
+            this.bt_ZN.MouseUp += new System.Windows.Forms.MouseEventHandler(this.bt_ZN_MouseUp);
+            // 
+            // num_initSlotID
+            // 
+            this.num_initSlotID.Location = new System.Drawing.Point(149, 143);
+            this.num_initSlotID.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.num_initSlotID.Name = "num_initSlotID";
+            this.num_initSlotID.Size = new System.Drawing.Size(63, 22);
+            this.num_initSlotID.TabIndex = 31;
+            this.num_initSlotID.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // bt_prepareGetWafer
+            // 
+            this.bt_prepareGetWafer.Location = new System.Drawing.Point(87, 18);
+            this.bt_prepareGetWafer.Name = "bt_prepareGetWafer";
+            this.bt_prepareGetWafer.Size = new System.Drawing.Size(114, 23);
+            this.bt_prepareGetWafer.TabIndex = 30;
+            this.bt_prepareGetWafer.Text = "Prepare to Catch Z";
+            this.bt_prepareGetWafer.UseVisualStyleBackColor = true;
+            this.bt_prepareGetWafer.Click += new System.EventHandler(this.bt_prepareGetWafer_Click);
+            // 
             // bt_zCatch
             // 
-            this.bt_zCatch.Location = new System.Drawing.Point(196, 93);
+            this.bt_zCatch.Location = new System.Drawing.Point(-54, 180);
             this.bt_zCatch.Name = "bt_zCatch";
-            this.bt_zCatch.Size = new System.Drawing.Size(75, 23);
+            this.bt_zCatch.Size = new System.Drawing.Size(97, 23);
             this.bt_zCatch.TabIndex = 30;
             this.bt_zCatch.Text = "Z Catch";
             this.bt_zCatch.UseVisualStyleBackColor = true;
@@ -988,7 +1142,7 @@
             // 
             // bt_start
             // 
-            this.bt_start.Location = new System.Drawing.Point(119, 249);
+            this.bt_start.Location = new System.Drawing.Point(106, 338);
             this.bt_start.Name = "bt_start";
             this.bt_start.Size = new System.Drawing.Size(75, 23);
             this.bt_start.TabIndex = 29;
@@ -1029,12 +1183,15 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
-            // num_initSlotID
+            // bt_readZangle
             // 
-            this.num_initSlotID.Location = new System.Drawing.Point(51, 93);
-            this.num_initSlotID.Name = "num_initSlotID";
-            this.num_initSlotID.Size = new System.Drawing.Size(120, 22);
-            this.num_initSlotID.TabIndex = 31;
+            this.bt_readZangle.Location = new System.Drawing.Point(207, 200);
+            this.bt_readZangle.Name = "bt_readZangle";
+            this.bt_readZangle.Size = new System.Drawing.Size(98, 35);
+            this.bt_readZangle.TabIndex = 41;
+            this.bt_readZangle.Text = "Read Z Angle File";
+            this.bt_readZangle.UseVisualStyleBackColor = true;
+            this.bt_readZangle.Click += new System.EventHandler(this.bt_readZangle_Click);
             // 
             // ControllerForm
             // 
@@ -1081,6 +1238,7 @@
             this.panel_Initializer.ResumeLayout(false);
             this.panel_Initializer.PerformLayout();
             this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_initSlotID)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1173,5 +1331,17 @@
         private System.Windows.Forms.Button bt_initCoo;
         private System.Windows.Forms.Button bt_zCatch;
         private System.Windows.Forms.NumericUpDown num_initSlotID;
+        private System.Windows.Forms.Button bt_ZP;
+        private System.Windows.Forms.Button bt_ZN;
+        private System.Windows.Forms.Button bt_goIn;
+        private System.Windows.Forms.Button bt_prepareGetWafer;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button bt_setZout;
+        private System.Windows.Forms.Button bt_setZin;
+        private System.Windows.Forms.Button bt_SuckSW;
+        private System.Windows.Forms.Button bt_manualCatch;
+        private System.Windows.Forms.CheckBox cB_zPrecise;
+        private System.Windows.Forms.Button bt_readInit;
+        private System.Windows.Forms.Button bt_readZangle;
     }
 }

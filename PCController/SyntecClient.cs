@@ -190,6 +190,17 @@ namespace PCController
             return false;
         }
 
+        public static bool readOBit(int addr)
+        {
+            byte[] val;
+            cnc.READ_plc_obit(addr, addr, out val);
+
+            if (val != null)
+                return val[0] == 0 ? false : true;
+
+            return false;
+        }
+
 
 
         public static double readSingleVar(int no)
@@ -350,7 +361,7 @@ namespace PCController
 
             for (int i = 0; i < tmpM.Length; i++)
             {
-                if (tmpM[i] > 180)
+                if (tmpM[i] > 180 && i != 2)
                     Pos_in[i] = tmpM[i] - 360;
                 else
                     Pos_in[i] = tmpM[i];

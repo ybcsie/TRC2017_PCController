@@ -20,35 +20,67 @@ namespace PCController
 
         public static double[,] measureangle = null;
 
-        public static double[] Z_chamberA =
+        public static double[,] Z_chamberB =
             {
-            108.111,//0
-            111.8,//1
-            115.8,//2
-            119.8,//3
-            123.8,//4
-            127.8,//5
-            131.8,//6
-            135.8,//7
-            139.8,//8
-            143.8,//9
-            147.8,//10
-            151.8,//11
-            155.8,//12
-            159.8,//13
-            163.8,//14
-            167.8,//15
-            171.8,//16
-            175.8,//17
-            179.8,//18
-            183.8,//19
-            187.8,//20
-            191.8,//21
-            195.8,//22
-            199.8,//23
-            203.8//24
+            { 101.248,104.229 },//0
+            { 105.759,108.313},//1
+            { 109.303,111.744 },//2
+            { 113.398,115.839},//3
+            { 117.448,120.249},//4
+            { 121.397,124.378},//5
+            { 126.122,128.304},//6
+            { 129.677,132.86},//7
+            { 133.682,137.023},//8
+            { 100,100},//9
+            { 100,100},//10
+            { 100,100},//11
+            { 100,100},//12
+            { 100,100},//13
+            { 100,100},//14
+            { 100,100},//15
+            { 100,100},//16
+            { 100,100},//17
+            { 100,100},//18
+            { 100,100},//19
+            { 100,100},//20
+            { 100,100},//21
+            { 100,100},//22
+            { 100,100},//23
+            { 100,100}//24
         };
 
+        public static double[] WaferZs = { 160, 150, 140, 130, 167.348, 105.104 };
+        public static double[,] WaferZs_IO = { { 160 ,162}, { 150, 152 }, { 140, 142 }, { 130, 132 }, { 133.682, 137.023 }, { 101.248, 104.229 } };
+
+        private static StreamWriter zAngles;
+        private static StreamReader zAnglesReader;
+        private const string zAnglesFilename = "zAngles.txt";
+
+        public static void writeAngle()
+        {
+            zAngles = new StreamWriter(zAnglesFilename);
+            for (int i = 0; i < 6; i++)
+            {
+                zAngles.WriteLine(WaferZs_IO[i, 0]);
+                zAngles.WriteLine(WaferZs_IO[i, 1]);
+            }
+
+            zAngles.Close();
+
+        }
+        public static void readAngle()
+        {
+            zAnglesReader = new StreamReader(zAnglesFilename);
+
+            for (int i = 0; i < 6; i++)
+            {
+                WaferZs_IO[i, 0] = Convert.ToDouble(zAnglesReader.ReadLine());
+                WaferZs_IO[i, 1] = Convert.ToDouble(zAnglesReader.ReadLine());
+            }
+
+
+            zAnglesReader.Close();
+        }
     }
 
     class MotorAngle
@@ -766,19 +798,20 @@ namespace PCController
                 checkcassette[0, i] = num ;
                 num = num + 0.48;
             }
-            
-            checkcassette[0, 0] = ArmData.Z_chamberA[5];
-            checkcassette[0, 1] = ArmData.Z_chamberA[4];
-            checkcassette[0, 2] = ArmData.Z_chamberA[3];
-            checkcassette[0, 3] = ArmData.Z_chamberA[2];
-            checkcassette[0, 4] = ArmData.Z_chamberA[1];
+            /*
+            checkcassette[0, 0] = ;
+            checkcassette[0, 1] = ;
+            checkcassette[0, 2] = ;
+            checkcassette[0, 3] = ;
+            checkcassette[0, 4] = ;
             checkcassette[0, 5] = ArmData.Z_chamberA[0];
-            checkcassette[1, 0] = ArmData.Z_chamberA[5];
-            checkcassette[1, 1] = ArmData.Z_chamberA[4];
-            checkcassette[1, 2] = ArmData.Z_chamberA[3];
-            checkcassette[1, 3] = ArmData.Z_chamberA[2];
-            checkcassette[1, 4] = ArmData.Z_chamberA[1];
-            checkcassette[1, 5] = ArmData.Z_chamberA[0];
+            checkcassette[1, 0] = checkcassette[0, 0];
+            checkcassette[1, 1] = checkcassette[0, 1];
+            checkcassette[1, 2] = checkcassette[0, 2];
+            checkcassette[1, 3] = checkcassette[0, 3];
+            checkcassette[1, 4] = checkcassette[0, 4];
+            checkcassette[1, 5] = checkcassette[0, 5];
+            */
         }
 
         public static AngleList routplanning(double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)

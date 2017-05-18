@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace PCController
 {
@@ -16,7 +17,7 @@ namespace PCController
 
         public static void setup()
         {
-            int pointCount = 35;
+            int pointCount = 20;
 
             double[] coor = new double[] { ArmData.coordinate[0, 0], ArmData.coordinate[0, 1], ArmData.coordinate[0, 2], ArmData.coordinate[0, 3] };
 
@@ -69,11 +70,14 @@ namespace PCController
 
         public static void setupZ()
         {
-            int pointCount = 35;
+            setupZ(120, 5);
+        }
 
+        public static void setupZ(double offset, int pointCount)
+        {
             double[] coor = new double[] { ArmData.coordinate[8, 0], ArmData.coordinate[8, 1], ArmData.coordinate[8, 2], ArmData.coordinate[8, 3] };
 
-            AngleList linearAngleList = RoutPlanning.routplanning(coor[0], coor[1], coor[2], coor[3], ArmData.distance - 120, pointCount);
+            AngleList linearAngleList = RoutPlanning.routplanning(coor[0], coor[1], coor[2], coor[3], ArmData.distance - offset, pointCount);
 
             Angle currNode = linearAngleList.headAngle;
 
@@ -354,6 +358,7 @@ mesPrintln("Initializer: C4 OK!");
             SyntecClient.getPos(out pos);
             Program.form.mesPrintln(string.Format("Move to C{0:d} = {1:f3}", axis, absAngle));
             SyntecClient.writeGVar(1000 + axis, absAngle - pos[axis - 1]);
+            Program.form.mesPrintln(string.Format("G91 : {0:f3}", absAngle - pos[axis - 1]));
         }
 
         private static void writeG91AngleByOffset(int axis, double angleOffset)
@@ -413,29 +418,12 @@ mesPrintln("Initializer: C4 OK!");
             double pos = SyntecClient.Pos[2];
             int count = 0;
 
-            while (SyntecClient.readReg(56) != 1)
+            while (SyntecClient.readReg(56) != 1 || !SyntecClient.readIBit(335))
             {
                 Thread.Sleep(5);
 
-                if (count++ % 5 == 1)
-                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
-                    {
-                        Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
-                        SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-                        Thread.Sleep(300);
-                        pos = SyntecClient.Pos[2];
-                        SyntecClient.JOG(3, direction);
-                    }
-            }
-
-            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-
-            while (!SyntecClient.readIBit(335))
-            {
-                Thread.Sleep(5);
-
-                if (count++ % 5 == 1)
-                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
+                if (count++ % 20 == 1)
+                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.3)
                     {
                         Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
                         SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
@@ -451,24 +439,25 @@ mesPrintln("Initializer: C4 OK!");
 
         }
 
-        private static void JOGZUntilSensor(int direction, int speed, bool sensorState, bool initModeOn)
+        private static void JOGZUntilSensor_InitOn(int direction, int speed)
         {
             SyntecClient.cycleReset();
             SyntecClient.setJOGSpeed(speed);
 
-            SyntecClient.writeReg(25, initModeOn ? 1 : 0);
+            SyntecClient.writeReg(25, 1);
+            SyntecClient.writeReg(55, 0);
+            SyntecClient.writeReg(57, 0);
+            SyntecClient.writeReg(57, 1);
 
             SyntecClient.JOG(3, direction);
 
             double pos = SyntecClient.Pos[2];
             int count = 0;
 
-            while (SyntecClient.readIBit(335) != sensorState)
+            while (SyntecClient.readIBit(335) && SyntecClient.readReg(55) != 1)
             {
-                Thread.Sleep(5);
-
-                if (count++ % 5 == 1)
-                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.5)
+                if (count++ % 20 == 1)
+                    if (Math.Abs(SyntecClient.Pos[2] - pos) < 0.3)
                     {
                         Program.form.mesPrintln("Initializer: JOG is not responsing, trying reJOG ...");
                         SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
@@ -476,6 +465,7 @@ mesPrintln("Initializer: C4 OK!");
                         pos = SyntecClient.Pos[2];
                         SyntecClient.JOG(3, direction);
                     }
+                Thread.Sleep(5);
             }
 
             SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
@@ -486,6 +476,7 @@ mesPrintln("Initializer: C4 OK!");
 
 
         }
+
 
         private static void runInitAndWait(int step)
         {
@@ -564,6 +555,22 @@ mesPrintln("Initializer: C4 OK!");
             });
 
         }
+        public static void readInitPoint()
+        {
+            StreamReader rd = new StreamReader("initCoo.txt");
+            int stageId;
+            for (int i = 5; i < 10; i++)
+            {
+                stageId = Convert.ToInt32(rd.ReadLine());
+
+                ArmData.measureangle[stageId, 0] = Convert.ToDouble(rd.ReadLine());
+                ArmData.measureangle[stageId, 2] = Convert.ToDouble(rd.ReadLine());
+                ArmData.measureangle[stageId, 3] = Convert.ToDouble(rd.ReadLine());
+
+            }
+            rd.Close();
+        }
+
 
         public static void getPoint()
         {
@@ -573,6 +580,16 @@ mesPrintln("Initializer: C4 OK!");
             ArmData.measureangle[initStage, 0] = pos[0];
             ArmData.measureangle[initStage, 2] = pos[1];
             ArmData.measureangle[initStage, 3] = pos[3];
+
+            StreamWriter initCooWriter = new StreamWriter("initCoo.txt");
+            for (int i = 5; i < 10; i++)
+            {
+                initCooWriter.WriteLine(i);
+                initCooWriter.WriteLine(pos[0]);
+                initCooWriter.WriteLine(pos[1]);
+                initCooWriter.WriteLine(pos[3]);
+            }
+            initCooWriter.Close();
 
             Program.form.mesPrintln(
                 string.Format("Stage {0:d} has been initialized by: ", initStage) +
@@ -598,19 +615,74 @@ mesPrintln("Initializer: C4 OK!");
         }
         public static void catchZInit()
         {
-            home(true);
+            if (SyntecClient.Pos[1] > 0)//C1 at Right side
+                home(true);
 
             setupZ();
 
             writeG91AngleByAbs(1, ArmData.coordinate[3, 0]);
             writeG91AngleByAbs(2, ArmData.coordinate[3, 2]);
-            writeG91AngleByAbs(3, 150);
+            writeG91AngleByAbs(3, 110);
             writeG91AngleByAbs(4, ArmData.coordinate[3, 3]);
+
+            while (!SyntecClient.isIdle())
+                Thread.Sleep(500);
+
             runInitAndWait(8);
 
+            Program.form.mesPrintln("OK!");
+            /*
             SyntecClient.writeCBit(36, true);
             Program.form.showWarnning("move arm to chamber and then press OK");
             SyntecClient.writeCBit(36, false);
+            */
+        }
+        public static void manualCatch()
+        {
+            setupZ(-20, 30);
+
+            writeG91AngleByAbs(1, ArmData.coordinate[8, 0]);
+            writeG91AngleByAbs(2, ArmData.coordinate[8, 2]);
+            writeG91AngleByOffset(3, 0);
+            writeG91AngleByAbs(4, ArmData.coordinate[8, 3]);
+
+            runInitAndWait(8);
+
+            Program.form.showWarnning("press OK to move back");
+
+            runInitAndWait(11);
+
+        }
+
+        public static void getWaferTester(int id)
+        {
+            setupZ(-20,35);
+
+            writeG91AngleByAbs(1, ArmData.coordinate[8, 0]);
+            writeG91AngleByAbs(2, ArmData.coordinate[8, 2]);
+            writeG91AngleByAbs(3, ArmData.WaferZs_IO[id, 0]);
+            writeG91AngleByAbs(4, ArmData.coordinate[8, 3]);
+
+            runInitAndWait(8);
+
+            Program.form.showWarnning("press OK to get wafer");
+
+            SyntecClient.writeOBit(320, true);
+            while (SyntecClient.isBusy())
+            {
+                Thread.Sleep(50);
+            }
+
+            writeG91AngleByAbs(3, ArmData.WaferZs_IO[id, 1]);
+
+            runInitAndWait(10);
+            runInitAndWait(11);
+
+            SyntecClient.writeOBit(320, false);
+            while (SyntecClient.isBusy())
+            {
+                Thread.Sleep(50);
+            }
 
         }
 
@@ -624,62 +696,34 @@ mesPrintln("Initializer: C4 OK!");
                 return;
             }
 
+            /*
             //move Z
-            writeG91AngleByAbs(3, 105 + id * 4);
+            writeG91AngleByAbs(3, 105 + id * 4 - 4);
             runInitAndWait(10);
-
-
+            */
             Program.form.mesPrintln("Catch Z...");
 
             double[] pos;
             double z1, z2;
 
-            JOGZUntilSensorChange(SyntecClient.JOGMode.POSITIVE, 10);
-
-            /*
-            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 30, false, false);
-            Program.form.mesPrintln("test1");
-            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, true, false);
-            Program.form.mesPrintln("test2");
-            */
-            JOGZUntilSensor(SyntecClient.JOGMode.NEGATIVE, 10, false, true);
+            JOGZUntilSensor_InitOn(SyntecClient.JOGMode.POSITIVE, 10);
             SyntecClient.getPos(out pos);
             z1 = pos[2];
             Program.form.mesPrintln("Z1 got.");
 
-            JOGZUntilSensor(SyntecClient.JOGMode.NEGATIVE, 10, true, false);
-            Program.form.mesPrintln("up");
+            writeG91AngleByOffset(3, 2);
+            runInitAndWait(10);
 
-
-            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, false, true);
+            JOGZUntilSensor_InitOn(SyntecClient.JOGMode.NEGATIVE, 10);
             SyntecClient.getPos(out pos);
             z2 = pos[2];
 
-            JOGZUntilSensor(SyntecClient.JOGMode.POSITIVE, 10, true, false);
+            writeG91AngleByOffset(3, 6);
+            runInitAndWait(10);
 
+            ArmData.WaferZs[id] = (z1 + z2) / 2;
 
-            ArmData.Z_chamberA[id] = (z1 + z2) / 2;
-
-            Program.form.mesPrintln(string.Format("Z = {0:f3}", ArmData.Z_chamberA[id]));
-            /*
-            SyntecClient.writeReg(25, 0);
-            SyntecClient.JOG(3, SyntecClient.JOGMode.POSITIVE);
-
-            while (SyntecClient.readIBit(335))
-                Thread.Sleep(500);
-
-            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-
-            SyntecClient.writeReg(25, 1);
-            SyntecClient.JOG(3, SyntecClient.JOGMode.NEGATIVE);
-
-            while (!SyntecClient.readIBit(335))
-                Thread.Sleep(500);
-
-            SyntecClient.JOG(3, SyntecClient.JOGMode.STOP);
-
-            SyntecClient.writeReg(25, 0);
-            */
+            Program.form.mesPrintln(string.Format("Z = {0:f3}", ArmData.WaferZs[id]));
 
             Program.form.mesPrintln("Done");
 
