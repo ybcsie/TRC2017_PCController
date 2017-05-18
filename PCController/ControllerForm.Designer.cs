@@ -104,6 +104,7 @@
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.bt_readZangle = new System.Windows.Forms.Button();
             this.cB_zPrecise = new System.Windows.Forms.CheckBox();
             this.bt_manualCatch = new System.Windows.Forms.Button();
             this.bt_setZout = new System.Windows.Forms.Button();
@@ -120,7 +121,7 @@
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.bt_readZangle = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -988,6 +989,7 @@
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.button1);
             this.tabPage5.Controls.Add(this.bt_readZangle);
             this.tabPage5.Controls.Add(this.cB_zPrecise);
             this.tabPage5.Controls.Add(this.bt_manualCatch);
@@ -1009,6 +1011,16 @@
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Auto";
             this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // bt_readZangle
+            // 
+            this.bt_readZangle.Location = new System.Drawing.Point(207, 200);
+            this.bt_readZangle.Name = "bt_readZangle";
+            this.bt_readZangle.Size = new System.Drawing.Size(98, 35);
+            this.bt_readZangle.TabIndex = 41;
+            this.bt_readZangle.Text = "Read Z Angle File";
+            this.bt_readZangle.UseVisualStyleBackColor = true;
+            this.bt_readZangle.Click += new System.EventHandler(this.bt_readZangle_Click);
             // 
             // cB_zPrecise
             // 
@@ -1142,11 +1154,11 @@
             // 
             // bt_start
             // 
-            this.bt_start.Location = new System.Drawing.Point(106, 338);
+            this.bt_start.Location = new System.Drawing.Point(60, 338);
             this.bt_start.Name = "bt_start";
             this.bt_start.Size = new System.Drawing.Size(75, 23);
             this.bt_start.TabIndex = 29;
-            this.bt_start.Text = "Start";
+            this.bt_start.Text = "Start1";
             this.bt_start.UseVisualStyleBackColor = true;
             this.bt_start.Click += new System.EventHandler(this.bt_start_Click);
             // 
@@ -1183,15 +1195,15 @@
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
             // 
-            // bt_readZangle
+            // button1
             // 
-            this.bt_readZangle.Location = new System.Drawing.Point(207, 200);
-            this.bt_readZangle.Name = "bt_readZangle";
-            this.bt_readZangle.Size = new System.Drawing.Size(98, 35);
-            this.bt_readZangle.TabIndex = 41;
-            this.bt_readZangle.Text = "Read Z Angle File";
-            this.bt_readZangle.UseVisualStyleBackColor = true;
-            this.bt_readZangle.Click += new System.EventHandler(this.bt_readZangle_Click);
+            this.button1.Location = new System.Drawing.Point(167, 338);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 42;
+            this.button1.Text = "Start2";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ControllerForm
             // 
@@ -1343,5 +1355,6 @@
         private System.Windows.Forms.CheckBox cB_zPrecise;
         private System.Windows.Forms.Button bt_readInit;
         private System.Windows.Forms.Button bt_readZangle;
+        private System.Windows.Forms.Button button1;
     }
 }

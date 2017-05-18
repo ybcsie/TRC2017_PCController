@@ -6,9 +6,11 @@ using System.Windows.Forms;
 namespace PCController
 {
     
+    
+
     public partial class ControllerForm : Form
     {
-
+        public static int task = 0;
 
         public static int[] wafernum = new int[6];
         public static int[] wafernumB = new int[6];
@@ -232,9 +234,17 @@ namespace PCController
             SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
 
             SyntecClient.cycleStart();
+
             RoutPlanning.checkcassette(cassettezaxis);
             //TRCClient.handShake();
-            TRCClient.init1();
+            if (task == 0)
+            {
+                TRCClient.init1();
+            }
+            else
+            {
+                TRCClient.init();
+            }
             //>>>>>>>>>>>>>>>>>任務內容
             missiontime0[0] = TRCClient.record_time[0, 0];
             missiontime0[1] = TRCClient.record_time[0, 1];
@@ -677,8 +687,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
+                    SyntecClient.writeGVar(3, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB],1]);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB], 0]);//設定@4,Z軸縮回時高度
                 }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作
@@ -1073,6 +1083,7 @@ namespace PCController
             ThreadsController.addThreadAndStartByFunc(() =>
             {
                 Initializer.home(false);
+                task = 0;
                 auto();
             });
 
@@ -1211,6 +1222,16 @@ namespace PCController
 
             });
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ThreadsController.addThreadAndStartByFunc(() =>
+            {
+                Initializer.home(false);
+                task = 1;
+                auto();
+            });
         }
     }
 
