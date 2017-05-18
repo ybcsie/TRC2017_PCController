@@ -766,21 +766,19 @@ namespace PCController
                 checkcassette[0, i] = num ;
                 num = num + 0.48;
             }
-            /*
-            checkcassette[0, 0] = ;
-            checkcassette[0, 1] = ;
-            checkcassette[0, 2] = ;
-            checkcassette[0, 3] = ;
-            checkcassette[0, 4] = ;
-            checkcassette[0, 5] = ;
-            */
+            
+            checkcassette[0, 0] = ArmData.Z_chamberA[5];
+            checkcassette[0, 1] = ArmData.Z_chamberA[4];
+            checkcassette[0, 2] = ArmData.Z_chamberA[3];
+            checkcassette[0, 3] = ArmData.Z_chamberA[2];
+            checkcassette[0, 4] = ArmData.Z_chamberA[1];
             checkcassette[0, 5] = ArmData.Z_chamberA[0];
-            checkcassette[1, 0] = checkcassette[0, 0];
-            checkcassette[1, 1] = checkcassette[0, 1];
-            checkcassette[1, 2] = checkcassette[0, 2];
-            checkcassette[1, 3] = checkcassette[0, 3];
-            checkcassette[1, 4] = checkcassette[0, 4];
-            checkcassette[1, 5] = checkcassette[0, 5];
+            checkcassette[1, 0] = ArmData.Z_chamberA[5];
+            checkcassette[1, 1] = ArmData.Z_chamberA[4];
+            checkcassette[1, 2] = ArmData.Z_chamberA[3];
+            checkcassette[1, 3] = ArmData.Z_chamberA[2];
+            checkcassette[1, 4] = ArmData.Z_chamberA[1];
+            checkcassette[1, 5] = ArmData.Z_chamberA[0];
         }
 
         public static AngleList routplanning(double angle1, double angle2, double angle3, double angle4, double distance, int pointsnum)

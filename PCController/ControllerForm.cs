@@ -190,7 +190,10 @@ namespace PCController
             int[] missiontime0 = new int[3];
             int[,] missionstate0 = new int[5, 3];
             int[] missionnum0 = new int[3];
-            
+            int checklargestate = 0;
+            int[,] lackstate = new int[26, 6];
+            int[] savestate = new int[9];
+            int[,] missiontmp0 = new int[5, 3];
             int armtime0;
             int i = 0;
             int j = 0;
@@ -204,6 +207,31 @@ namespace PCController
 
             AngleList[] go = new AngleList[10];
 
+
+            //roudplaining
+
+            for (i = 0; i < 10; i++)
+            {
+                //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
+                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance, pointsnum);
+            }
+
+
+            //end plaining 
+
+            //Nccode generator
+
+            NCGen.generator(go);
+
+            Thread.Sleep(500);
+
+            mesPrintln("NCGen: NC Code generation is done.");
+
+            SyntecClient.cycleReset();
+
+            SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
+
+            SyntecClient.cycleStart();
             RoutPlanning.checkcassette(cassettezaxis);
             //TRCClient.handShake();
             TRCClient.init1();
@@ -212,45 +240,152 @@ namespace PCController
             missiontime0[1] = TRCClient.record_time[0, 1];
             missiontime0[2] = TRCClient.record_time[0, 2];
             Program.form.mesPrintln(string.Format("missiontime0 = {0:d},{1:d},{2:d}", missiontime0[0], missiontime0[1], missiontime0[2]));
-            for (i = 0; i < 3; i++)
+            for (i = 0; i < 5; i++)
             {
-                if (TRCClient.record_stage[0, i] > 100)
+                for (j = 0; j < 3; j++)
                 {
-                    missionnum0[i] = 3;
+                    missiontmp0[i, j] = 0;
                 }
-                else if (TRCClient.record_stage[0, i] > 10)
+            }
+            for (j = 0; j < 6; j++)
+            {
+                for (i = 0; i < 3; i++)
                 {
-                    missionnum0[i] = 2;
+                    if (TRCClient.record_stage[j, i] > 100)
+                    {
+                        missionnum0[i] = 3;
+                    }
+                    else if (TRCClient.record_stage[j, i] > 10)
+                    {
+                        missionnum0[i] = 2;
+                    }
+                    else
+                    {
+                        missionnum0[i] = 1;
+                    }
                 }
-                else
+                if ((missionnum0[0] + missionnum0[2] + missionnum0[1]) == 6)
                 {
-                    missionnum0[i] = 1;
+                    checklargestate = j;
+                    j = 6;
+                }
+            }
+            for (i = 0; i < 25; i++)
+            {
+                for (j = 0; j < 6; j++)
+                {
+                    lackstate[i, j] = 0;
                 }
             }
             Program.form.mesPrintln(string.Format("m num = {0:d},{1:d},{2:d}", missionnum0[0], missionnum0[1], missionnum0[2]));
             for (i = 1; i < 4; i++)
             {
                 //Program.form.mesPrintln(string.Format("r stage = {0:d}", TRCClient.record_stage[0, i - 1]));
-                if (TRCClient.record_stage[1, i - 1] > 100)
+                if (TRCClient.record_stage[checklargestate, i - 1] > 100)
                 {
-                    missionstate0[i, 2] = TRCClient.record_stage[0, i - 1] % 10;
-                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
-                    missionstate0[i, 1] = TRCClient.record_stage[0, i - 1] % 10;
-                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    savestate[i - 1] = TRCClient.record_stage[checklargestate, i - 1];
+                    missionstate0[i, 2] = TRCClient.record_stage[checklargestate, i - 1] % 10;
+                    TRCClient.record_stage[checklargestate, i - 1] = TRCClient.record_stage[checklargestate, i - 1] / 10;
+                    missionstate0[i, 1] = TRCClient.record_stage[checklargestate, i - 1] % 10;
+                    TRCClient.record_stage[checklargestate, i - 1] = TRCClient.record_stage[checklargestate, i - 1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[checklargestate, i - 1] % 10;
                     Program.form.mesPrintln(string.Format("m stage = {0:d},{1:d},{2:d}", missionstate0[i, 0], missionstate0[i, 1], missionstate0[i, 2]));
                 }
-                else if (TRCClient.record_stage[1, i - 1] > 10)
+                else if (TRCClient.record_stage[checklargestate, i - 1] > 10)
                 {
-                    missionstate0[i, 1] = TRCClient.record_stage[0, i - 1] % 10;
-                    TRCClient.record_stage[0, i - 1] = TRCClient.record_stage[0, i - 1] / 10;
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    savestate[i - 1] = TRCClient.record_stage[checklargestate, i - 1];
+                    missionstate0[i, 1] = TRCClient.record_stage[checklargestate, i - 1] % 10;
+                    TRCClient.record_stage[checklargestate, i - 1] = TRCClient.record_stage[checklargestate, i - 1] / 10;
+                    missionstate0[i, 0] = TRCClient.record_stage[checklargestate, i - 1] % 10;
                     Program.form.mesPrintln(string.Format("m stage = {0:d},{1:d}", missionstate0[i, 0], missionstate0[i, 1]));
                 }
                 else
                 {
-                    missionstate0[i, 0] = TRCClient.record_stage[0, i - 1] % 10;
+                    savestate[i - 1] = TRCClient.record_stage[checklargestate, i - 1];
+                    missionstate0[i, 0] = TRCClient.record_stage[checklargestate, i - 1] % 10;
                     Program.form.mesPrintln(string.Format("m stage = {0:d}", missionstate0[i, 0]));
+                }
+            }
+            int k, l, m, n, x, z, a, b;
+            n = 0;
+            for (j = 0; j < 6; j++)
+            {
+                if (j != checklargestate)
+                {
+                    if (savestate[0] != TRCClient.record_stage[j, 0] || savestate[1] != TRCClient.record_stage[j, 1] || savestate[2] != TRCClient.record_stage[j, 2])
+                    {
+                        Program.form.mesPrintln(string.Format("fuck {0:d} = {1:d},{2:d},{3:d}", j, TRCClient.record_stage[j, 0], TRCClient.record_stage[j, 1], TRCClient.record_stage[j, 2]));
+                        for (i = 1; i < 4; i++)
+                        {
+                            if (TRCClient.record_stage[j, i - 1] > 100)
+                            {
+                                missiontmp0[i, 2] = TRCClient.record_stage[j, i - 1] % 10;
+                                TRCClient.record_stage[j, i - 1] = TRCClient.record_stage[j, i - 1] / 10;
+                                missiontmp0[i, 1] = TRCClient.record_stage[j, i - 1] % 10;
+                                TRCClient.record_stage[j, i - 1] = TRCClient.record_stage[j, i - 1] / 10;
+                                missiontmp0[i, 0] = TRCClient.record_stage[j, i - 1] % 10;
+                                Program.form.mesPrintln(string.Format("m stage {0:d} = {1:d},{2:d},{3:d}", j, missiontmp0[i, 0], missiontmp0[i, 1], missiontmp0[i, 2]));
+                            }
+                            else if (TRCClient.record_stage[j, i - 1] > 10)
+                            {
+                                missiontmp0[i, 1] = TRCClient.record_stage[j, i - 1] % 10;
+                                TRCClient.record_stage[j, i - 1] = TRCClient.record_stage[j, i - 1] / 10;
+                                missiontmp0[i, 0] = TRCClient.record_stage[j, i - 1] % 10;
+                                Program.form.mesPrintln(string.Format("m stage {0:d}= {1:d},{2:d}", j, missiontmp0[i, 0], missiontmp0[i, 1]));
+                            }
+                            else
+                            {
+                                missiontmp0[i, 0] = TRCClient.record_stage[j, i - 1] % 10;
+                                Program.form.mesPrintln(string.Format("m stage{0:d} = {1:d}", j, missiontmp0[i, 0]));
+                            }
+
+                        }
+                        x = 0;
+                        for (k = 1; k < 4; k++)
+                        {
+                            for (l = 0; l < 3; l++)
+                            {
+                                if (missionstate0[k, l] != 0)
+                                {
+                                    for (m = 0; m < 3 && n == 0; m++)
+                                    {
+                                        if (missionstate0[k, l] == missiontmp0[k, m])
+                                        {
+                                            n = 1;
+
+                                        }
+                                    }
+                                    if (n == 0)
+                                    {
+                                        lackstate[TRCClient.record_wafer[j], x] = l + 1;
+                                        for (a = 0; a < k - 1; a++)
+                                        {
+                                            lackstate[TRCClient.record_wafer[j], x] = lackstate[TRCClient.record_wafer[j], x] + missionnum0[a];
+                                        }
+
+                                        x++;
+                                    }
+                                    else
+                                    {
+                                        n = 0;
+                                    }
+                                }
+                            }
+
+                            Program.form.mesPrintln(string.Format("lack{0:d} = {1:d} {2:d} {3:d}  ", TRCClient.record_wafer[j], lackstate[TRCClient.record_wafer[j], 0], lackstate[TRCClient.record_wafer[j], 1], lackstate[TRCClient.record_wafer[j], 2]));
+                        }
+
+                    }
+                }
+
+
+
+                for (k = 0; k < 5; k++)
+                {
+                    for (l = 0; l < 3; l++)
+                    {
+                        missiontmp0[k, l] = 0;
+                    }
                 }
             }
             /*
@@ -295,7 +430,6 @@ namespace PCController
             }
             else
             {
-                Scheduler.ScheduleFunction(scheduleing, missiontime0, missionstate0, missionnum0, armtime0);
                 wafernum[0] = TRCClient.record_wafer[0];
                 wafernum[1] = TRCClient.record_wafer[1];
                 wafernum[2] = TRCClient.record_wafer[2];
@@ -325,6 +459,7 @@ namespace PCController
                         }
                     }
                 }
+                Scheduler.ScheduleFunction(scheduleing, missiontime0, missionstate0, missionnum0, armtime0, lackstate, wafernum);
             }
 
             Program.form.mesPrintln(string.Format("Wnum = {0:d},{1:d},{2:d},{3:d},{4:d},{5:d}", wafernum[0], wafernum[1], wafernum[2], wafernum[3], wafernum[4], wafernum[5]));
@@ -340,7 +475,7 @@ namespace PCController
 
 
             //roudplaining
-
+            /*
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
@@ -363,6 +498,7 @@ namespace PCController
             SyntecClient.uploadNCFile(SyntecClient.NCFileName.MAIN_JOB);
 
             SyntecClient.cycleStart();
+            */
 
             controlwhile(scheduleing, cassettezaxis);
             
@@ -541,8 +677,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, cassettezaxis[1, WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
-                    SyntecClient.writeGVar(4, cassettezaxis[1, WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
+                    SyntecClient.writeGVar(3, cassettezaxis[1, 5 - WaferinCassettB] + 2);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, cassettezaxis[1, 5-WaferinCassettB] - 4);//設定@4,Z軸縮回時高度
                 }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作

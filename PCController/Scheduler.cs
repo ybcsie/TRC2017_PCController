@@ -8,34 +8,38 @@ namespace PCController
 {
     class Scheduler
     {
-        public static int[] missiontime=new int[3];
-        public static int[,] missionstate=new int[5,3];
-        public static int[] missionnum=new int[3];
+        public static int[] missiontime = new int[3];
+        public static int[,] missionstate = new int[5, 3];
+        public static int[] missionnum = new int[3];
+        public static int[] wafernum = new int[6];
         public static int armtime;
+        public static int[,] lackstate = new int[26, 6];
 
 
         public static int savenum = 0;
-        public static int[,] finalpath1=new int[50000,100];
+        public static int[,] finalpath1 = new int[50000, 100];
         public static int[,] finalpath2 = new int[50000, 100];
         public static int[,] finalpath3 = new int[50000, 100];
         public static int[,] finalpath4 = new int[50000, 100];
         public static int[,] finalpath5 = new int[50000, 100];
         public static int[,] finalpath6 = new int[50000, 100];
-        public static int[,] finaltime = new int[50000, 100]; 
+        public static int[,] finaltime = new int[50000, 100];
         public static int x, y, wx, wy;
 
 
-        public static void ScheduleFunction(int[,] scheduleing,int[] missiontime0, int[,] missionstate0, int[] missionnum0, int armtime0)
+        public static void ScheduleFunction(int[,] scheduleing, int[] missiontime0, int[,] missionstate0, int[] missionnum0, int armtime0, int[,] lackstate0, int[] wafernum0)
         {
             int alltime;
-            int[,] statetime=new int[5,3];//0 cassette A,1 A,2 B
-            int[,] statepriority=new int[5,3];
-            int[] statewafernum=new int[5];
-            int[] path=new int[6];
+            int[,] statetime = new int[5, 3];//0 cassette A,1 A,2 B
+            int[,] statepriority = new int[5, 3];
+            int[] statewafernum = new int[5];
+            int[] path = new int[6];
             int count;
             int ans;
             char[,] pathchar = new char[24, 2];
 
+            int[,] waferonstate = new int[5, 3];
+            int getnum = 6;
             x = 0;
             y = 0;
             wx = 0;
@@ -46,21 +50,42 @@ namespace PCController
             count = 0;
             armtime = armtime0;
 
+            for (i = 0; i < 6; i++)
+            {
+                wafernum[i] = wafernum0[i];
+            }
+            for (i = 0; i < 5; i++)
+            {
+                for (j = 0; j < 3; j++)
+                {
+                    waferonstate[i, j] = 0;
+                }
+            }
+
+            for (i = 0; i < 26; i++)
+            {
+                for (j = 0; j < 6; j++)
+                {
+                    lackstate[i, j] = lackstate0[i, j];
+                }
+            }
+
+
             for (i = 0; i < 50000; i++)
             {
                 for (j = 0; j < 100; j++)
                 {
-                    finalpath1[i,j] = 0;
-                    finalpath2[i,j] = 0;
-                    finalpath3[i,j] = 0;
-                    finalpath4[i,j] = 0;
-                    finalpath5[i,j] = 0;
-                    finalpath6[i,j] = 0;
-                    finaltime[i,j] = 0;
+                    finalpath1[i, j] = 0;
+                    finalpath2[i, j] = 0;
+                    finalpath3[i, j] = 0;
+                    finalpath4[i, j] = 0;
+                    finalpath5[i, j] = 0;
+                    finalpath6[i, j] = 0;
+                    finaltime[i, j] = 0;
                 }
             }
 
-            for (i=0;i<3;i++)
+            for (i = 0; i < 3; i++)
             {
                 missiontime[i] = missiontime0[i];
                 missionnum[i] = missionnum0[i];
@@ -71,8 +96,8 @@ namespace PCController
                 for (j = 0; j < 3; j++)
                 {
                     missionstate[i, j] = missionstate0[i, j];
-                    statepriority[i,j] = 0;
-                    statetime[i,j] = 0;
+                    statepriority[i, j] = 0;
+                    statetime[i, j] = 0;
                 }
             }
             for (i = 0; i < 5; i++)
@@ -85,7 +110,7 @@ namespace PCController
                 path[i] = 0;
             }
 
-            scheduling(alltime, statetime, statepriority, count, path, statewafernum);
+            scheduling(alltime, statetime, statepriority, count, path, statewafernum, waferonstate, getnum);
 
             Program.form.mesPrintln(String.Format("total road {0:d}\n", savenum));
 
@@ -93,57 +118,62 @@ namespace PCController
             y = 0;
 
             ans = findthefast();
-           /* 
-                for(i=0;i<100;i++){
-                for(j=0;j<50;j++){
-                    if(finaltime[j,i]!=0){
-                        Program.form.mesPrint(String.Format("{0:d} ", finaltime[j,i]));
-                    }
-                }
-                if(finaltime[j,i]!=0)
-                    Program.form.mesPrintln("");
-            }
-            */
-            Program.form.mesPrintln(String.Format("path: {0:d} {1:d} {2:d} {3:d} {4:d} {5:d} totaltime:{6:d}\n", finalpath1[x,y], finalpath2[x, y], finalpath3[x, y], finalpath4[x, y], finalpath5[x, y], finalpath6[x, y], finaltime[x,y]));
+            /* 
+                 for(i=0;i<100;i++){
+                 for(j=0;j<50;j++){
+                     if(finaltime[j,i]!=0){
+                         Program.form.mesPrint(String.Format("{0:d} ", finaltime[j,i]));
+                     }
+                 }
+                 if(finaltime[j,i]!=0)
+                     Program.form.mesPrintln("");
+             }
+             */
+            Program.form.mesPrintln(String.Format("path: {0:d} {1:d} {2:d} {3:d} {4:d} {5:d} totaltime:{6:d}", finalpath1[x, y], finalpath2[x, y], finalpath3[x, y], finalpath4[x, y], finalpath5[x, y], finalpath6[x, y], finaltime[x, y]));
 
-            for (i = 3;i>=0; i--)
+            for (i = 3; i >= 0; i--)
             {
                 scheduleing[i, 1] = finalpath1[x, y] % 10;
                 finalpath1[x, y] = finalpath1[x, y] / 10;
                 scheduleing[i, 0] = finalpath1[x, y] % 10;
                 finalpath1[x, y] = finalpath1[x, y] / 10;
-                scheduleing[4+i, 1] = finalpath2[x, y] % 10;
+                scheduleing[4 + i, 1] = finalpath2[x, y] % 10;
                 finalpath2[x, y] = finalpath2[x, y] / 10;
-                scheduleing[4+i, 0] = finalpath2[x, y] % 10;
+                scheduleing[4 + i, 0] = finalpath2[x, y] % 10;
                 finalpath2[x, y] = finalpath2[x, y] / 10;
-                scheduleing[8+i, 1] = finalpath3[x, y] % 10;
+                scheduleing[8 + i, 1] = finalpath3[x, y] % 10;
                 finalpath3[x, y] = finalpath3[x, y] / 10;
-                scheduleing[8+i, 0] = finalpath3[x, y] % 10;
+                scheduleing[8 + i, 0] = finalpath3[x, y] % 10;
                 finalpath3[x, y] = finalpath3[x, y] / 10;
-                scheduleing[12+i, 1] = finalpath4[x, y] % 10;
+                scheduleing[12 + i, 1] = finalpath4[x, y] % 10;
                 finalpath4[x, y] = finalpath4[x, y] / 10;
-                scheduleing[12+i, 0] = finalpath4[x, y] % 10;
+                scheduleing[12 + i, 0] = finalpath4[x, y] % 10;
                 finalpath4[x, y] = finalpath4[x, y] / 10;
-                scheduleing[16+i, 1] = finalpath5[x, y] % 10;
+                scheduleing[16 + i, 1] = finalpath5[x, y] % 10;
                 finalpath5[x, y] = finalpath5[x, y] / 10;
-                scheduleing[16+i, 0] = finalpath5[x, y] % 10;
+                scheduleing[16 + i, 0] = finalpath5[x, y] % 10;
                 finalpath5[x, y] = finalpath5[x, y] / 10;
-                scheduleing[20+i, 1] = finalpath6[x, y] % 10;
+                scheduleing[20 + i, 1] = finalpath6[x, y] % 10;
                 finalpath6[x, y] = finalpath6[x, y] / 10;
-                scheduleing[20+i, 0] = finalpath6[x, y] % 10;
+                scheduleing[20 + i, 0] = finalpath6[x, y] % 10;
                 finalpath6[x, y] = finalpath6[x, y] / 10;
+
+            }
+            for (i = 0; i < 24; i++)
+            {
+                Program.form.mesPrintln(String.Format("sch: {0:d} {1:d}", scheduleing[i, 0], scheduleing[i, 1]));
             }
 
-            int xline, yline,k;
+            int xline, yline, k;
             xline = 0;
             yline = 0;
-            
+
 
             for (i = 0; i < 24; i++)
             {
                 for (j = 0; j < 2; j++)
                 {
-                    if (scheduleing[i, j] !=0 && scheduleing[i, j] !=7)
+                    if (scheduleing[i, j] != 0 && scheduleing[i, j] != 7)
                     {
                         scheduleing[i, j] = scheduleing[i, j] - 1;
                         for (k = 0; k < 3; k++)
@@ -161,12 +191,12 @@ namespace PCController
                         scheduleing[i, j] = missionstate[xline + 1, scheduleing[i, j]];//轉成ABCDEF
                         xline = 0;
 
-                        if(scheduleing[i, j] == 1)
+                        if (scheduleing[i, j] == 1)
                         {
                             scheduleing[i, j] = 1;
                             pathchar[i, j] = 'A';
                         }
-                        else if(scheduleing[i, j] == 2)
+                        else if (scheduleing[i, j] == 2)
                         {
                             scheduleing[i, j] = 2;
                             pathchar[i, j] = 'B';
@@ -193,26 +223,26 @@ namespace PCController
                         }
 
                     }
-                    else if(scheduleing[i, j] == 0)
+                    else if (scheduleing[i, j] == 0)
                     {
                         scheduleing[i, j] = 4;
-                        pathchar[i,j] = 'S';
+                        pathchar[i, j] = 'S';
                     }
-                    else if(scheduleing[i, j] == 7)
+                    else if (scheduleing[i, j] == 7)
                     {
                         scheduleing[i, j] = 5;
                         pathchar[i, j] = 'Z';
                     }
 
                 }
-                Program.form.mesPrintln(string.Format("PATH = {0:c},{1:c}", pathchar[i,0], pathchar[i, 1]));
+                Program.form.mesPrintln(string.Format("PATH = {0:c},{1:c}", pathchar[i, 0], pathchar[i, 1]));
 
             }
-            
+
 
         }
 
-        public static int scheduling(int alltime0, int[,] statetime0, int[,] statepriority0, int count0, int[] path0, int[] statewafernum0)
+        public static int scheduling(int alltime0, int[,] statetime0, int[,] statepriority0, int count0, int[] path0, int[] statewafernum0, int[,] waferonstate0, int getnum0)
         {
             int alltime1, alltime2, alltime3, alltime4;
             int[,] statetime1 = new int[5, 3], statetime2 = new int[5, 3], statetime3 = new int[5, 3], statetime4 = new int[5, 3];//0 cassette A,1 A,2 B
@@ -222,13 +252,18 @@ namespace PCController
             int[] path1 = new int[6], path2 = new int[6], path3 = new int[6], path4 = new int[6];
             int from1, from2, from3, from4, target1, target2, target3, target4;
             int tmp;
-
-            int i = 0, j = 0, judge = 0;
+            int[,] waferonstate1 = new int[5, 3], waferonstate2 = new int[5, 3], waferonstate3 = new int[5, 3], waferonstate4 = new int[5, 3];
+            int getnum1, getnum2, getnum3, getnum4;
+            int i = 0, j = 0, judge = 0, a = 0, x = 0;
+            int lack = 0;
             /*
                 if(savenum>50)
                 return 0;
             */
-
+            getnum1 = getnum0;
+            getnum2 = getnum0;
+            getnum3 = getnum0;
+            getnum4 = getnum0;
             alltime1 = alltime0;
             alltime2 = alltime0;
             alltime3 = alltime0;
@@ -245,6 +280,10 @@ namespace PCController
                     statepriority3[i, j] = statepriority0[i, j];
                     statetime4[i, j] = statetime0[i, j];
                     statepriority4[i, j] = statepriority0[i, j];
+                    waferonstate1[i, j] = waferonstate0[i, j];
+                    waferonstate2[i, j] = waferonstate0[i, j];
+                    waferonstate3[i, j] = waferonstate0[i, j];
+                    waferonstate4[i, j] = waferonstate0[i, j];
                     //printf("shit %d\n",statepriority0[i][j]);
                 }
                 //printf("shit %d\n",statepriority0[i][j]);
@@ -274,10 +313,8 @@ namespace PCController
 
             if (statewafernum1[0] > 0 && statewafernum1[1] < missionnum[0])
             {
-                statewafernum1[0]--;
-                statewafernum1[1]++;
                 from1 = 0;
-
+                lack = 0;
                 //尋找目標
                 judge = 0;
                 target1 = -1;
@@ -285,54 +322,77 @@ namespace PCController
                 {
                     if (statepriority1[1, i] == 0 && judge == 0)
                     {
-                        statepriority1[1, i] = 1;
-                        statetime1[1, i] = missiontime[0];//紀錄工作時間
-                        judge = 1;
-                        target1 = i;
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (lackstate[wafernum[statewafernum1[0] - 1], j] == (i + 1))
+                            {
+                                lack++;
+                            }
+                        }
+                        if (lack == 0)
+                        {
+                            statepriority1[1, i] = 1;
+                            statetime1[1, i] = missiontime[0];//紀錄工作時間
+                            judge = 1;
+                            target1 = i;
+                            waferonstate1[1, i] = wafernum[statewafernum1[0] - 1];
+                        }
                     }
                     else if (statepriority1[1, i] != 0)
                     {
                         statepriority1[1, i] = statepriority1[1, i] + 1;
                     }
+                    lack = 0;
                 }
-                if (judge != 1)
+                if (judge != 1)//沒目標
                 {
-                    Program.form.mesPrintln("no target 0");
-                }
-
-                alltime1 = alltime1 + armtime;//動到alltime所有都要減時間
-                for (i = 0; i < 5; i++)
-                {
-                    for (j = 0; j < 3; j++)
+                    for (x = 0; x < missionnum[0]; x++)
                     {
-                        if (statetime1[i, j] > 0)
+                        if (statepriority1[1, x] != 0)
                         {
-                            if (i != 1 || j != target1)
+                            statepriority1[1, x] = statepriority1[1, x] - 1;
+                        }
+                    }
+                    //Program.form.mesPrintln("no target 0");
+                }
+                else
+                {
+                    alltime1 = alltime1 + armtime;//動到alltime所有都要減時間
+                    for (i = 0; i < 5; i++)
+                    {
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (statetime1[i, j] > 0)
                             {
-                                statetime1[i, j] = statetime1[i, j] - armtime;
-                                if (statetime1[i, j] < 0)
+                                if (i != 1 || j != target1)
                                 {
-                                    statetime1[i, j] = 0;
+                                    statetime1[i, j] = statetime1[i, j] - armtime;
+                                    if (statetime1[i, j] < 0)
+                                    {
+                                        statetime1[i, j] = 0;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
 
-                judge = 0;
+                    judge = 0;
 
-                for (i = 0; i < 6 && judge == 0; i++)
-                {
-                    if (path1[i] < 999999)
+                    for (i = 0; i < 6 && judge == 0; i++)
                     {
-                        path1[i] = path1[i] * 100 + (from1) * 10 + (target1 + 1);
-                        judge = 1;
+                        if (path1[i] < 999999)
+                        {
+                            path1[i] = path1[i] * 100 + (from1) * 10 + (target1 + 1);
+                            judge = 1;
+                        }
                     }
+                    count1++;
+                    statewafernum1[0]--;
+                    statewafernum1[1]++;
+                    //Program.form.mesPrintln("0--------------------->1");
+                    scheduling(alltime1, statetime1, statepriority1, count1, path1, statewafernum1, waferonstate1, getnum1);
                 }
-                count1++;
-
-                scheduling(alltime1, statetime1, statepriority1, count1, path1, statewafernum1);
             }
 
             i = 0;
@@ -342,13 +402,12 @@ namespace PCController
 
             if (statewafernum2[1] > 0 && statewafernum2[2] < missionnum[1])
             {
+                //Program.form.mesPrintln("1->2");
                 //手閉時間
                 //printf("mission 2:%d   Wafer2:%d   priori:%d\n",missionnum[1],statewafernum2[2],statepriority2[2][0]);
 
-                statewafernum2[1]--;
-                statewafernum2[2]++;
-
                 //找優先權&來源
+                lack = 0;
                 tmp = 0;
                 from2 = (-1);
                 for (i = 0; i < missionnum[0]; i++)
@@ -369,24 +428,10 @@ namespace PCController
                 }
 
                 //開始拿走
-                statepriority2[1, from2] = 0;//優先全規0
-                                             //printf("fuck from:%d  prio:%d\n",from2,statepriority2[1][from2]);
-                                             //紀錄等待from好的時間
-                alltime2 = alltime2 + statetime2[1, from2];
-                for (i = 0; i < 5; i++)
-                {
-                    for (j = 0; j < 3; j++)
-                    {
-                        if (statetime2[i, j] > 0)
-                        {
-                            statetime2[i, j] = statetime2[i, j] - statetime2[1, from2];
-                            if (statetime2[i, j] < 0)
-                            {
-                                statetime2[i, j] = 0;
-                            }
-                        }
-                    }
-                }
+
+                //printf("fuck from:%d  prio:%d\n",from2,statepriority2[1][from2]);
+                //紀錄等待from好的時間
+
 
                 judge = 0;
                 target2 = -1;
@@ -395,31 +440,49 @@ namespace PCController
                     //printf("prio %d\n",statepriority2[2][i]);
                     if (statepriority2[2, i] == 0 && judge == 0)
                     {
-                        statepriority2[2, i] = 1;
-                        statetime2[2, i] = missiontime[1];//紀錄工作時間
-                        judge = 1;
-                        target2 = i;
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (lackstate[waferonstate2[1, from2], j] == (i + missionnum[0] + 1))
+                            {
+                                lack++;
+                            }
+                        }
+                        if (lack == 0)
+                        {
+                            statepriority2[2, i] = 1;
+                            statetime2[2, i] = missiontime[1];//紀錄工作時間
+                            judge = 1;
+                            target2 = i;
+                            waferonstate2[2, i] = waferonstate2[1, from2];
+                        }
                     }
                     else if (statepriority2[2, i] != 0)
                     {
                         statepriority2[2, i] = statepriority2[2, i] + 1;
                     }
+                    lack = 0;
                 }
                 if (judge != 1)
                 {
-                    Program.form.mesPrintln("no target 1");
-
-                }
-                alltime2 = alltime2 + armtime;//動到alltime所有都要減時間
-                for (i = 0; i < 5; i++)
-                {
-                    for (j = 0; j < 3; j++)
+                    //Program.form.mesPrintln("no target 1");
+                    for (i = 0; i < missionnum[1]; i++)
                     {
-                        if (statetime2[i, j] > 0)
+                        if (statepriority2[2, i] != 0)
                         {
-                            if (i != 2 || j != target2)
+                            statepriority2[2, i] = statepriority2[2, i] - 1;
+                        }
+                    }
+                }
+                else
+                {
+                    alltime2 = alltime2 + statetime2[1, from2];
+                    for (i = 0; i < 5; i++)
+                    {
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (statetime2[i, j] > 0)
                             {
-                                statetime2[i, j] = statetime2[i, j] - armtime;
+                                statetime2[i, j] = statetime2[i, j] - statetime2[1, from2];
                                 if (statetime2[i, j] < 0)
                                 {
                                     statetime2[i, j] = 0;
@@ -427,32 +490,56 @@ namespace PCController
                             }
                         }
                     }
-                }
+                    statepriority2[1, from2] = 0;//優先全規0
+                    waferonstate2[1, from2] = 0;
 
-                judge = 0;
-                for (i = 0; i < 6 && judge == 0; i++)
-                {
-                    if (path2[i] < 999999)
+                    alltime2 = alltime2 + armtime;//動到alltime所有都要減時間
+                    for (i = 0; i < 5; i++)
                     {
-                        path2[i] = path2[i] * 100 + (from2 + 1) * 10 + (target2 + missionnum[0] + 1);
-                        judge = 1;
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (statetime2[i, j] > 0)
+                            {
+                                if (i != 2 || j != target2)
+                                {
+                                    statetime2[i, j] = statetime2[i, j] - armtime;
+                                    if (statetime2[i, j] < 0)
+                                    {
+                                        statetime2[i, j] = 0;
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-                count2++;
 
-                scheduling(alltime2, statetime2, statepriority2, count2, path2, statewafernum2);
+                    judge = 0;
+                    for (i = 0; i < 6 && judge == 0; i++)
+                    {
+                        if (path2[i] < 999999)
+                        {
+                            path2[i] = path2[i] * 100 + (from2 + 1) * 10 + (target2 + missionnum[0] + 1);
+                            judge = 1;
+                        }
+                    }
+                    count2++;
+
+                    statewafernum2[1]--;
+                    statewafernum2[2]++;
+                    // Program.form.mesPrintln("1--------------------->2");
+                    scheduling(alltime2, statetime2, statepriority2, count2, path2, statewafernum2, waferonstate2, getnum2);
+                }
             }
 
 
             if (statewafernum3[2] > 0 && statewafernum3[3] < missionnum[2])
             {
+                //Program.form.mesPrintln("2->3");
                 //手閉時間
 
                 //printf("state2 wafernum:%d\n",statewafernum3[2]);
-                statewafernum3[2]--;
-                statewafernum3[3]++;
 
                 //找優先權&來源
+                lack = 0;
                 tmp = 0;
                 from3 = (-1);
                 for (i = 0; i < missionnum[1]; i++)
@@ -472,24 +559,7 @@ namespace PCController
 
 
                 //開始拿走
-                statepriority3[2, from3] = 0;//優先全規0
-                                             //printf("from3:%d\n",from3);
-                                             //紀錄等待from好的時間
-                alltime3 = alltime3 + statetime3[2, from3];
-                for (i = 0; i < 5; i++)
-                {
-                    for (j = 0; j < 3; j++)
-                    {
-                        if (statetime3[i, j] > 0)
-                        {
-                            statetime3[i, j] = statetime3[i, j] - statetime3[2, from3];
-                            if (statetime3[i, j] < 0)
-                            {
-                                statetime3[i, j] = 0;
-                            }
-                        }
-                    }
-                }
+
 
                 judge = 0;
                 target3 = -1;
@@ -497,32 +567,54 @@ namespace PCController
                 {
                     if (statepriority3[3, i] == 0 && judge == 0)
                     {
-                        statepriority3[3, i] = 1;
-                        statetime3[3, i] = missiontime[1];//紀錄工作時間
-                        judge = 1;
-                        target3 = i;
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (lackstate[waferonstate3[2, from3], j] == (i + missionnum[0] + missionnum[1] + 1))
+                            {
+                                lack++;
+                            }
+                        }
+                        if (lack == 0)
+                        {
+                            statepriority3[3, i] = 1;
+                            statetime3[3, i] = missiontime[1];//紀錄工作時間
+                            judge = 1;
+                            target3 = i;
+                            waferonstate3[3, i] = waferonstate3[2, from3];
+                        }
                     }
                     else if (statepriority3[3, i] != 0)
                     {
                         statepriority3[3, i] = statepriority3[3, i] + 1;
                     }
+                    lack = 0;
                 }
                 if (judge != 1)
                 {
-                    Program.form.mesPrintln("no target 2");
+                    //Program.form.mesPrintln("no target 2");
+                    for (i = 0; i < missionnum[2]; i++)
+                    {
+                        if (statepriority3[3, i] != 0)
+                        {
+                            statepriority3[3, i] = statepriority3[3, i] - 1;
+                        }
+                    }
 
                 }
-
-                alltime3 = alltime3 + armtime;//動到alltime所有都要減時間
-                for (i = 0; i < 5; i++)
+                else
                 {
-                    for (j = 0; j < 3; j++)
+                    statepriority3[2, from3] = 0;//優先全規0
+                    waferonstate3[2, from3] = 0;     //printf("from3:%d\n",from3);
+                                                     //紀錄等待from好的時間
+
+                    alltime3 = alltime3 + statetime3[2, from3];
+                    for (i = 0; i < 5; i++)
                     {
-                        if (statetime3[i, j] > 0)
+                        for (j = 0; j < 3; j++)
                         {
-                            if (i != 3 || j != target3)
+                            if (statetime3[i, j] > 0)
                             {
-                                statetime3[i, j] = statetime3[i, j] - armtime;
+                                statetime3[i, j] = statetime3[i, j] - statetime3[2, from3];
                                 if (statetime3[i, j] < 0)
                                 {
                                     statetime3[i, j] = 0;
@@ -530,33 +622,54 @@ namespace PCController
                             }
                         }
                     }
-                }
 
-
-                judge = 0;
-
-                for (i = 0; i < 6 && judge == 0; i++)
-                {
-                    if (path3[i] < 999999)
+                    alltime3 = alltime3 + armtime;//動到alltime所有都要減時間
+                    for (i = 0; i < 5; i++)
                     {
-                        path3[i] = path3[i] * 100 + (from3 + missionnum[0] + 1) * 10 + (target3 + missionnum[1] + missionnum[0] + 1);
-                        judge = 1;
+                        for (j = 0; j < 3; j++)
+                        {
+                            if (statetime3[i, j] > 0)
+                            {
+                                if (i != 3 || j != target3)
+                                {
+                                    statetime3[i, j] = statetime3[i, j] - armtime;
+                                    if (statetime3[i, j] < 0)
+                                    {
+                                        statetime3[i, j] = 0;
+                                    }
+                                }
+                            }
+                        }
                     }
+
+
+                    judge = 0;
+
+                    for (i = 0; i < 6 && judge == 0; i++)
+                    {
+                        if (path3[i] < 999999)
+                        {
+                            path3[i] = path3[i] * 100 + (from3 + missionnum[0] + 1) * 10 + (target3 + missionnum[1] + missionnum[0] + 1);
+                            judge = 1;
+                        }
+                    }
+                    count3++;
+                    statewafernum3[2]--;
+                    statewafernum3[3]++;
+                    //Program.form.mesPrintln("2--------------------->3");
+                    scheduling(alltime3, statetime3, statepriority3, count3, path3, statewafernum3, waferonstate3, getnum3);
                 }
-                count3++;
-
-
-                scheduling(alltime3, statetime3, statepriority3, count3, path3, statewafernum3);
             }
 
 
             if (statewafernum4[3] > 0 && statewafernum4[4] < 6)
             {
                 //手閉時間
+                //Program.form.mesPrintln(String.Format("{0:d},,", statewafernum4[4]));
                 statewafernum4[3]--;
                 statewafernum4[4]++;
-
                 //找優先權&來源
+                lack = 0;
                 tmp = 0;
                 from4 = (-1);
                 for (i = 0; i < missionnum[2]; i++)
@@ -574,8 +687,12 @@ namespace PCController
                 }
 
                 //開始拿走
+
+                target4 = 7;
                 statepriority4[3, from4] = 0;//優先全規0
                                              //紀錄等待from好的時間
+                waferonstate4[3, from4] = 0;
+
                 alltime4 = alltime4 + statetime4[3, from4];
                 for (i = 0; i < 5; i++)
                 {
@@ -591,7 +708,6 @@ namespace PCController
                         }
                     }
                 }
-                target4 = 7;
                 alltime4 = alltime4 + armtime;//動到alltime所有都要減時間
                 for (i = 0; i < 5; i++)
                 {
@@ -619,8 +735,12 @@ namespace PCController
                     }
                 }
                 count4++;
+                //Program.form.mesPrintln(String.Format("{0:d}", statewafernum4[4]));
+
                 if (statewafernum4[4] == 6)
                 {
+
+
                     /////write data;
                     x = savenum % 50000;
                     y = savenum / 50000;
@@ -641,13 +761,12 @@ namespace PCController
                 }
                 else
                 {
-
-                    scheduling(alltime4, statetime4, statepriority4, count4, path4, statewafernum4);
+                    scheduling(alltime4, statetime4, statepriority4, count4, path4, statewafernum4, waferonstate4, getnum4);
                 }
             }
             //printf("total time %d\n",savenum);
             return 0;
-            
+
         }
 
         public static int findthefast()
@@ -660,15 +779,15 @@ namespace PCController
             {
                 for (j = 0; j < 100; j++)
                 {
-                    if (finaltime[i,j] != 0)
+                    if (finaltime[i, j] != 0)
                     {
-                        if (finaltime[i,j] < target)
+                        if (finaltime[i, j] < target)
                         {
-                            target = finaltime[i,j];
+                            target = finaltime[i, j];
                             x = i;
                             y = j;
                         }
-                        if (finalpath1[i,j] == 1133447 && finalpath2[i,j] == 1133447 && finalpath3[i,j] == 1133447 && finalpath4[i,j] == 1133447 && finalpath5[i,j] == 1133447 && finalpath6[i,j] == 1133447)
+                        if (finalpath1[i, j] == 1133447 && finalpath2[i, j] == 1133447 && finalpath3[i, j] == 1133447 && finalpath4[i, j] == 1133447 && finalpath5[i, j] == 1133447 && finalpath6[i, j] == 1133447)
                         {
                             wx = i;
                             wy = j;

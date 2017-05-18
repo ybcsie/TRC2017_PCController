@@ -33,9 +33,9 @@ namespace PCController
             ncfile.WriteLine("MOVJ C2=170.0 C4=-150.0 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=170.0 C4=150.0 FJ20 PL10;");
             ncfile.WriteLine("MOVJ C2=-170.0 C4=150.0 FJ20 PL10;");
-            ncfile.WriteLine("MOVJ C1=61.265 C2=-174.890 C4=150.000 FJ10 PL10;");
+            ncfile.WriteLine("MOVJ C1=85.735 C2=-148.067 C4=116.332 FJ20 PL10;");
             ncfile.WriteLine("WAIT();");
-            ncfile.WriteLine("MOVJ C3=50.0 FJ20 PL10;");
+            ncfile.WriteLine("MOVJ C3=121.0 FJ20 PL10;");
             ncfile.WriteLine("WAIT();");
             ncfile.WriteLine("@5:=0;");
             ncfile.WriteLine("@4:=0;");
