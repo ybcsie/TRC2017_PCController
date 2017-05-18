@@ -84,9 +84,9 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel_Initialize = new System.Windows.Forms.Panel();
-            this.bt_readInit = new System.Windows.Forms.Button();
             this.bt_initCoo = new System.Windows.Forms.Button();
             this.panel_movStage = new System.Windows.Forms.Panel();
+            this.bt_readInit = new System.Windows.Forms.Button();
             this.bt_movToStage = new System.Windows.Forms.Button();
             this.rBt_initStage8 = new System.Windows.Forms.RadioButton();
             this.rBt_initStage0 = new System.Windows.Forms.RadioButton();
@@ -104,6 +104,7 @@
             this.bt_thetaP = new System.Windows.Forms.Button();
             this.bt_movForward = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.bt_readZangle = new System.Windows.Forms.Button();
             this.cB_zPrecise = new System.Windows.Forms.CheckBox();
             this.bt_manualCatch = new System.Windows.Forms.Button();
@@ -121,7 +122,6 @@
             this.bt_servoSW = new System.Windows.Forms.Button();
             this.bt_cycleReset = new System.Windows.Forms.Button();
             this.tB_mesPrint = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarNo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gvarValue)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -771,7 +771,6 @@
             // 
             // panel_Initialize
             // 
-            this.panel_Initialize.Controls.Add(this.bt_readInit);
             this.panel_Initialize.Controls.Add(this.bt_initCoo);
             this.panel_Initialize.Controls.Add(this.panel_movStage);
             this.panel_Initialize.Controls.Add(this.bt_originSetter);
@@ -782,16 +781,6 @@
             this.panel_Initialize.Name = "panel_Initialize";
             this.panel_Initialize.Size = new System.Drawing.Size(295, 372);
             this.panel_Initialize.TabIndex = 13;
-            // 
-            // bt_readInit
-            // 
-            this.bt_readInit.Location = new System.Drawing.Point(203, 9);
-            this.bt_readInit.Name = "bt_readInit";
-            this.bt_readInit.Size = new System.Drawing.Size(80, 35);
-            this.bt_readInit.TabIndex = 22;
-            this.bt_readInit.Text = "Read Init File";
-            this.bt_readInit.UseVisualStyleBackColor = true;
-            this.bt_readInit.Click += new System.EventHandler(this.bt_readInit_Click);
             // 
             // bt_initCoo
             // 
@@ -805,6 +794,7 @@
             // 
             // panel_movStage
             // 
+            this.panel_movStage.Controls.Add(this.bt_readInit);
             this.panel_movStage.Controls.Add(this.bt_movToStage);
             this.panel_movStage.Controls.Add(this.rBt_initStage8);
             this.panel_movStage.Controls.Add(this.rBt_initStage0);
@@ -812,10 +802,20 @@
             this.panel_movStage.Controls.Add(this.rBt_initStage1);
             this.panel_movStage.Controls.Add(this.rBt_initStage2);
             this.panel_movStage.Controls.Add(this.rBt_initStage6);
-            this.panel_movStage.Location = new System.Drawing.Point(3, 51);
+            this.panel_movStage.Location = new System.Drawing.Point(3, 50);
             this.panel_movStage.Name = "panel_movStage";
-            this.panel_movStage.Size = new System.Drawing.Size(289, 102);
+            this.panel_movStage.Size = new System.Drawing.Size(289, 103);
             this.panel_movStage.TabIndex = 20;
+            // 
+            // bt_readInit
+            // 
+            this.bt_readInit.Location = new System.Drawing.Point(208, 58);
+            this.bt_readInit.Name = "bt_readInit";
+            this.bt_readInit.Size = new System.Drawing.Size(80, 35);
+            this.bt_readInit.TabIndex = 22;
+            this.bt_readInit.Text = "Read Init File";
+            this.bt_readInit.UseVisualStyleBackColor = true;
+            this.bt_readInit.Click += new System.EventHandler(this.bt_readInit_Click);
             // 
             // bt_movToStage
             // 
@@ -1012,9 +1012,19 @@
             this.tabPage5.Text = "Auto";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(167, 338);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 42;
+            this.button1.Text = "Start2";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // bt_readZangle
             // 
-            this.bt_readZangle.Location = new System.Drawing.Point(207, 200);
+            this.bt_readZangle.Location = new System.Drawing.Point(208, 193);
             this.bt_readZangle.Name = "bt_readZangle";
             this.bt_readZangle.Size = new System.Drawing.Size(98, 35);
             this.bt_readZangle.TabIndex = 41;
@@ -1034,9 +1044,9 @@
             // 
             // bt_manualCatch
             // 
-            this.bt_manualCatch.Location = new System.Drawing.Point(104, 229);
+            this.bt_manualCatch.Location = new System.Drawing.Point(81, 180);
             this.bt_manualCatch.Name = "bt_manualCatch";
-            this.bt_manualCatch.Size = new System.Drawing.Size(97, 23);
+            this.bt_manualCatch.Size = new System.Drawing.Size(97, 48);
             this.bt_manualCatch.TabIndex = 39;
             this.bt_manualCatch.Text = "Manual Catch";
             this.bt_manualCatch.UseVisualStyleBackColor = true;
@@ -1065,7 +1075,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(88, 148);
+            this.label11.Location = new System.Drawing.Point(37, 157);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(55, 12);
             this.label11.TabIndex = 36;
@@ -1073,7 +1083,7 @@
             // 
             // bt_goIn
             // 
-            this.bt_goIn.Location = new System.Drawing.Point(104, 189);
+            this.bt_goIn.Location = new System.Drawing.Point(209, 157);
             this.bt_goIn.Name = "bt_goIn";
             this.bt_goIn.Size = new System.Drawing.Size(97, 23);
             this.bt_goIn.TabIndex = 35;
@@ -1117,7 +1127,7 @@
             // 
             // num_initSlotID
             // 
-            this.num_initSlotID.Location = new System.Drawing.Point(149, 143);
+            this.num_initSlotID.Location = new System.Drawing.Point(98, 152);
             this.num_initSlotID.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1144,7 +1154,7 @@
             // 
             // bt_zCatch
             // 
-            this.bt_zCatch.Location = new System.Drawing.Point(-54, 180);
+            this.bt_zCatch.Location = new System.Drawing.Point(208, 128);
             this.bt_zCatch.Name = "bt_zCatch";
             this.bt_zCatch.Size = new System.Drawing.Size(97, 23);
             this.bt_zCatch.TabIndex = 30;
@@ -1194,16 +1204,6 @@
             this.tB_mesPrint.Size = new System.Drawing.Size(571, 465);
             this.tB_mesPrint.TabIndex = 24;
             this.tB_mesPrint.WordWrap = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(167, 338);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 42;
-            this.button1.Text = "Start2";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ControllerForm
             // 

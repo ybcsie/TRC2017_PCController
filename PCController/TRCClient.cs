@@ -12,7 +12,9 @@ namespace PCController
 {
     class TRCClient
     {
-        public const string DEFAULT_IP = "127.0.0.1";
+        public const string DEFAULT_IP = "210.20.98.10";
+        //public const string DEFAULT_IP = "127.0.0.1";
+
         public const int DEFAULT_PORT = 5001;
 
         private static string address;

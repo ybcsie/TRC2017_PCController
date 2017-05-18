@@ -559,6 +559,7 @@ mesPrintln("Initializer: C4 OK!");
         {
             StreamReader rd = new StreamReader("initCoo.txt");
             int stageId;
+
             for (int i = 5; i < 10; i++)
             {
                 stageId = Convert.ToInt32(rd.ReadLine());
@@ -585,9 +586,9 @@ mesPrintln("Initializer: C4 OK!");
             for (int i = 5; i < 10; i++)
             {
                 initCooWriter.WriteLine(i);
-                initCooWriter.WriteLine(pos[0]);
-                initCooWriter.WriteLine(pos[1]);
-                initCooWriter.WriteLine(pos[3]);
+                initCooWriter.WriteLine(ArmData.measureangle[i, 0]);
+                initCooWriter.WriteLine(ArmData.measureangle[i, 2]);
+                initCooWriter.WriteLine(ArmData.measureangle[i, 3]);
             }
             initCooWriter.Close();
 
@@ -721,9 +722,9 @@ mesPrintln("Initializer: C4 OK!");
             writeG91AngleByOffset(3, 6);
             runInitAndWait(10);
 
-            ArmData.WaferZs[id] = (z1 + z2) / 2;
+            //ArmData.WaferZs[id] = (z1 + z2) / 2;
 
-            Program.form.mesPrintln(string.Format("Z = {0:f3}", ArmData.WaferZs[id]));
+            //Program.form.mesPrintln(string.Format("Z = {0:f3}", ArmData.WaferZs[id]));
 
             Program.form.mesPrintln("Done");
 
