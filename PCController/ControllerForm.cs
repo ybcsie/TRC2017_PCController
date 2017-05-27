@@ -215,7 +215,7 @@ namespace PCController
             for (i = 0; i < 10; i++)
             {
                 //Program.form.mesPrintln(string.Format(" 1axis:{0:f} 2axis:{1:f} 3axis:{2:f} 4axis:{3:f} \n", coordinate[i, 0], coordinate[i, 1], coordinate[i, 2], coordinate[i, 3]));
-                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance, pointsnum);
+                go[i] = RoutPlanning.routplanning(ArmData.coordinate[i, 0], ArmData.coordinate[i, 1], ArmData.coordinate[i, 2], ArmData.coordinate[i, 3], ArmData.distance+20, pointsnum);
             }
 
 
@@ -473,6 +473,7 @@ namespace PCController
             }
 
             Program.form.mesPrintln(string.Format("Wnum = {0:d},{1:d},{2:d},{3:d},{4:d},{5:d}", wafernum[0], wafernum[1], wafernum[2], wafernum[3], wafernum[4], wafernum[5]));
+            Program.form.mesPrintln(string.Format("WnumB = {0:d},{1:d},{2:d},{3:d},{4:d},{5:d}", wafernumB[0], wafernumB[1], wafernumB[2], wafernumB[3], wafernumB[4], wafernumB[5]));
 
 
             /*
@@ -553,7 +554,7 @@ namespace PCController
             }
             SyntecClient.writeGVar(5, 0);
             SyntecClient.writeGVar(6, 0);
-            SyntecClient.writeReg(50, 0);//@11=0
+            //SyntecClient.writeReg(50, 0);//@11=0
             oversignal = SyntecClient.readReg(50);
             while (oversignal == 0)
             {//while接收控制器回傳動作結束@11=1;
@@ -687,8 +688,8 @@ namespace PCController
                 }
                 else
                 {
-                    SyntecClient.writeGVar(3, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB],1]);//設定@3,Z軸伸長至cassetteB放時高度
-                    SyntecClient.writeGVar(4, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB], 0]);//設定@4,Z軸縮回時高度
+                    SyntecClient.writeGVar(3, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB], 1] + ArmData.Boffset);//設定@3,Z軸伸長至cassetteB放時高度
+                    SyntecClient.writeGVar(4, ArmData.Z_chamberB[wafernum[5 - WaferinCassettB], 0] + ArmData.Boffset);//設定@4,Z軸縮回時高度
                 }
                 SyntecClient.writeGVar(1, scheduleing[step, 1]);//設定@1為scheduleing[i,1]
                                                                 //控制器進行動作
@@ -700,8 +701,9 @@ namespace PCController
 
                 if (scheduleing[step, 1] == 5)//發送動作許可請求，接受後寫@5為1
                 {
-                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernum[5-WaferinCassettB]) != 1)
+                    while (TRCClient.sentEvent(2, correspondChambername[scheduleing[step, 1]], WaferonHand, wafernumB[5-WaferinCassettB]) != 1)
                     {
+                        Program.form.mesPrintln(String.Format("WaferinCassettB {0:d}", wafernum[5 - WaferinCassettB]));
                         Thread.Sleep(1000);
                     }
                 }
@@ -750,8 +752,9 @@ namespace PCController
                 Thread.Sleep(1500);
 
             }
-            Program.form.showWarnning("mission end");
             TRCClient.end();
+            Program.form.mesPrintln("mission end");
+            
         }
 
         private void setState(string state)
@@ -1170,6 +1173,7 @@ namespace PCController
 
             ArmData.WaferZs_IO[(int)num_initSlotID.Value, 0] = pos[2];
             ArmData.writeAngle();
+            mesPrintln("Done.");
         }
 
         private void bt_setZout_Click(object sender, EventArgs e)
@@ -1179,6 +1183,7 @@ namespace PCController
 
             ArmData.WaferZs_IO[(int)num_initSlotID.Value, 1] = pos[2];
             ArmData.writeAngle();
+            mesPrintln("Done.");
 
         }
 

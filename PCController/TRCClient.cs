@@ -12,7 +12,7 @@ namespace PCController
 {
     class TRCClient
     {
-        public const string DEFAULT_IP = "210.20.98.10";
+        public const string DEFAULT_IP = "210.20.98.1";
         //public const string DEFAULT_IP = "127.0.0.1";
 
         public const int DEFAULT_PORT = 5001;
@@ -207,6 +207,9 @@ namespace PCController
             // initial src, dst, cass number, & steps
             src = (para2[0].ElementAt(6) - '0') * 10
                     + (para2[0].ElementAt(7) - '0');
+            dst = (para2[7].ElementAt(6) - '0') * 10
+                   + (para2[7].ElementAt(7) - '0');
+            record_dst[now] = dst;
             record_wafer[0] = src;
 
             for (int i = 0; i < 3; i++)

@@ -649,9 +649,22 @@ mesPrintln("Initializer: C4 OK!");
 
             runInitAndWait(8);
 
+            SyntecClient.writeOBit(320, true);
+            while (SyntecClient.isBusy())
+            {
+                Thread.Sleep(50);
+            }
+
             Program.form.showWarnning("press OK to move back");
 
             runInitAndWait(11);
+
+            SyntecClient.writeOBit(320, false);
+            while (SyntecClient.isBusy())
+            {
+                Thread.Sleep(50);
+            }
+
 
         }
 

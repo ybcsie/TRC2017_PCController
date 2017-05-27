@@ -48,6 +48,7 @@ namespace PCController
             { 196.805,199.707},//24
             { 200.742,203.926}//25
         };
+        public const double Boffset = 0;
 
         public static double[,] WaferZs_IO = { { 160 ,162}, { 150, 152 }, { 140, 142 }, { 130, 132 }, { 133.682, 137.023 }, { 101.248, 104.229 } };
 
@@ -682,7 +683,7 @@ namespace PCController
 
             for (i = 0; i < 10; i++)
             {
-                if (reference[i, 0] <= 0.001)
+                if (reference[i, 0] <= 0.001 || i==2 || i==7)
                 {
                     tmplong1 = Math.Sqrt(reference[i, 0] * reference[i, 0] + reference[i, 1] * reference[i, 1]);
                     tmpangle1 = ((-1) * reference[i, 0] * 1) / (tmplong1);
